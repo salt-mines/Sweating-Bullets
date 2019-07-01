@@ -1,21 +1,21 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(PlayerInput), typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
     [Range(0, 100)]
     public float movementSpeed = 6.0f;
 
-    public float mouseSensitivity = 2.0f;
-
     private Vector3 movement = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
 
+    private PlayerInput playerInput;
     private CharacterController characterController;
     private Camera playerCamera;
 
-    void Start()
+    private void Start()
     {
+        playerInput = GetComponent<PlayerInput>();
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
 
@@ -23,20 +23,19 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-        var x = Input.GetAxisRaw("Mouse X");
-        var y = -Input.GetAxisRaw("Mouse Y");
-
-        rotation.x += x * mouseSensitivity;
-        rotation.y += y * mouseSensitivity;
-        playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);
-
-        movement = transform.right * Input.GetAxisRaw("Horizontal") + transform.forward * Input.GetAxisRaw("Vertical");
+        movement = transform.forward * playerInput.Forward + transform.right * playerInput.Strafe;
         movement.Normalize();
 
         transform.rotation = Quaternion.Euler(0, rotation.x, 0);
-
         characterController.SimpleMove(movement * movementSpeed);
+    }
+
+    private void LateUpdate()
+    {
+        rotation.x += playerInput.MouseX;
+        rotation.y += -playerInput.MouseY;
+        playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);
     }
 }
