@@ -7,8 +7,11 @@ public class Gun : MonoBehaviour
     public float rateOfFire = 30f;
     public float range = 100f;
 
+    public LayerMask hittableMask;
+
     private float timeToFire = 0f;
     private Camera fpsCamera;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,10 +32,15 @@ public class Gun : MonoBehaviour
     void Shoot()
     {
         RaycastHit hit;
-        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range))
+        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, hittableMask))
         {
             Debug.Log(hit.transform.name);
             Debug.DrawRay(fpsCamera.transform.position, fpsCamera.transform.forward * hit.distance, Color.yellow, 2, false);
+            if(hit.transform.gameObject.layer == 9)
+            {
+                // Kills hittable layer gameObject
+                Destroy(hit.transform.gameObject);
+            }
         }
     }
 }
