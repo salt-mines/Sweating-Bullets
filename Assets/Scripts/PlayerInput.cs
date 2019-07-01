@@ -10,7 +10,25 @@ public class PlayerInput : MonoBehaviour
     public float MouseX { get; private set; }
     public float MouseY { get; private set; }
 
-    void Update()
+    public bool MouseLocked
+    {
+        get
+        {
+            return Cursor.lockState != CursorLockMode.None;
+        }
+        set
+        {
+            Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !value;
+        }
+    }
+
+    private void Start()
+    {
+        MouseLocked = true;
+    }
+
+    private void Update()
     {
         Forward = Input.GetAxisRaw("Vertical");
         Strafe = Input.GetAxisRaw("Horizontal");

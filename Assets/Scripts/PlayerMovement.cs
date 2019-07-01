@@ -18,9 +18,6 @@ public class PlayerMovement : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void FixedUpdate()
@@ -35,7 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private void LateUpdate()
     {
         rotation.x += playerInput.MouseX;
-        rotation.y += -playerInput.MouseY;
+        rotation.y = Mathf.Clamp(rotation.y - playerInput.MouseY, -89.99f, 89.99f);
+
         playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);
     }
 }
