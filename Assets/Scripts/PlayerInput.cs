@@ -10,6 +10,8 @@ public class PlayerInput : MonoBehaviour
     public float MouseX { get; private set; }
     public float MouseY { get; private set; }
 
+    public bool Jump { get; private set; }
+
     public bool MouseLocked
     {
         get
@@ -35,5 +37,7 @@ public class PlayerInput : MonoBehaviour
 
         MouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
         MouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+
+        Jump = Input.GetButtonDown("Jump");
     }
 }

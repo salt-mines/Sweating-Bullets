@@ -5,6 +5,10 @@ public class PlayerMovement : MonoBehaviour
 {
     [Range(0, 100)]
     public float movementSpeed = 6.0f;
+    [Range(0, 100)]
+    public float jumpSpeed = 12.0f;
+    [Range(0, 100)]
+    public float gravity = 6.0f;
 
     private Vector3 movement = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
@@ -34,6 +38,6 @@ public class PlayerMovement : MonoBehaviour
         rotation.x += playerInput.MouseX;
         rotation.y = Mathf.Clamp(rotation.y - playerInput.MouseY, -89.99f, 89.99f);
 
-        playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);
+        playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);   
     }
 }
