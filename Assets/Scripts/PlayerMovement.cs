@@ -6,12 +6,16 @@ public class PlayerMovement : MonoBehaviour
     [Range(0, 100)]
     public float movementSpeed = 6.0f;
     [Range(0, 100)]
-    public float jumpSpeed = 12.0f;
+    public float jumpSpeed = 8.0f;
     [Range(0, 100)]
-    public float gravity = 6.0f;
+    public float gravity = 20.0f;
+
+    private float vSpeed = 0;
 
     private Vector3 movement = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
+
+    private Vector3 lastPosition;
 
     private PlayerInput playerInput;
     private CharacterController characterController;
@@ -26,11 +30,28 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        movement = transform.forward * playerInput.Forward + transform.right * playerInput.Strafe;
-        movement.Normalize();
+        if (characterController.isGrounded)
+        {
+            vSpeed = 0f;
+            movement = new Vector3(playerInput.Strafe, 0, playerInput.Forward);
+            movement = transform.TransformDirection(movement.normalized);
+            movement *= movementSpeed;
+
+            if (playerInput.Jump)
+            {
+                vSpeed = jumpSpeed;
+            }
+        }
+        vSpeed -= gravity * Time.deltaTime;
+        movement.y = vSpeed;
+
+        characterController.Move(movement * Time.deltaTime);
 
         transform.rotation = Quaternion.Euler(0, rotation.x, 0);
-        characterController.SimpleMove(movement * movementSpeed);
+
+        Debug.Log("movespeed: " + Vector3.Distance(lastPosition, transform.position) / Time.deltaTime);
+
+        lastPosition = transform.position;
     }
 
     private void LateUpdate()
