@@ -89,8 +89,6 @@ public class PlayerMovement : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0, rotation.x, 0);
 
-        Debug.Log(Vector3.Distance(lastPosition, transform.position) / Time.deltaTime);
-
         lastPosition = transform.position;
     }
 
