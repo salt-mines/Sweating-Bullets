@@ -12,6 +12,8 @@ public class PlayerInput : MonoBehaviour
 
     public bool Jump { get; private set; }
 
+    public bool Sprint { get; private set; }
+
     public bool MouseLocked
     {
         get
@@ -39,5 +41,6 @@ public class PlayerInput : MonoBehaviour
         MouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
         Jump = Input.GetButtonDown("Jump");
+        Sprint = Input.GetButton("Sprint");
     }
 }

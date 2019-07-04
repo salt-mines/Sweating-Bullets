@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpSpeed = 8.0f;
     [Range(0, 100)]
     public float gravity = 20.0f;
+    [Range(0, 100)]
+    public float sprintSpeed = 11.0f;
 
     private float vSpeed = 0;
 
@@ -34,9 +36,17 @@ public class PlayerMovement : MonoBehaviour
         {
             vSpeed = 0f;
             movement = new Vector3(playerInput.Strafe, 0, playerInput.Forward);
-            movement = transform.TransformDirection(movement.normalized);
-            movement *= movementSpeed;
+            movement.Normalize();
+            movement = transform.TransformDirection(movement);
 
+            if (playerInput.Sprint)
+            {
+                movement *= sprintSpeed;
+            }
+            else
+            {
+                movement *= movementSpeed;
+            }
             if (playerInput.Jump)
             {
                 vSpeed = jumpSpeed;
@@ -44,7 +54,6 @@ public class PlayerMovement : MonoBehaviour
         }
         vSpeed -= gravity * Time.deltaTime;
         movement.y = vSpeed;
-
         characterController.Move(movement * Time.deltaTime);
 
         transform.rotation = Quaternion.Euler(0, rotation.x, 0);
