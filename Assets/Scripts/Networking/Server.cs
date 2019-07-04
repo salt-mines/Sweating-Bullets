@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Lidgren.Network;
+using System.Collections.Generic;
 
 namespace Networking
 {
@@ -8,6 +9,7 @@ namespace Networking
         private NetServer server;
 
         private byte nextHostId;
+        private List<ClientInfo> connectedClients = new List<ClientInfo>();
 
         public Server()
         {
@@ -33,6 +35,29 @@ namespace Networking
             return GetClientInfo(msg.SenderConnection);
         }
 
+        public void SendToOne(NetOutgoingMessage msg, NetConnection connection, NetDeliveryMethod method)
+        {
+            server.SendMessage(msg, connection, method);
+        }
+
+        public void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
+        {
+            foreach (var client in connectedClients)
+            {
+                SendToOne(msg, client.Connection, method);
+            }
+        }
+
+        public void SendToAllButOne(NetOutgoingMessage msg, NetConnection exceptThis, NetDeliveryMethod method)
+        {
+            foreach (var client in connectedClients)
+            {
+                if (client.Connection == exceptThis) continue;
+
+                SendToOne(msg, client.Connection, method);
+            }
+        }
+
         protected override void OnStatusMessage(NetIncomingMessage msg)
         {
             var newStatus = (NetConnectionStatus)msg.ReadByte();
@@ -41,12 +66,21 @@ namespace Networking
             {
                 case NetConnectionStatus.Connected:
                     Debug.LogFormat("Conn [{0}]: {1}", this, client.HostId);
-                    server.SendMessage(Packets.Connected.Write(server.CreateMessage(), client.HostId), client.Connection, NetDeliveryMethod.ReliableSequenced);
+                    connectedClients.Add(client);
+                    SendToOne(Packets.Connected.Write(server.CreateMessage(), client.HostId), client.Connection, NetDeliveryMethod.ReliableSequenced);
+                    SendToAll(Packets.PlayerMove.Write(server.CreateMessage(), client.HostId, Vector3.zero, Quaternion.identity), NetDeliveryMethod.ReliableSequenced);
                     break;
+                case NetConnectionStatus.Disconnecting:
                 case NetConnectionStatus.Disconnected:
                     Debug.LogFormat("DC [{0}]: {1}", this, client.HostId);
+                    connectedClients.Remove(client);
                     break;
             }
+        }
+
+        public void Update()
+        {
+
         }
     }
 }

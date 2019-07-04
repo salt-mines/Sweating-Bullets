@@ -1,10 +1,13 @@
 ﻿using Lidgren.Network;
+using System;
+using UnityEngine;
 
 namespace Networking.Packets
 {
     public enum PacketType : byte
     {
-        Connected,
+        Connected = 0,
+        PlayerMove = 10,
     }
 
     public interface IPacket
@@ -21,8 +24,10 @@ namespace Networking.Packets
             {
                 case PacketType.Connected:
                     return new Connected();
+                case PacketType.PlayerMove:
+                    return new PlayerMove();
                 default:
-                    return null;
+                    throw new NotImplementedException("Packet not implemented: " + type);
             }
         }
     }
@@ -52,5 +57,40 @@ namespace Networking.Packets
         }
     }
 
+    public struct PlayerMove : IPacket
+    {
+        static readonly PacketType TYPE = PacketType.PlayerMove;
 
+        public byte hostId;
+
+        public Vector3 position;
+        public Quaternion rotation;
+
+        public IPacket Read(NetIncomingMessage msg)
+        {
+            hostId = msg.ReadByte();
+            position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
+            rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
+            return this;
+        }
+
+        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        {
+            return Write(msg, hostId, position, rotation);
+        }
+
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId, Vector3 position, Quaternion rotation)
+        {
+            msg.Write((byte)TYPE);
+            msg.Write(hostId);
+            msg.Write(position.x);
+            msg.Write(position.y);
+            msg.Write(position.z);
+            msg.Write(rotation.x);
+            msg.Write(rotation.y);
+            msg.Write(rotation.z);
+            msg.Write(rotation.w);
+            return msg;
+        }
+    }
 }
