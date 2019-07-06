@@ -24,16 +24,16 @@ namespace Networking
         }
 
         public byte PlayerId { get; }
-        public GameObject LocalActor { get; set; }
+        private GameObject LocalActor { get; set; }
 
         public GameObject LocalPlayerPrefab { get; set; }
-        public NetworkActor NetworkPlayerPrefab { get; set; }
 
         public void CreateLocalPlayer()
         {
             LocalActor = Object.Instantiate(LocalPlayerPrefab);
-
-            networkActors.Add(PlayerId, LocalActor.GetComponent<NetworkActor>());
+            var na = LocalActor.GetComponent<NetworkActor>();
+            na.PlayerId = PlayerId;
+            networkActors.Add(PlayerId, na);
         }
 
         public ClientInfo GetClientInfo(NetConnection connection)
@@ -90,6 +90,7 @@ namespace Networking
 
             connectedClients.Add(client);
             var actor = Object.Instantiate(NetworkPlayerPrefab);
+            actor.PlayerId = client.PlayerId;
             networkActors.Add(client.PlayerId, actor);
 
             SendToOne(Connected.Write(server.CreateMessage(), client.PlayerId), client.Connection,
@@ -132,12 +133,12 @@ namespace Networking
         {
             worldState.Clear();
 
-            foreach (var player in networkActors)
+            foreach (var player in networkActors.Values)
                 worldState.Add(new PlayerState
                 {
-                    playerId = player.Value.PlayerId,
-                    position = player.Value.transform.position,
-                    rotation = player.Value.transform.rotation
+                    playerId = player.PlayerId,
+                    position = player.transform.position,
+                    rotation = player.transform.rotation
                 });
 
             SendToAll(WorldState.Write(server.CreateMessage(), worldState), NetDeliveryMethod.UnreliableSequenced);

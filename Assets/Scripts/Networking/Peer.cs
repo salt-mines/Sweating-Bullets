@@ -10,6 +10,8 @@ namespace Networking
 
         protected readonly NetPeerConfiguration peerConfig = new NetPeerConfiguration(APP_NAME);
         protected NetPeer peer;
+        
+        public NetworkActor NetworkPlayerPrefab { get; set; }
 
         public Peer()
         {

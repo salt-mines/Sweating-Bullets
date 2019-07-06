@@ -21,7 +21,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        Mode = NetworkMode.ListenServer;
+        Debug.Log("Starting in mode: " + Mode);
         
         switch (Mode)
         {
@@ -34,21 +34,26 @@ public class NetworkManager : MonoBehaviour
                 ((ListenServer) peer).CreateLocalPlayer();
                 break;
             case NetworkMode.Client:
-                peer = new Client();
+                peer = new Client
+                {
+                    LocalPlayerPrefab = localPlayerPrefab,
+                    NetworkPlayerPrefab = networkPlayerPrefab
+                };
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
         peer.Start();
+        Connect("127.0.0.1", Peer.APP_PORT);
 
-        client = new Client
-        {
-            LocalActor = ((ListenServer) peer).LocalActor,
-            NetworkPlayerPrefab = networkPlayerPrefab
-        };
-        client.Start();
-        client.Connect("127.0.0.1", Peer.APP_PORT);
+//        client = new Client
+//        {
+//            LocalActor = ((ListenServer) peer).LocalActor,
+//            NetworkPlayerPrefab = networkPlayerPrefab
+//        };
+//        client.Start();
+//        client.Connect("127.0.0.1", Peer.APP_PORT);
     }
 
     public void Connect(string host, int port)
@@ -59,15 +64,15 @@ public class NetworkManager : MonoBehaviour
     private void Update()
     {
         peer.ReadMessages();
-        client.ReadMessages();
+        //client.ReadMessages();
 
         peer.Update();
-        client.Update();
+        //client.Update();
     }
 
     private void FixedUpdate()
     {
         peer.FixedUpdate();
-        client.FixedUpdate();
+        //client.FixedUpdate();
     }
 }

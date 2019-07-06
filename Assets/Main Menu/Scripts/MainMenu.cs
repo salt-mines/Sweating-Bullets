@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MainMenu
@@ -7,8 +8,22 @@ namespace MainMenu
     {
         public OptionsMenu optionsMenuPrefab;
 
-        public void OnStart()
+        private NetworkManager.NetworkMode mode;
+
+        private void Start()
         {
+            SceneManager.sceneLoaded += SceneLoaded;
+        }
+
+        public void OnJoin()
+        {
+            mode = NetworkManager.NetworkMode.Client;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        
+        public void OnHost()
+        {
+            mode = NetworkManager.NetworkMode.ListenServer;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
@@ -20,6 +35,14 @@ namespace MainMenu
         public void OnQuit()
         {
             Application.Quit();
+        }
+
+        private void SceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("HI SHITS");
+            var nm = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+
+            nm.Mode = this.mode;
         }
     }
 }

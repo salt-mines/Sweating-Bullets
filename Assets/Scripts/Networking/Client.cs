@@ -16,9 +16,9 @@ namespace Networking
         }
 
         public byte PlayerId { get; private set; }
-        public GameObject LocalActor { get; set; }
+        private GameObject LocalActor { get; set; }
 
-        public NetworkActor NetworkPlayerPrefab { get; set; }
+        public GameObject LocalPlayerPrefab { get; set; }
 
         public void Connect(string host, int port)
         {
@@ -35,7 +35,7 @@ namespace Networking
             switch (type)
             {
                 case PacketType.Connected:
-                    PlayerId = ((Connected) packet).playerId;
+                    OnConnected((Connected) packet);
                     break;
                 case PacketType.WorldState:
                     GetWorldState((WorldState) packet);
@@ -54,6 +54,13 @@ namespace Networking
                 LocalActor.transform.position,
                 LocalActor.transform.rotation
             ), NetDeliveryMethod.UnreliableSequenced);
+        }
+
+        private void OnConnected(Connected packet)
+        {
+            PlayerId = packet.playerId;
+
+            LocalActor = Object.Instantiate(LocalPlayerPrefab);
         }
 
         private void UpdatePlayerState(PlayerState state)
