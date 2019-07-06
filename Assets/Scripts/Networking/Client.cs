@@ -1,26 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using Lidgren.Network;
 using Networking.Packets;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace Networking
 {
-    class Client : Peer
+    internal class Client : Peer
     {
-        private NetClient client;
-
-        public byte HostId { get; private set; }
-        public GameObject LocalActor { get; set; }
-        private PlayerMove movePacket = new PlayerMove();
-
-        public NetworkActor NetworkPlayerPrefab { get; set; }
-
         private readonly Dictionary<byte, NetworkActor> networkActors = new Dictionary<byte, NetworkActor>();
+        private readonly NetClient client;
 
         public Client()
         {
             peer = client = new NetClient(peerConfig);
         }
+
+        public byte PlayerId { get; private set; }
+        public GameObject LocalActor { get; set; }
+
+        public NetworkActor NetworkPlayerPrefab { get; set; }
 
         public void Connect(string host, int port)
         {
@@ -29,41 +27,50 @@ namespace Networking
 
         protected override void OnDataMessage(NetIncomingMessage msg)
         {
-            PacketType type = (PacketType)msg.ReadByte();
-            var packet = Packet.GetPacketFromType(type);
+            var type = (PacketType) msg.ReadByte();
+            var packet = Packet.GetPacketFromType(type).Read(msg);
 
-            Debug.LogFormat("Packet [{0}]: {1}", this, type);
+            //Debug.LogFormat("Packet [{0}]: {1}", this, type);
 
             switch (type)
             {
                 case PacketType.Connected:
-                    packet.Read(msg);
-                    HostId = ((Connected)packet).hostId;
-                    movePacket.hostId = HostId;
+                    PlayerId = ((Connected) packet).playerId;
                     break;
-                case PacketType.PlayerMove:
-                    UpdateNetworkActor((PlayerMove)packet.Read(msg));
+                case PacketType.WorldState:
+                    GetWorldState((WorldState) packet);
                     break;
             }
         }
 
-        public void Update()
+        public override void FixedUpdate()
         {
             if (!LocalActor) return;
+            if (client.ConnectionStatus != NetConnectionStatus.Connected) return;
 
-            movePacket.position = LocalActor.transform.position;
-            movePacket.rotation = LocalActor.transform.rotation;
+            client.SendMessage(PlayerMove.Write(
+                client.CreateMessage(),
+                PlayerId,
+                LocalActor.transform.position,
+                LocalActor.transform.rotation
+            ), NetDeliveryMethod.UnreliableSequenced);
         }
 
-        private void UpdateNetworkActor(PlayerMove packet)
+        private void UpdatePlayerState(PlayerState state)
         {
-            if (!networkActors.TryGetValue(packet.hostId, out var actor))
+            if (!networkActors.TryGetValue(state.playerId, out var actor))
             {
+                Debug.LogFormat("Player {0} at {1}, rotated {2}", state.playerId, state.position, state.rotation);
                 actor = Object.Instantiate(NetworkPlayerPrefab);
-                networkActors.Add(packet.hostId, actor);
+                networkActors.Add(state.playerId, actor);
             }
 
-            actor.transform.SetPositionAndRotation(packet.position, packet.rotation);
+            actor.transform.SetPositionAndRotation(state.position, state.rotation);
+        }
+
+        private void GetWorldState(WorldState state)
+        {
+            foreach (var e in state.worldState) UpdatePlayerState(e);
         }
     }
 }

@@ -28,8 +28,6 @@ public class PlayerMovement : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
-
-        GameObject.Find("NetworkManager").GetComponent<NetworkManager>().LocalActor = gameObject;
     }
 
     private void FixedUpdate()

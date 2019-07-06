@@ -2,7 +2,7 @@
 
 public class NetworkActor : MonoBehaviour
 {
-    public byte HostId { get; set; }
+    public byte PlayerId { get; set; }
     
     void Start()
     {
