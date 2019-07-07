@@ -11,14 +11,14 @@ namespace Networking
     {
         private readonly List<ClientInfo> connectedClients = new List<ClientInfo>();
         private readonly Dictionary<byte, NetworkActor> networkActors = new Dictionary<byte, NetworkActor>();
+        private readonly NetServer server;
         private readonly List<PlayerState> worldState = new List<PlayerState>();
 
         private byte nextHostId;
-        private readonly NetServer server;
 
         public ListenServer()
         {
-            peerConfig.Port = APP_PORT;
+            peerConfig.Port = AppPort;
             peer = server = new NetServer(peerConfig);
             PlayerId = 0;
         }
@@ -131,6 +131,8 @@ namespace Networking
 
         public override void FixedUpdate()
         {
+            if (connectedClients.Count == 0) return;
+
             worldState.Clear();
 
             foreach (var player in networkActors.Values)
@@ -141,7 +143,7 @@ namespace Networking
                     rotation = player.transform.rotation
                 });
 
-            SendToAll(WorldState.Write(server.CreateMessage(), worldState), NetDeliveryMethod.UnreliableSequenced);
+            SendToAll(WorldState.Write(server.CreateMessage(), Time.time, worldState), NetDeliveryMethod.UnreliableSequenced);
         }
     }
 }

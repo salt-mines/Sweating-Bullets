@@ -20,7 +20,7 @@ namespace MainMenu
             mode = NetworkManager.NetworkMode.Client;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        
+
         public void OnHost()
         {
             mode = NetworkManager.NetworkMode.ListenServer;
@@ -39,8 +39,11 @@ namespace MainMenu
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log("HI SHITS");
-            var nm = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+            var nmo = GameObject.Find("NetworkManager");
+            if (nmo == null) return;
+
+            var nm = nmo.GetComponent<NetworkManager>();
+            if (nm == null) return;
 
             nm.Mode = this.mode;
         }

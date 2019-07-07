@@ -5,15 +5,13 @@ namespace Networking
 {
     public abstract class Peer
     {
-        public const int APP_PORT = 13456;
-        public const string APP_NAME = "saltfps";
+        public const int AppPort = 13456;
+        public const string AppName = "saltfps";
 
-        protected readonly NetPeerConfiguration peerConfig = new NetPeerConfiguration(APP_NAME);
+        protected readonly NetPeerConfiguration peerConfig = new NetPeerConfiguration(AppName);
         protected NetPeer peer;
-        
-        public NetworkActor NetworkPlayerPrefab { get; set; }
 
-        public Peer()
+        protected Peer()
         {
 #if UNITY_EDITOR
 //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.DebugMessage, true);
@@ -22,6 +20,10 @@ namespace Networking
             peerConfig.ConnectionTimeout = 600;
 #endif
         }
+
+        public bool Running => peer.Status == NetPeerStatus.Running;
+
+        public NetworkActor NetworkPlayerPrefab { get; set; }
 
         public void Start()
         {

@@ -22,9 +22,10 @@ public class NetworkManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("Starting in mode: " + Mode);
-        
+
         switch (Mode)
         {
+            case NetworkMode.Server:
             case NetworkMode.ListenServer:
                 peer = new ListenServer
                 {
@@ -45,15 +46,7 @@ public class NetworkManager : MonoBehaviour
         }
 
         peer.Start();
-        Connect("127.0.0.1", Peer.APP_PORT);
-
-//        client = new Client
-//        {
-//            LocalActor = ((ListenServer) peer).LocalActor,
-//            NetworkPlayerPrefab = networkPlayerPrefab
-//        };
-//        client.Start();
-//        client.Connect("127.0.0.1", Peer.APP_PORT);
+        Connect("127.0.0.1", Peer.AppPort);
     }
 
     public void Connect(string host, int port)
@@ -63,16 +56,16 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        peer.ReadMessages();
-        //client.ReadMessages();
-
+        if (!peer.Running) return;
         peer.Update();
-        //client.Update();
     }
 
     private void FixedUpdate()
     {
+        if (!peer.Running) return;
+
+        peer.ReadMessages();
+
         peer.FixedUpdate();
-        //client.FixedUpdate();
     }
 }
