@@ -17,11 +17,6 @@ namespace Networking
 
         public Client()
         {
-#if UNITY_EDITOR
-            peerConfig.SimulatedMinimumLatency = 0.08f;
-            peerConfig.SimulatedRandomLatency = 0.02f;
-#endif
-
             peer = client = new NetClient(peerConfig);
         }
 
@@ -80,7 +75,7 @@ namespace Networking
             var value = msBox.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
             if (value == null) return;
             
-            value.text = $"{client.ServerConnection.AverageRoundtripTime / 1000:F0} ms";
+            value.text = $"{Mathf.RoundToInt(client.ServerConnection.AverageRoundtripTime * 1000)} ms";
 
             InterpolateWorldState();
         }

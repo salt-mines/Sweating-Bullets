@@ -146,9 +146,13 @@ namespace Networking
             networkActors[sender].transform.rotation = packet.rotation;
         }
 
+        private int tick;
         public override void FixedUpdate()
         {
+            tick++;
             if (connectedClients.Count == 0) return;
+
+            if (tick % 4 != 0) return;
 
             worldState.Clear();
 

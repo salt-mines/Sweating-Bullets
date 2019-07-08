@@ -14,10 +14,13 @@ namespace Networking
         protected Peer()
         {
 #if UNITY_EDITOR
-//            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.DebugMessage, true);
-//            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.WarningMessage, true);
-//            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.ErrorMessage, true);
-//            peerConfig.ConnectionTimeout = 600;
+            peerConfig.SimulatedMinimumLatency = 0.08f;
+            peerConfig.SimulatedRandomLatency = 0.02f;
+
+            //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.DebugMessage, true);
+            //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.WarningMessage, true);
+            //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.ErrorMessage, true);
+            //            peerConfig.ConnectionTimeout = 600;
 #endif
         }
 
