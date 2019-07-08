@@ -7,8 +7,10 @@ namespace MainMenu
     public class MainMenu : MonoBehaviour
     {
         public OptionsMenu optionsMenuPrefab;
+        public ServerSelection serverMenuPrefab;
 
         private NetworkManager.NetworkMode mode;
+        private string host;
 
         private void Start()
         {
@@ -17,6 +19,20 @@ namespace MainMenu
 
         public void OnJoin()
         {
+            if (!serverMenuPrefab) return;
+
+            var menu = Instantiate(serverMenuPrefab, transform.parent);
+            menu.onJoin.AddListener(StartClient);
+        }
+
+        private void StartClient(string host)
+        {
+            this.host = host;
+            if (string.IsNullOrEmpty(this.host))
+            {
+                this.host = "127.0.0.1";
+            }
+
             mode = NetworkManager.NetworkMode.Client;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
@@ -46,6 +62,11 @@ namespace MainMenu
             if (nm == null) return;
 
             nm.Mode = this.mode;
+
+            if (nm.Mode == NetworkManager.NetworkMode.Client)
+            {
+                nm.Connect(host);
+            }
         }
     }
 }

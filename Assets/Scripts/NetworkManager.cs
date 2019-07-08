@@ -16,6 +16,7 @@ public class NetworkManager : MonoBehaviour
     public NetworkActor networkPlayerPrefab;
 
     private Peer peer;
+    private string instantConnectHost = null;
 
     public NetworkMode Mode { get; set; }
 
@@ -32,7 +33,7 @@ public class NetworkManager : MonoBehaviour
                     LocalPlayerPrefab = localPlayerPrefab,
                     NetworkPlayerPrefab = networkPlayerPrefab
                 };
-                ((ListenServer) peer).CreateLocalPlayer();
+                ((ListenServer)peer).CreateLocalPlayer();
                 break;
             case NetworkMode.Client:
                 peer = new Client
@@ -46,12 +47,14 @@ public class NetworkManager : MonoBehaviour
         }
 
         peer.Start();
-        Connect("127.0.0.1", Peer.AppPort);
+        if (instantConnectHost != null)
+            Connect(instantConnectHost);
     }
 
-    public void Connect(string host, int port)
+    public void Connect(string host, int port = Peer.AppPort)
     {
         if (peer is Client client) client.Connect(host, port);
+        if (peer == null) instantConnectHost = host;
     }
 
     private void Update()

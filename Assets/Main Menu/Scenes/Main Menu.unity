@@ -429,6 +429,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   optionsMenuPrefab: {fileID: 9185384815369294685, guid: f1a6865fafd6a644ca6029aa55b9df13,
     type: 3}
+  serverMenuPrefab: {fileID: 3806674986425161812, guid: 7f09aad87f0cd9d42b13492eb5b9cec0,
+    type: 3}
 --- !u!1 &287276625
 GameObject:
   m_ObjectHideFlags: 0
