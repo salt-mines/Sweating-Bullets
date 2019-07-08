@@ -13,6 +13,7 @@ namespace Networking
         private readonly LinkedList<TimedWorldState> stateBuffer = new LinkedList<TimedWorldState>();
         private TimedWorldState currentState;
         private float timeSinceLastState;
+        private HashSet<byte> disconnectedPlayers = new HashSet<byte>();
 
         public Client()
         {
@@ -49,6 +50,9 @@ namespace Networking
             {
                 case PacketType.Connected:
                     OnConnected((Connected) packet);
+                    break;
+                case PacketType.PlayerDisconnected:
+                    OnPlayerDisconnected((PlayerDisconnected)packet);
                     break;
                 case PacketType.WorldState:
                     var ws = (WorldState) packet;
@@ -98,6 +102,17 @@ namespace Networking
             LocalActor = Object.Instantiate(LocalPlayerPrefab);
         }
 
+        private void OnPlayerDisconnected(PlayerDisconnected packet)
+        {
+            var actorExists = networkActors.TryGetValue(packet.playerId, out var actor);
+            if (actorExists)
+            {
+                Object.Destroy(actor.gameObject);
+                networkActors.Remove(packet.playerId);
+            }
+            disconnectedPlayers.Add(packet.playerId);
+        }
+
         private void AddWorldState(TimedWorldState state)
         {
             if (stateBuffer.Count > 0 && stateBuffer.Last.Value.time > state.time)
@@ -122,6 +137,7 @@ namespace Networking
         {
             // Don't update ourselves
             if (playerId == PlayerId) return;
+            if (disconnectedPlayers.Contains(playerId)) return;
 
             if (!networkActors.TryGetValue(playerId, out var actor))
             {

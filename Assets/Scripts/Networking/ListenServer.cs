@@ -56,6 +56,8 @@ namespace Networking
 
         public void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
         {
+            if (server.ConnectionsCount == 0) return;
+
             server.SendMessage(msg, server.Connections, method, 0);
         }
 
@@ -79,16 +81,16 @@ namespace Networking
             switch (newStatus)
             {
                 case NetConnectionStatus.Connected:
-                    PlayerConnected(client);
+                    OnPlayerConnected(client);
                     break;
                 case NetConnectionStatus.Disconnecting:
                 case NetConnectionStatus.Disconnected:
-                    PlayerDisconnected(client);
+                    OnPlayerDisconnected(client);
                     break;
             }
         }
 
-        private void PlayerConnected(ClientInfo client)
+        private void OnPlayerConnected(ClientInfo client)
         {
             Debug.LogFormat("Conn [{0}]: {1}", this, client.PlayerId);
 
@@ -101,7 +103,7 @@ namespace Networking
                 NetDeliveryMethod.ReliableSequenced);
         }
 
-        private void PlayerDisconnected(ClientInfo client)
+        private void OnPlayerDisconnected(ClientInfo client)
         {
             Debug.LogFormat("DC [{0}]: {1}", this, client.PlayerId);
             
@@ -113,6 +115,8 @@ namespace Networking
                 Object.Destroy(actor.gameObject);
                 networkActors.Remove(client.PlayerId);
             }
+
+            SendToAll(PlayerDisconnected.Write(server.CreateMessage(), client.PlayerId), NetDeliveryMethod.ReliableUnordered);
         }
 
         protected override void OnDataMessage(NetIncomingMessage msg)

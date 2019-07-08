@@ -8,7 +8,9 @@ namespace Networking.Packets
     public enum PacketType : byte
     {
         Connected = 0,
-        PlayerMove = 10,
+        PlayerConnected = 10,
+        PlayerDisconnected = 11,
+        PlayerMove = 12,
         WorldState = 20,
         EntityState = 21,
     }
@@ -27,6 +29,10 @@ namespace Networking.Packets
             {
                 case PacketType.Connected:
                     return new Connected();
+                case PacketType.PlayerConnected:
+                    return new PlayerConnected();
+                case PacketType.PlayerDisconnected:
+                    return new PlayerDisconnected();
                 case PacketType.PlayerMove:
                     return new PlayerMove();
                 case PacketType.WorldState:
@@ -42,6 +48,56 @@ namespace Networking.Packets
     public struct Connected : IPacket
     {
         static readonly PacketType TYPE = PacketType.Connected;
+
+        public byte playerId;
+
+        public IPacket Read(NetIncomingMessage msg)
+        {
+            playerId = msg.ReadByte();
+            return this;
+        }
+
+        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        {
+            return Write(msg, playerId);
+        }
+
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId)
+        {
+            msg.Write((byte)TYPE);
+            msg.Write(hostId);
+            return msg;
+        }
+    }
+
+    public struct PlayerConnected : IPacket
+    {
+        static readonly PacketType TYPE = PacketType.PlayerConnected;
+
+        public byte playerId;
+
+        public IPacket Read(NetIncomingMessage msg)
+        {
+            playerId = msg.ReadByte();
+            return this;
+        }
+
+        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        {
+            return Write(msg, playerId);
+        }
+
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId)
+        {
+            msg.Write((byte)TYPE);
+            msg.Write(hostId);
+            return msg;
+        }
+    }
+
+    public struct PlayerDisconnected : IPacket
+    {
+        static readonly PacketType TYPE = PacketType.PlayerDisconnected;
 
         public byte playerId;
 
