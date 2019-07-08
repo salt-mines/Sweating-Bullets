@@ -17,7 +17,7 @@ namespace Networking
 //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.DebugMessage, true);
 //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.WarningMessage, true);
 //            peerConfig.SetMessageTypeEnabled(NetIncomingMessageType.ErrorMessage, true);
-            peerConfig.ConnectionTimeout = 600;
+//            peerConfig.ConnectionTimeout = 600;
 #endif
         }
 
@@ -37,6 +37,8 @@ namespace Networking
         public virtual void FixedUpdate()
         {
         }
+
+        public void Shutdown(string bye) => peer.Shutdown(bye);
 
         public void ReadMessages()
         {

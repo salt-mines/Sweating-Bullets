@@ -104,9 +104,15 @@ namespace Networking
         private void PlayerDisconnected(ClientInfo client)
         {
             Debug.LogFormat("DC [{0}]: {1}", this, client.PlayerId);
-
+            
             connectedClients.Remove(client);
-            networkActors.Remove(client.PlayerId);
+
+            var actorExists = networkActors.TryGetValue(client.PlayerId, out var actor);
+            if (actorExists)
+            {
+                Object.Destroy(actor.gameObject);
+                networkActors.Remove(client.PlayerId);
+            }
         }
 
         protected override void OnDataMessage(NetIncomingMessage msg)

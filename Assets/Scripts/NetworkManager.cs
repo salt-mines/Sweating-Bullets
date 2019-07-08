@@ -71,4 +71,9 @@ public class NetworkManager : MonoBehaviour
 
         peer.FixedUpdate();
     }
+
+    private void OnDestroy()
+    {
+        peer.Shutdown("Bye!");
+    }
 }
