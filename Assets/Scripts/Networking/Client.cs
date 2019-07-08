@@ -63,6 +63,9 @@ namespace Networking
                         worldState = ws.worldState
                     });
                     break;
+                default:
+                    base.OnDataMessage(msg);
+                    break;
             }
         }
 
@@ -95,11 +98,21 @@ namespace Networking
             ), NetDeliveryMethod.UnreliableSequenced);
         }
 
+        public void Shoot(NetworkActor target)
+        {
+            client.SendMessage(PlayerShoot.Write(
+                client.CreateMessage(),
+                PlayerId,
+                target.PlayerId),
+                NetDeliveryMethod.ReliableUnordered);
+        }
+
         private void OnConnected(Connected packet)
         {
             PlayerId = packet.playerId;
 
             LocalActor = Object.Instantiate(LocalPlayerPrefab);
+            LocalActor.GetComponent<PlayerMechanics>().spawnPoint = GameObject.Find("Spawnpoint");
         }
 
         private void OnPlayerDisconnected(PlayerDisconnected packet)

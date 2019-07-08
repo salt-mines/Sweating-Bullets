@@ -11,6 +11,7 @@ namespace Networking.Packets
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerMove = 12,
+        PlayerShoot = 13,
         WorldState = 20,
         EntityState = 21,
     }
@@ -35,6 +36,8 @@ namespace Networking.Packets
                     return new PlayerDisconnected();
                 case PacketType.PlayerMove:
                     return new PlayerMove();
+                case PacketType.PlayerShoot:
+                    return new PlayerShoot();
                 case PacketType.WorldState:
                     return new WorldState();
                 case PacketType.EntityState:
@@ -62,10 +65,10 @@ namespace Networking.Packets
             return Write(msg, playerId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write((byte)TYPE);
-            msg.Write(hostId);
+            msg.Write(playerId);
             return msg;
         }
     }
@@ -87,10 +90,10 @@ namespace Networking.Packets
             return Write(msg, playerId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write((byte)TYPE);
-            msg.Write(hostId);
+            msg.Write(playerId);
             return msg;
         }
     }
@@ -112,10 +115,10 @@ namespace Networking.Packets
             return Write(msg, playerId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte hostId)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write((byte)TYPE);
-            msg.Write(hostId);
+            msg.Write(playerId);
             return msg;
         }
     }
@@ -153,6 +156,34 @@ namespace Networking.Packets
             msg.Write(rotation.y);
             msg.Write(rotation.z);
             msg.Write(rotation.w);
+            return msg;
+        }
+    }
+
+    public struct PlayerShoot : IPacket
+    {
+        static readonly PacketType TYPE = PacketType.PlayerDisconnected;
+
+        public byte playerId;
+        public byte targetId;
+
+        public IPacket Read(NetIncomingMessage msg)
+        {
+            playerId = msg.ReadByte();
+            targetId = msg.ReadByte();
+            return this;
+        }
+
+        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        {
+            return Write(msg, playerId, targetId);
+        }
+
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, byte targetId)
+        {
+            msg.Write((byte)TYPE);
+            msg.Write(playerId);
+            msg.Write(targetId);
             return msg;
         }
     }

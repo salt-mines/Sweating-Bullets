@@ -15,7 +15,7 @@ public class NetworkManager : MonoBehaviour
     public GameObject localPlayerPrefab;
     public NetworkActor networkPlayerPrefab;
 
-    private Peer peer;
+    public Peer Peer { get; private set; }
     private string instantConnectHost = null;
 
     public NetworkMode Mode { get; set; }
@@ -28,15 +28,15 @@ public class NetworkManager : MonoBehaviour
         {
             case NetworkMode.Server:
             case NetworkMode.ListenServer:
-                peer = new ListenServer
+                Peer = new ListenServer
                 {
                     LocalPlayerPrefab = localPlayerPrefab,
                     NetworkPlayerPrefab = networkPlayerPrefab
                 };
-                ((ListenServer)peer).CreateLocalPlayer();
+                ((ListenServer)Peer).CreateLocalPlayer();
                 break;
             case NetworkMode.Client:
-                peer = new Client
+                Peer = new Client
                 {
                     LocalPlayerPrefab = localPlayerPrefab,
                     NetworkPlayerPrefab = networkPlayerPrefab
@@ -46,34 +46,34 @@ public class NetworkManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        peer.Start();
+        Peer.Start();
         if (instantConnectHost != null)
             Connect(instantConnectHost);
     }
 
     public void Connect(string host, int port = Peer.AppPort)
     {
-        if (peer is Client client) client.Connect(host, port);
-        if (peer == null) instantConnectHost = host;
+        if (Peer is Client client) client.Connect(host, port);
+        if (Peer == null) instantConnectHost = host;
     }
 
     private void Update()
     {
-        if (!peer.Running) return;
-        peer.Update();
+        if (!Peer.Running) return;
+        Peer.Update();
     }
 
     private void FixedUpdate()
     {
-        if (!peer.Running) return;
+        if (!Peer.Running) return;
 
-        peer.ReadMessages();
+        Peer.ReadMessages();
 
-        peer.FixedUpdate();
+        Peer.FixedUpdate();
     }
 
     private void OnDestroy()
     {
-        peer.Shutdown("Bye!");
+        Peer.Shutdown("Bye!");
     }
 }

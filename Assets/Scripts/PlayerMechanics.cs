@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMechanics : MonoBehaviour
 {
@@ -38,28 +36,27 @@ public class PlayerMechanics : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-
-        if(hit.transform.gameObject.layer == 9 && isAlive)
-        {
-            playerMovement.enabled = false;
-            characterController.enabled = false;
-            foreach (Transform child in transform)
-            {
-                if(child.gameObject.tag == "MainCamera")
-                {
-                    foreach(Transform cameraChild in child.transform)
-                    {
-                        cameraChild.gameObject.SetActive(false);
-                    }
-                }
-                else
-                {
-                    child.gameObject.SetActive(false);
-                }
-            }
-            isAlive = false;
-            Debug.Log("Death!");
-        }
+        //if(hit.transform.gameObject.layer == 9 && isAlive)
+        //{
+        //    playerMovement.enabled = false;
+        //    characterController.enabled = false;
+        //    foreach (Transform child in transform)
+        //    {
+        //        if(child.gameObject.tag == "MainCamera")
+        //        {
+        //            foreach(Transform cameraChild in child.transform)
+        //            {
+        //                cameraChild.gameObject.SetActive(false);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            child.gameObject.SetActive(false);
+        //        }
+        //    }
+        //    isAlive = false;
+        //    Debug.Log("Death!");
+        //}
     }
 
     public void RespawnPlayer()

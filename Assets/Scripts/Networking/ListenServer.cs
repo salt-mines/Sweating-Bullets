@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Lidgren.Network;
+﻿using Lidgren.Network;
 using Networking.Packets;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -15,7 +14,7 @@ namespace Networking
         private readonly NetServer server;
         private readonly Dictionary<byte, PlayerState> worldState = new Dictionary<byte, PlayerState>();
 
-        private byte nextHostId;
+        private byte nextPlayerId;
 
         public ListenServer()
         {
@@ -32,6 +31,7 @@ namespace Networking
         public void CreateLocalPlayer()
         {
             LocalActor = Object.Instantiate(LocalPlayerPrefab);
+            LocalActor.GetComponent<PlayerMechanics>().spawnPoint = GameObject.Find("Spawnpoint");
             var na = LocalActor.GetComponent<NetworkActor>();
             na.PlayerId = PlayerId;
             networkActors.Add(PlayerId, na);
@@ -39,9 +39,9 @@ namespace Networking
 
         public ClientInfo GetClientInfo(NetConnection connection)
         {
-            if (connection.Tag == null) connection.Tag = new ClientInfo(++nextHostId, connection);
+            if (connection.Tag == null) connection.Tag = new ClientInfo(++nextPlayerId, connection);
 
-            return (ClientInfo) connection.Tag;
+            return (ClientInfo)connection.Tag;
         }
 
         public ClientInfo GetClientInfo(NetIncomingMessage msg)
@@ -70,13 +70,13 @@ namespace Networking
 
                 clients.Add(client.Connection);
             }
-            
+
             server.SendMessage(msg, clients, method, 0);
         }
 
         protected override void OnStatusMessage(NetIncomingMessage msg)
         {
-            var newStatus = (NetConnectionStatus) msg.ReadByte();
+            var newStatus = (NetConnectionStatus)msg.ReadByte();
             var client = GetClientInfo(msg);
             switch (newStatus)
             {
@@ -106,7 +106,7 @@ namespace Networking
         private void OnPlayerDisconnected(ClientInfo client)
         {
             Debug.LogFormat("DC [{0}]: {1}", this, client.PlayerId);
-            
+
             connectedClients.Remove(client);
 
             var actorExists = networkActors.TryGetValue(client.PlayerId, out var actor);
@@ -121,7 +121,7 @@ namespace Networking
 
         protected override void OnDataMessage(NetIncomingMessage msg)
         {
-            var type = (PacketType) msg.ReadByte();
+            var type = (PacketType)msg.ReadByte();
             var packet = Packet.GetPacketFromType(type).Read(msg);
             var sender = GetClientInfo(msg).PlayerId;
 
@@ -130,7 +130,10 @@ namespace Networking
             switch (type)
             {
                 case PacketType.PlayerMove:
-                    OnPlayerMove(sender, (PlayerMove) packet);
+                    OnPlayerMove(sender, (PlayerMove)packet);
+                    break;
+                default:
+                    base.OnDataMessage(msg);
                     break;
             }
         }
