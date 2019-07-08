@@ -72,17 +72,16 @@ namespace Networking
 
             var value = msBox.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
             if (value == null) return;
-
-
+            
             value.text = $"{client.ServerConnection.AverageRoundtripTime / 1000:F0} ms";
+
+            InterpolateWorldState();
         }
 
         public override void FixedUpdate()
         {
             if (!Connected) return;
             if (!LocalActor) return;
-            
-            UpdateWorldState();
 
             client.SendMessage(PlayerMove.Write(
                 client.CreateMessage(),
@@ -119,24 +118,29 @@ namespace Networking
             };
         }
 
-        private void UpdatePlayerState(PlayerState state)
+        private void UpdatePlayerState(byte playerId, PlayerState state)
         {
-            if (!networkActors.TryGetValue(state.playerId, out var actor))
+            // Don't update ourselves
+            if (playerId == PlayerId) return;
+
+            if (!networkActors.TryGetValue(playerId, out var actor))
             {
-                Debug.LogFormat("Player {0} at {1}, rotated {2}", state.playerId, state.position, state.rotation);
+                Debug.LogFormat("Player {0} at {1}, rotated {2}", playerId, state.position, state.rotation);
                 actor = Object.Instantiate(NetworkPlayerPrefab);
-                networkActors.Add(state.playerId, actor);
+                networkActors.Add(playerId, actor);
             }
 
             actor.transform.SetPositionAndRotation(state.position, state.rotation);
         }
 
-        private void UpdateWorldState()
+        private void InterpolateWorldState()
         {
+            if (stateBuffer.Count == 0) return;
+
             var interpTime = Time.time - Interpolation;
 
             var from = stateBuffer.First;
-            var to = stateBuffer.Last;
+            var to = from.Next;
 
             while (to != null && to.Value.time <= interpTime)
             {
@@ -144,15 +148,42 @@ namespace Networking
                 to = from.Next;
                 stateBuffer.RemoveFirst();
             }
-            
-            //var ratio = 
+
+            if (to != null)
+            {
+                var ratio = (interpTime - from.Value.time) / (to.Value.time - from.Value.time);
+                var idSet = new HashSet<byte>(from.Value.worldState.Keys);
+                idSet.UnionWith(to.Value.worldState.Keys);
+
+                foreach (var id in idSet)
+                {
+                    var fromExists = from.Value.worldState.TryGetValue(id, out var playerFrom);
+                    var toExists = to.Value.worldState.TryGetValue(id, out var playerTo);
+
+                    if (fromExists && toExists)
+                    {
+                        UpdatePlayerState(id, LerpPlayerState(playerFrom, playerTo, ratio));
+                    }
+                    else
+                    {
+                        UpdatePlayerState(id, toExists ? playerTo : playerFrom);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var kv in from.Value.worldState)
+                {
+                    UpdatePlayerState(kv.Key, kv.Value);
+                }
+            }
         }
 
         private struct TimedWorldState
         {
             public float time;
             public float serverTime;
-            public List<PlayerState> worldState;
+            public Dictionary<byte, PlayerState> worldState;
         }
     }
 }

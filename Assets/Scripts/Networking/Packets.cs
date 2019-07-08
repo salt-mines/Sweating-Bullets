@@ -106,18 +106,19 @@ namespace Networking.Packets
         static readonly PacketType TYPE = PacketType.WorldState;
 
         public float time;
-        public List<PlayerState> worldState;
+        public Dictionary<byte, PlayerState> worldState;
         
         public IPacket Read(NetIncomingMessage msg)
         {
             time = msg.ReadFloat();
             var length = msg.ReadInt32();
-            worldState = new List<PlayerState>(length);
+            worldState = new Dictionary<byte, PlayerState>(length);
 
             for (int i = 0; i < length; i++)
             {
                 msg.ReadByte(); // Read extra Packet ID
-                worldState.Add((PlayerState)new PlayerState().Read(msg));
+                var ps = (PlayerState)new PlayerState().Read(msg);
+                worldState.Add(ps.playerId, ps);
             }
 
             return this;
@@ -128,12 +129,12 @@ namespace Networking.Packets
             return Write(msg, time, worldState);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, float time, List<PlayerState> worldState)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, float time, Dictionary<byte, PlayerState> worldState)
         {
             msg.Write((byte)TYPE);
             msg.Write(time);
             msg.Write(worldState.Count);
-            foreach (var state in worldState)
+            foreach (var state in worldState.Values)
             {
                 state.Write(msg);
             }

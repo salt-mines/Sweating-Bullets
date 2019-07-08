@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Networking
         private readonly List<ClientInfo> connectedClients = new List<ClientInfo>();
         private readonly Dictionary<byte, NetworkActor> networkActors = new Dictionary<byte, NetworkActor>();
         private readonly NetServer server;
-        private readonly List<PlayerState> worldState = new List<PlayerState>();
+        private readonly Dictionary<byte, PlayerState> worldState = new Dictionary<byte, PlayerState>();
 
         private byte nextHostId;
 
@@ -55,17 +56,20 @@ namespace Networking
 
         public void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
         {
-            foreach (var client in connectedClients) SendToOne(msg, client.Connection, method);
+            server.SendMessage(msg, server.Connections, method, 0);
         }
 
         public void SendToAllButOne(NetOutgoingMessage msg, NetConnection exceptThis, NetDeliveryMethod method)
         {
+            var clients = new List<NetConnection>(connectedClients.Count);
             foreach (var client in connectedClients)
             {
                 if (client.Connection == exceptThis) continue;
 
-                SendToOne(msg, client.Connection, method);
+                clients.Add(client.Connection);
             }
+            
+            server.SendMessage(msg, clients, method, 0);
         }
 
         protected override void OnStatusMessage(NetIncomingMessage msg)
@@ -136,7 +140,7 @@ namespace Networking
             worldState.Clear();
 
             foreach (var player in networkActors.Values)
-                worldState.Add(new PlayerState
+                worldState.Add(player.PlayerId, new PlayerState
                 {
                     playerId = player.PlayerId,
                     position = player.transform.position,
