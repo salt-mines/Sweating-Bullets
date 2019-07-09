@@ -2,22 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerMechanics : MonoBehaviour
 {
-    public GameObject spawnPoint;
-    public GameObject playerPrefab;
+    public GameObject spawnPoints;
+
+    public float spawnTime = 10f;
+    public float timeSpentDead = 0f;
 
     private CharacterController characterController;
     private PlayerMovement playerMovement;
+    private GameObject[] spawnPointList;
 
-    public float spawnTime = 10f;
-    public float timeSpentDead = 0f; 
     private bool isAlive = true;
+
+    private int points = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         playerMovement = GetComponent<PlayerMovement>();
+
+        spawnPointList = new GameObject[spawnPoints.transform.childCount];
+
+        for(int i = 0; i<spawnPoints.transform.childCount; i++)
+        {
+            spawnPointList[i] = spawnPoints.transform.GetChild(i).gameObject;
+        }
     }
 
     // Update is called once per frame
@@ -64,7 +76,7 @@ public class PlayerMechanics : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        gameObject.transform.position = spawnPoint.transform.position;
+        gameObject.transform.position = spawnPointList[Random.Range(0, spawnPointList.Length - 1)].transform.position;
 
         foreach (Transform child in transform)
         {
