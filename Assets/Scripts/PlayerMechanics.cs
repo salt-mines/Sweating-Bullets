@@ -87,6 +87,10 @@ public class PlayerMechanics : MonoBehaviour
 
         foreach (Transform child in transform)
         {
+            foreach (Transform cameraChild in child.transform)
+            {
+                cameraChild.gameObject.SetActive(true);
+            }
             child.gameObject.SetActive(true);
         }
         characterController.enabled = true;

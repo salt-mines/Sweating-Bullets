@@ -16,7 +16,7 @@ public class PlayerInput : MonoBehaviour
 
     public bool Crouch { get; private set; }
 
-    public bool Escape { get; private set; }
+    public bool Cancel { get; private set; }
 
     public bool MouseLocked
     {
@@ -48,6 +48,6 @@ public class PlayerInput : MonoBehaviour
         Sprint = Input.GetButton("Sprint");
         Crouch = Input.GetButton("Crouch");
 
-        Escape = Input.GetButton("Escape");
+        Cancel = Input.GetButtonDown("Cancel");
     }
 }
