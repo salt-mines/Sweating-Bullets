@@ -15,14 +15,18 @@ public class PlayerMechanics : MonoBehaviour
     private GameObject[] spawnPointList;
 
     private bool isAlive = true;
+    private GameManager gameManager;
+    private ScoreManager scoreManager;
 
-    private int points = 0;
+    public int points;
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         playerMovement = GetComponent<PlayerMovement>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
 
         spawnPointList = new GameObject[spawnPoints.transform.childCount];
 
@@ -46,6 +50,7 @@ public class PlayerMechanics : MonoBehaviour
             RespawnPlayer();
             isAlive = true;
         }
+        scoreManager.PlayerJoin();
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -76,7 +81,9 @@ public class PlayerMechanics : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        gameObject.transform.position = spawnPointList[Random.Range(0, spawnPointList.Length - 1)].transform.position;
+        var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)];
+        gameObject.transform.position = spawnPoint.transform.position;
+        gameObject.transform.rotation = spawnPoint.transform.rotation;
 
         foreach (Transform child in transform)
         {

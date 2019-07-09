@@ -12,11 +12,15 @@ public class Gun : MonoBehaviour
     private float timeToFire = 0f;
     private Camera fpsCamera;
 
+    private GameManager gameManager;
+    private ScoreManager scoreManager;
 
     // Start is called before the first frame update
     void Start()
     {
         fpsCamera = GetComponentInParent<Camera>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
     }
 
     // Update is called once per frame
@@ -40,6 +44,8 @@ public class Gun : MonoBehaviour
             {
                 // Kills hittable layer gameObject
                 Destroy(hit.transform.gameObject);
+                GetComponentInParent<PlayerMechanics>().points++;
+                scoreManager.UpdateScoreText();
             }
         }
     }
