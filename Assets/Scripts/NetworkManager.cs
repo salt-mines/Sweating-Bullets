@@ -12,10 +12,11 @@ public class NetworkManager : MonoBehaviour
     }
 
     private Client client;
+    private Server server;
+
     public GameObject localPlayerPrefab;
     public NetworkActor networkPlayerPrefab;
-
-    public Peer Peer { get; private set; }
+    
     private string instantConnectHost = null;
 
     public NetworkMode Mode { get; set; }
@@ -28,52 +29,32 @@ public class NetworkManager : MonoBehaviour
         {
             case NetworkMode.Server:
             case NetworkMode.ListenServer:
-                Peer = new ListenServer
-                {
-                    LocalPlayerPrefab = localPlayerPrefab,
-                    NetworkPlayerPrefab = networkPlayerPrefab
-                };
-                ((ListenServer)Peer).CreateLocalPlayer();
-                break;
             case NetworkMode.Client:
-                Peer = new Client
-                {
-                    LocalPlayerPrefab = localPlayerPrefab,
-                    NetworkPlayerPrefab = networkPlayerPrefab
-                };
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        Peer.Start();
-        if (instantConnectHost != null)
-            Connect(instantConnectHost);
+        server = new Server(Constants.MaxPlayers);
+        client = new HostClient(server);
     }
 
-    public void Connect(string host, int port = Peer.AppPort)
+    public void Connect(string host, int port = Constants.AppPort)
     {
-        if (Peer is Client client) client.Connect(host, port);
-        if (Peer == null) instantConnectHost = host;
     }
 
     private void Update()
     {
-        if (!Peer.Running) return;
-        Peer.Update();
+        client.Update();
     }
 
     private void FixedUpdate()
     {
-        if (!Peer.Running) return;
-
-        Peer.ReadMessages();
-
-        Peer.FixedUpdate();
+        if (server != null)
+            server.FixedUpdate();
     }
 
     private void OnDestroy()
     {
-        Peer.Shutdown("Bye!");
     }
 }

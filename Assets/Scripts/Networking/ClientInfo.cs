@@ -4,11 +4,11 @@ namespace Networking
 {
     public class ClientInfo
     {
-        public byte PlayerId { get; private set; }
+        public int PlayerId { get; private set; }
         public bool HasSpawned { get; set; }
         public NetConnection Connection { get; private set; }
 
-        public ClientInfo(byte id, NetConnection connection)
+        public ClientInfo(int id, NetConnection connection)
         {
             PlayerId = id;
             Connection = connection;

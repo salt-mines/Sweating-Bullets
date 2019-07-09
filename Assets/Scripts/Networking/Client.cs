@@ -1,213 +1,152 @@
 ﻿using System.Collections.Generic;
 using Lidgren.Network;
 using Networking.Packets;
-using TMPro;
 using UnityEngine;
 
 namespace Networking
 {
-    internal class Client : Peer
+    internal abstract class Client
     {
-        private readonly NetClient client;
-        private readonly Dictionary<byte, NetworkActor> networkActors = new Dictionary<byte, NetworkActor>();
-        private readonly LinkedList<TimedWorldState> stateBuffer = new LinkedList<TimedWorldState>();
-        private TimedWorldState currentState;
-        private float timeSinceLastState;
-        private HashSet<byte> disconnectedPlayers = new HashSet<byte>();
+        public List<PlayerInfo> Players { get; } = new List<PlayerInfo>();
+        public byte MaxPlayers { get; protected set; }
 
-        public Client()
-        {
-            peer = client = new NetClient(peerConfig);
-        }
+        public bool InterpolationEnabled { get; set; } = true;
 
         public float Interpolation { get; set; } = 0.1f;
 
-        public byte PlayerId { get; private set; }
-        private GameObject LocalActor { get; set; }
+        public byte? PlayerId { get; protected set; } = null;
 
+        protected GameObject LocalActor { get; set; }
         public GameObject LocalPlayerPrefab { get; set; }
 
-        public bool Connected => client.ConnectionStatus == NetConnectionStatus.Connected;
+        public bool Connected => PlayerId != null;
 
-        public void Connect(string host, int port)
+        public void Update()
         {
-            client.Connect(host, port);
-        }
+            ProcessMessages();
 
-        protected override void OnDataMessage(NetIncomingMessage msg)
-        {
-            var type = (PacketType) msg.ReadByte();
-            var packet = Packet.GetPacketFromType(type).Read(msg);
-
-            //Debug.LogFormat("Packet [{0}]: {1}", this, type);
-
-            switch (type)
-            {
-                case PacketType.Connected:
-                    OnConnected((Connected) packet);
-                    break;
-                case PacketType.PlayerDisconnected:
-                    OnPlayerDisconnected((PlayerDisconnected)packet);
-                    break;
-                case PacketType.WorldState:
-                    var ws = (WorldState) packet;
-                    AddWorldState(new TimedWorldState
-                    {
-                        time = Time.time,
-                        serverTime = ws.time,
-                        worldState = ws.worldState
-                    });
-                    break;
-                default:
-                    base.OnDataMessage(msg);
-                    break;
-            }
-        }
-
-        public override void Update()
-        {
             if (!Connected) return;
-            if (client.ServerConnection == null) return;
 
-            var msBox = GameObject.Find("Latency");
-            if (msBox == null) return;
+            UpdateWorldState();
 
-            var value = msBox.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            if (value == null) return;
-            
-            value.text = $"{Mathf.RoundToInt(client.ServerConnection.AverageRoundtripTime * 1000)} ms";
-
-            InterpolateWorldState();
+            SendState();
         }
 
-        public override void FixedUpdate()
+        protected abstract void ProcessMessages();
+
+        protected abstract void SendState();
+
+        protected void SetInfo(byte playerId, byte maxPlayers)
         {
-            if (!Connected) return;
-            if (!LocalActor) return;
-
-            client.SendMessage(PlayerMove.Write(
-                client.CreateMessage(),
-                PlayerId,
-                LocalActor.transform.position,
-                LocalActor.transform.rotation
-            ), NetDeliveryMethod.UnreliableSequenced);
-        }
-
-        public void Shoot(NetworkActor target)
-        {
-            client.SendMessage(PlayerShoot.Write(
-                client.CreateMessage(),
-                PlayerId,
-                target.PlayerId),
-                NetDeliveryMethod.ReliableUnordered);
-        }
-
-        private void OnConnected(Connected packet)
-        {
-            PlayerId = packet.playerId;
-
-            LocalActor = Object.Instantiate(LocalPlayerPrefab);
-            LocalActor.GetComponent<PlayerMechanics>().spawnPoint = GameObject.Find("Spawnpoint");
+            PlayerId = playerId;
+            MaxPlayers = maxPlayers;
+            Players.Capacity = maxPlayers;
         }
 
         private void OnPlayerDisconnected(PlayerDisconnected packet)
         {
-            var actorExists = networkActors.TryGetValue(packet.playerId, out var actor);
-            if (actorExists)
-            {
-                Object.Destroy(actor.gameObject);
-                networkActors.Remove(packet.playerId);
-            }
-            disconnectedPlayers.Add(packet.playerId);
         }
 
-        private void AddWorldState(TimedWorldState state)
+        protected void AddWorldState(PlayerState?[] worldState)
         {
-            if (stateBuffer.Count > 0 && stateBuffer.Last.Value.time > state.time)
+            for (byte i = 0; i < worldState.Length; i++)
             {
-                return;
+                var ps = worldState[i];
+                if (ps.HasValue)
+                {
+                    if (Players.Count <= i || Players[i] == null)
+                    {
+                        var ply = new PlayerInfo(i);
+
+                        if (Players.Count <= i)
+                        {
+                            Players.Add(ply);
+                        }
+                        else
+                        {
+                            Players[i] = ply;
+                        }
+                    }
+
+                    Players[i].StateBuffer.AddLast(new TimedPlayerState
+                    {
+                        time = Time.time,
+                        state = ps.Value
+                    });
+                }
             }
-
-            stateBuffer.AddLast(state);
-        }
-
-        private PlayerState LerpPlayerState(PlayerState a, PlayerState b, float ratio)
-        {
-            return new PlayerState
-            {
-                playerId = a.playerId,
-                position = Vector3.Lerp(a.position, b.position, ratio),
-                rotation = Quaternion.Lerp(a.rotation, b.rotation, ratio)
-            };
         }
 
         private void UpdatePlayerState(byte playerId, PlayerState state)
         {
             // Don't update ourselves
             if (playerId == PlayerId) return;
-            if (disconnectedPlayers.Contains(playerId)) return;
 
-            if (!networkActors.TryGetValue(playerId, out var actor))
+            Debug.LogFormat("P#{0}: pos {1}; rot {2}", playerId, state.position, state.rotation);
+
+            //if (!networkActors.TryGetValue(playerId, out var actor))
             {
-                Debug.LogFormat("Player {0} at {1}, rotated {2}", playerId, state.position, state.rotation);
-                actor = Object.Instantiate(NetworkPlayerPrefab);
-                networkActors.Add(playerId, actor);
+                //Debug.LogFormat("Player {0} at {1}, rotated {2}", playerId, state.position, state.rotation);
+                //actor = Object.Instantiate(NetworkPlayerPrefab);
+                //networkActors.Add(playerId, actor);
             }
 
-            actor.transform.SetPositionAndRotation(state.position, state.rotation);
+            //actor.transform.SetPositionAndRotation(state.position, state.rotation);
         }
 
-        private void InterpolateWorldState()
+        private void UpdateWorldState()
         {
-            if (stateBuffer.Count == 0) return;
-
-            var interpTime = Time.time - Interpolation;
-
-            var from = stateBuffer.First;
-            var to = from.Next;
-
-            while (to != null && to.Value.time <= interpTime)
+            foreach (var ply in Players)
             {
-                from = to;
-                to = from.Next;
-                stateBuffer.RemoveFirst();
-            }
-
-            if (to != null)
-            {
-                var ratio = (interpTime - from.Value.time) / (to.Value.time - from.Value.time);
-                var idSet = new HashSet<byte>(from.Value.worldState.Keys);
-                idSet.UnionWith(to.Value.worldState.Keys);
-
-                foreach (var id in idSet)
+                foreach (var state in ply.StateBuffer)
                 {
-                    var fromExists = from.Value.worldState.TryGetValue(id, out var playerFrom);
-                    var toExists = to.Value.worldState.TryGetValue(id, out var playerTo);
-
-                    if (fromExists && toExists)
-                    {
-                        UpdatePlayerState(id, LerpPlayerState(playerFrom, playerTo, ratio));
-                    }
-                    else
-                    {
-                        UpdatePlayerState(id, toExists ? playerTo : playerFrom);
-                    }
+                    UpdatePlayerState(ply.Id, state.state);
                 }
+                ply.StateBuffer.Clear();
             }
-            else
-            {
-                foreach (var kv in from.Value.worldState)
-                {
-                    UpdatePlayerState(kv.Key, kv.Value);
-                }
-            }
-        }
 
-        private struct TimedWorldState
-        {
-            public float time;
-            public float serverTime;
-            public Dictionary<byte, PlayerState> worldState;
+            //if (stateBuffer.Count == 0) return;
+
+            //var interpTime = Time.time - Interpolation;
+
+            //var from = stateBuffer.First;
+            //var to = from.Next;
+
+            //while (to != null && to.Value.time <= interpTime)
+            //{
+            //    from = to;
+            //    to = from.Next;
+            //    stateBuffer.RemoveFirst();
+            //}
+
+            //if (to != null)
+            //{
+            //    var ratio = (interpTime - from.Value.time) / (to.Value.time - from.Value.time);
+            //    var idSet = new HashSet<byte>(from.Value.worldState.Keys);
+            //    idSet.UnionWith(to.Value.worldState.Keys);
+
+            //    foreach (var id in idSet)
+            //    {
+            //        var fromExists = from.Value.worldState.TryGetValue(id, out var playerFrom);
+            //        var toExists = to.Value.worldState.TryGetValue(id, out var playerTo);
+
+            //        if (fromExists && toExists)
+            //        {
+            //            UpdatePlayerState(id, PlayerState.Lerp(playerFrom, playerTo, ratio));
+            //        }
+            //        else
+            //        {
+            //            UpdatePlayerState(id, toExists ? playerTo : playerFrom);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var kv in from.Value.worldState)
+            //    {
+            //        UpdatePlayerState(kv.Key, kv.Value);
+            //    }
+            //}
         }
     }
 }

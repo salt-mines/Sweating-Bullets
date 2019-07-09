@@ -5,10 +5,7 @@ namespace Networking
 {
     public abstract class Peer
     {
-        public const int AppPort = 13456;
-        public const string AppName = "saltfps";
-
-        protected readonly NetPeerConfiguration peerConfig = new NetPeerConfiguration(AppName);
+        protected readonly NetPeerConfiguration peerConfig = new NetPeerConfiguration(Constants.AppName);
         protected NetPeer peer;
 
         protected Peer()

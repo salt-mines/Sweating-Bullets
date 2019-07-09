@@ -13,11 +13,12 @@ namespace Networking.Packets
         PlayerMove = 12,
         PlayerShoot = 13,
         WorldState = 20,
-        EntityState = 21,
     }
 
     public interface IPacket
     {
+        PacketType Type { get; }
+
         IPacket Read(NetIncomingMessage msg);
         NetOutgoingMessage Write(NetOutgoingMessage msg);
     }
@@ -40,42 +41,50 @@ namespace Networking.Packets
                     return new PlayerShoot();
                 case PacketType.WorldState:
                     return new WorldState();
-                case PacketType.EntityState:
-                    return new PlayerState();
                 default:
                     throw new NotImplementedException("Packet not implemented: " + type);
             }
+        }
+        
+        public static NetOutgoingMessage Write(NetPeer peer, IPacket packet)
+        {
+            var msg = peer.CreateMessage();
+            msg.Write((byte)packet.Type);
+            packet.Write(msg);
+            return msg;
         }
     }
 
     public struct Connected : IPacket
     {
-        static readonly PacketType TYPE = PacketType.Connected;
+        public PacketType Type => PacketType.Connected;
 
         public byte playerId;
+        public byte maxPlayers;
 
         public IPacket Read(NetIncomingMessage msg)
         {
             playerId = msg.ReadByte();
+            maxPlayers = msg.ReadByte();
             return this;
         }
 
         public NetOutgoingMessage Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId);
+            return Write(msg, playerId, maxPlayers);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers)
         {
-            msg.Write((byte)TYPE);
             msg.Write(playerId);
+            msg.Write(maxPlayers);
             return msg;
         }
     }
 
     public struct PlayerConnected : IPacket
     {
-        static readonly PacketType TYPE = PacketType.PlayerConnected;
+        public PacketType Type => PacketType.PlayerConnected;
 
         public byte playerId;
 
@@ -92,7 +101,6 @@ namespace Networking.Packets
 
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
         {
-            msg.Write((byte)TYPE);
             msg.Write(playerId);
             return msg;
         }
@@ -100,7 +108,7 @@ namespace Networking.Packets
 
     public struct PlayerDisconnected : IPacket
     {
-        static readonly PacketType TYPE = PacketType.PlayerDisconnected;
+        public PacketType Type => PacketType.PlayerDisconnected;
 
         public byte playerId;
 
@@ -117,7 +125,6 @@ namespace Networking.Packets
 
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
         {
-            msg.Write((byte)TYPE);
             msg.Write(playerId);
             return msg;
         }
@@ -125,7 +132,7 @@ namespace Networking.Packets
 
     public struct PlayerMove : IPacket
     {
-        static readonly PacketType TYPE = PacketType.PlayerMove;
+        public PacketType Type => PacketType.PlayerMove;
 
         public byte playerId;
 
@@ -147,7 +154,6 @@ namespace Networking.Packets
 
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position, Quaternion rotation)
         {
-            msg.Write((byte)TYPE);
             msg.Write(playerId);
             msg.Write(position.x);
             msg.Write(position.y);
@@ -162,7 +168,7 @@ namespace Networking.Packets
 
     public struct PlayerShoot : IPacket
     {
-        static readonly PacketType TYPE = PacketType.PlayerDisconnected;
+        public PacketType Type => PacketType.PlayerShoot;
 
         public byte playerId;
         public byte targetId;
@@ -181,7 +187,6 @@ namespace Networking.Packets
 
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, byte targetId)
         {
-            msg.Write((byte)TYPE);
             msg.Write(playerId);
             msg.Write(targetId);
             return msg;
@@ -190,22 +195,23 @@ namespace Networking.Packets
 
     public struct WorldState : IPacket
     {
-        static readonly PacketType TYPE = PacketType.WorldState;
+        public PacketType Type => PacketType.WorldState;
 
-        public float time;
-        public Dictionary<byte, PlayerState> worldState;
+        public PlayerState?[] worldState;
         
         public IPacket Read(NetIncomingMessage msg)
         {
-            time = msg.ReadFloat();
-            var length = msg.ReadInt32();
-            worldState = new Dictionary<byte, PlayerState>(length);
+            var length = msg.ReadByte();
+            worldState = new PlayerState?[length];
 
             for (int i = 0; i < length; i++)
             {
-                msg.ReadByte(); // Read extra Packet ID
-                var ps = (PlayerState)new PlayerState().Read(msg);
-                worldState.Add(ps.playerId, ps);
+                var exists = msg.ReadBoolean();
+                if (exists)
+                {
+                    var ps = PlayerState.Read(msg);
+                    worldState[ps.playerId] = ps;
+                }
             }
 
             return this;
@@ -213,55 +219,24 @@ namespace Networking.Packets
 
         public NetOutgoingMessage Write(NetOutgoingMessage msg)
         {
-            return Write(msg, time, worldState);
+            return Write(msg, worldState);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, float time, Dictionary<byte, PlayerState> worldState)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, PlayerState?[] worldState)
         {
-            msg.Write((byte)TYPE);
-            msg.Write(time);
-            msg.Write(worldState.Count);
-            foreach (var state in worldState.Values)
+            msg.Write(worldState.Length);
+            foreach (PlayerState? state in worldState)
             {
-                state.Write(msg);
+                if (!state.HasValue)
+                {
+                    msg.Write(false);
+                }
+                else
+                {
+                    msg.Write(true);
+                    state.Value.Write(msg);
+                }
             }
-            return msg;
-        }
-    }
-    
-    public struct PlayerState : IPacket
-    {
-        static readonly PacketType TYPE = PacketType.EntityState;
-
-        public byte playerId;
-
-        public Vector3 position;
-        public Quaternion rotation;
-
-        public IPacket Read(NetIncomingMessage msg)
-        {
-            playerId = msg.ReadByte();
-            position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
-            rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
-            return this;
-        }
-
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
-        {
-            return Write(msg, playerId, position, rotation);
-        }
-
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position, Quaternion rotation)
-        {
-            msg.Write((byte)TYPE);
-            msg.Write(playerId);
-            msg.Write(position.x);
-            msg.Write(position.y);
-            msg.Write(position.z);
-            msg.Write(rotation.x);
-            msg.Write(rotation.y);
-            msg.Write(rotation.z);
-            msg.Write(rotation.w);
             return msg;
         }
     }
