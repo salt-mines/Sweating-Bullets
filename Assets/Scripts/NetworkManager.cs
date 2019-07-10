@@ -12,14 +12,14 @@ public class NetworkManager : MonoBehaviour
     }
 
     private Client client;
-    private Server server;
+
+    private string instantConnectHost = null;
 
     public GameObject localPlayerPrefab;
     public NetworkActor networkPlayerPrefab;
-    
-    private string instantConnectHost = null;
+    private Server server;
 
-    public NetworkMode Mode { get; set; }
+    public NetworkMode Mode { get; set; } = NetworkMode.ListenServer;
 
     private void Start()
     {
@@ -28,15 +28,18 @@ public class NetworkManager : MonoBehaviour
         switch (Mode)
         {
             case NetworkMode.Server:
+                server = new Server(Constants.MaxPlayers);
+                break;
             case NetworkMode.ListenServer:
+                server = new Server(Constants.MaxPlayers);
+                client = new HostClient(server);
+                break;
             case NetworkMode.Client:
+                client = new NetworkClient();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        server = new Server(Constants.MaxPlayers);
-        client = new HostClient(server);
     }
 
     public void Connect(string host, int port = Constants.AppPort)
@@ -45,13 +48,13 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        client.Update();
+        client?.Update();
+        server?.Update();
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
-        if (server != null)
-            server.FixedUpdate();
+        server?.LateUpdate();
     }
 
     private void OnDestroy()

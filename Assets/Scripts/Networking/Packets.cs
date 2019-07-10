@@ -46,7 +46,7 @@ namespace Networking.Packets
             }
         }
         
-        public static NetOutgoingMessage Write(NetPeer peer, IPacket packet)
+        public static NetOutgoingMessage Write<T>(NetPeer peer, T packet) where T : IPacket
         {
             var msg = peer.CreateMessage();
             msg.Write((byte)packet.Type);

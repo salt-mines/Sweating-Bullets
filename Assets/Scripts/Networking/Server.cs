@@ -1,7 +1,6 @@
-﻿using Lidgren.Network;
+﻿using System;
+using Lidgren.Network;
 using Networking.Packets;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Networking
@@ -10,11 +9,7 @@ namespace Networking
     {
         private readonly NetServer server;
 
-        public byte MaxPlayerCount { get; }
-        public byte PlayerCount { get; private set; }
-
-        public PlayerInfo[] Players { get; }
-        public PlayerState?[] WorldState { get; }
+        private int tick;
 
         public Server(byte maxPlayers)
         {
@@ -31,12 +26,48 @@ namespace Networking
             server.Start();
         }
 
+        public byte MaxPlayerCount { get; }
+        public byte PlayerCount { get; private set; }
+
+        public PlayerInfo[] Players { get; }
+        public PlayerState?[] WorldState { get; }
+
+        public void Update()
+        {
+            ProcessMessages();
+        }
+
+        public void LateUpdate()
+        {
+            tick++;
+
+            if (tick % 4 != 0) return;
+
+            Array.Clear(WorldState, 0, WorldState.Length);
+
+            foreach (var player in Players)
+            {
+                if (player == null) continue;
+
+                WorldState[player.Id] = new PlayerState
+                {
+                    playerId = player.Id,
+                    position = player.Position,
+                    rotation = player.Rotation
+                };
+            }
+
+            SendToAll(Packet.Write(server, new WorldState {worldState = WorldState}),
+                NetDeliveryMethod.UnreliableSequenced);
+        }
+
+        #region Player methods
+
         public byte GetFreePlayerId()
         {
             for (byte i = 0; i < Players.Length; i++)
-            {
-                if (Players[i] == null) return i;
-            }
+                if (Players[i] == null)
+                    return i;
 
             throw new IndexOutOfRangeException("Too many players, no IDs left");
         }
@@ -46,49 +77,71 @@ namespace Networking
             if (!id.HasValue) id = GetFreePlayerId();
 
             var ply = new PlayerInfo(id.Value, connection);
-            if (connection != null)
-            {
-                connection.Tag = ply;
-            }
+            if (connection != null) connection.Tag = ply;
 
             Players[ply.Id] = ply;
 
             return ply;
         }
 
-        public PlayerInfo GetPlayerInfo(NetConnection connection)
+        private PlayerInfo GetPlayerInfo(NetConnection connection)
         {
             return connection.Tag as PlayerInfo;
         }
 
-        public PlayerInfo GetPlayerInfo(NetIncomingMessage msg)
+        private PlayerInfo GetPlayerInfo(NetIncomingMessage msg)
         {
             return GetPlayerInfo(msg.SenderConnection);
         }
 
-        public void SendToOne(NetOutgoingMessage msg, NetConnection connection, NetDeliveryMethod method)
+        #endregion
+
+        #region Packet sending
+
+        private void SendToOne(NetOutgoingMessage msg, NetConnection connection, NetDeliveryMethod method)
         {
             server.SendMessage(msg, connection, method);
         }
 
-        public void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
+        private void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
         {
             if (server.ConnectionsCount == 0) return;
 
             server.SendMessage(msg, server.Connections, method, 0);
         }
 
-        public void SendToAllButOne(NetOutgoingMessage msg, NetConnection exceptThis, NetDeliveryMethod method)
-        {
-            var clients = new List<NetConnection>(server.Connections);
-            clients.Remove(exceptThis);
+        #endregion
 
-            server.SendMessage(msg, clients, method, 0);
+        #region Packet handling
+
+        private void ProcessMessages()
+        {
+            NetIncomingMessage msg;
+            while ((msg = server.ReadMessage()) != null)
+            {
+                switch (msg.MessageType)
+                {
+                    case NetIncomingMessageType.Data:
+                        OnDataMessage(msg);
+                        break;
+                    case NetIncomingMessageType.StatusChanged:
+                        OnStatusMessage(msg);
+                        break;
+                    case NetIncomingMessageType.VerboseDebugMessage:
+                    case NetIncomingMessageType.DebugMessage:
+                    case NetIncomingMessageType.WarningMessage:
+                    case NetIncomingMessageType.ErrorMessage:
+                        //OnLibraryMessage(msg);
+                        break;
+                }
+
+                server.Recycle(msg);
+            }
         }
 
         protected void OnStatusMessage(NetIncomingMessage msg)
         {
-            var newStatus = (NetConnectionStatus)msg.ReadByte();
+            var newStatus = (NetConnectionStatus) msg.ReadByte();
             var client = GetPlayerInfo(msg);
             switch (newStatus)
             {
@@ -125,21 +178,20 @@ namespace Networking
 
             //connectedClients.Remove(client);
 
-            SendToAll(Packet.Write(server, new PlayerDisconnected { playerId = player.Id }), NetDeliveryMethod.ReliableUnordered);
+            SendToAll(Packet.Write(server, new PlayerDisconnected {playerId = player.Id}),
+                NetDeliveryMethod.ReliableUnordered);
         }
 
         protected void OnDataMessage(NetIncomingMessage msg)
         {
-            var type = (PacketType)msg.ReadByte();
+            var type = (PacketType) msg.ReadByte();
             var packet = Packet.GetPacketFromType(type).Read(msg);
             var sender = GetPlayerInfo(msg).Id;
 
             switch (type)
             {
                 case PacketType.PlayerMove:
-                    OnPlayerMove(sender, (PlayerMove)packet);
-                    break;
-                default:
+                    OnPlayerMove(sender, (PlayerMove) packet);
                     break;
             }
         }
@@ -153,28 +205,6 @@ namespace Networking
             ply.Rotation = packet.rotation;
         }
 
-        private int tick;
-        public void FixedUpdate()
-        {
-            tick++;
-
-            if (tick % 4 != 0) return;
-
-            Array.Clear(WorldState, 0, WorldState.Length);
-
-            foreach (var player in Players)
-            {
-                if (player == null) continue;
-
-                WorldState[player.Id] = new PlayerState
-                {
-                    playerId = player.Id,
-                    position = player.Position,
-                    rotation = player.Rotation
-                };
-            }
-
-            SendToAll(Packet.Write(server, new WorldState { worldState = WorldState }), NetDeliveryMethod.UnreliableSequenced);
-        }
+        #endregion
     }
 }
