@@ -224,7 +224,7 @@ namespace Networking.Packets
 
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, PlayerState?[] worldState)
         {
-            msg.Write(worldState.Length);
+            msg.Write((byte) worldState.Length);
             foreach (var state in worldState)
                 if (!state.HasValue)
                 {
