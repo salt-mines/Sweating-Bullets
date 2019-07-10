@@ -1,15 +1,14 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
 
 namespace Networking
 {
-    internal class Server
+    internal sealed class Server
     {
         private readonly NetServer server;
-
-        private int tick;
 
         public Server(byte maxPlayers)
         {
@@ -26,6 +25,8 @@ namespace Networking
             server.Start();
         }
 
+        public NetworkManager NetworkManager { get; internal set; }
+
         public byte MaxPlayerCount { get; }
         public byte PlayerCount { get; private set; }
 
@@ -39,10 +40,6 @@ namespace Networking
 
         public void LateUpdate()
         {
-            tick++;
-
-            if (tick % 4 != 0) return;
-
             Array.Clear(WorldState, 0, WorldState.Length);
 
             foreach (var player in Players)
@@ -61,6 +58,11 @@ namespace Networking
                 NetDeliveryMethod.UnreliableSequenced);
         }
 
+        public void Shutdown()
+        {
+            server.Shutdown("Bye");
+        }
+
         #region Player methods
 
         public byte GetFreePlayerId()
@@ -72,7 +74,7 @@ namespace Networking
             throw new IndexOutOfRangeException("Too many players, no IDs left");
         }
 
-        public PlayerInfo CreatePlayer(byte? id = null, NetConnection connection = null)
+        public PlayerInfo CreatePlayer(bool local = false, byte? id = null, [CanBeNull] NetConnection connection = null)
         {
             if (!id.HasValue) id = GetFreePlayerId();
 
@@ -80,8 +82,28 @@ namespace Networking
             if (connection != null) connection.Tag = ply;
 
             Players[ply.Id] = ply;
+            PlayerCount++;
+
+            if (NetworkManager)
+                ply.PlayerObject = NetworkManager.CreatePlayer(ply, local);
 
             return ply;
+        }
+
+        public void RemovePlayer(PlayerInfo ply)
+        {
+            RemovePlayer(ply.Id);
+        }
+
+        public void RemovePlayer(byte id)
+        {
+            if (Players[id] == null) return;
+
+            if (NetworkManager)
+                NetworkManager.RemovePlayer(Players[id].PlayerObject);
+
+            Players[id] = null;
+            PlayerCount--;
         }
 
         private PlayerInfo GetPlayerInfo(NetConnection connection)
@@ -139,14 +161,14 @@ namespace Networking
             }
         }
 
-        protected void OnStatusMessage(NetIncomingMessage msg)
+        private void OnStatusMessage(NetIncomingMessage msg)
         {
             var newStatus = (NetConnectionStatus) msg.ReadByte();
             var client = GetPlayerInfo(msg);
             switch (newStatus)
             {
                 case NetConnectionStatus.Connected:
-                    OnPlayerConnected(client);
+                    OnPlayerConnected(msg.SenderConnection);
                     break;
                 case NetConnectionStatus.Disconnecting:
                 case NetConnectionStatus.Disconnected:
@@ -155,13 +177,11 @@ namespace Networking
             }
         }
 
-        private void OnPlayerConnected(PlayerInfo player)
+        private void OnPlayerConnected(NetConnection connection)
         {
-            Debug.LogFormat("Conn [{0}]: {1}", this, player.Id);
+            var player = CreatePlayer(false, null, connection);
 
-            PlayerCount++;
-
-            //players.
+            Debug.LogFormat("Conn [{0}]: {1}", "Server", player.Id);
 
             SendToOne(Packet.Write(server, new Connected
             {
@@ -172,17 +192,15 @@ namespace Networking
 
         private void OnPlayerDisconnected(PlayerInfo player)
         {
-            Debug.LogFormat("DC [{0}]: {1}", this, player.Id);
-
-            PlayerCount--;
-
-            //connectedClients.Remove(client);
+            Debug.LogFormat("DC [{0}]: {1}", "Server", player.Id);
 
             SendToAll(Packet.Write(server, new PlayerDisconnected {playerId = player.Id}),
                 NetDeliveryMethod.ReliableUnordered);
+
+            RemovePlayer(player);
         }
 
-        protected void OnDataMessage(NetIncomingMessage msg)
+        private void OnDataMessage(NetIncomingMessage msg)
         {
             var type = (PacketType) msg.ReadByte();
             var packet = Packet.GetPacketFromType(type).Read(msg);

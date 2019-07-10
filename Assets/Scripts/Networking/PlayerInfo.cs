@@ -12,8 +12,8 @@ namespace Networking
         }
 
         public PlayerInfo(byte id, NetConnection connection)
+            : this(id)
         {
-            Id = id;
             Connection = connection;
         }
 
@@ -22,6 +22,7 @@ namespace Networking
         public Vector3 Position { get; set; } = Vector3.zero;
         public Quaternion Rotation { get; set; } = Quaternion.identity;
 
+        public NetworkPlayer PlayerObject { get; set; }
         public NetConnection Connection { get; }
 
         public LinkedList<TimedPlayerState> StateBuffer { get; } = new LinkedList<TimedPlayerState>();

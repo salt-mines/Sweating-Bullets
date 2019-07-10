@@ -1,9 +1,10 @@
 ﻿using Lidgren.Network;
 using Networking.Packets;
+using UnityEngine;
 
 namespace Networking
 {
-    internal class NetworkClient : Client
+    internal sealed class NetworkClient : Client
     {
         private readonly NetClient client;
 
@@ -11,6 +12,23 @@ namespace Networking
         {
             client = new NetClient(new NetPeerConfiguration(Constants.AppName));
             client.Start();
+        }
+
+        public override void Connect(string host, int port = Constants.AppPort)
+        {
+            client.Connect(host, port);
+        }
+
+        public override void Shutdown()
+        {
+            client.Shutdown("Bye");
+        }
+
+        protected override PlayerInfo CreatePlayer(byte id, bool local = false)
+        {
+            var ply = base.CreatePlayer(id, local);
+            ply.PlayerObject = NetworkManager.CreatePlayer(ply, local);
+            return ply;
         }
 
         protected override void ProcessMessages()
@@ -40,9 +58,17 @@ namespace Networking
 
         protected override void SendState()
         {
+            var ply = Players[PlayerId.Value];
+
+            client.SendMessage(Packet.Write(client, new PlayerMove
+            {
+                playerId = ply.Id,
+                position = ply.Position,
+                rotation = ply.Rotation
+            }), NetDeliveryMethod.UnreliableSequenced);
         }
 
-        protected void OnDataMessage(NetIncomingMessage msg)
+        private void OnDataMessage(NetIncomingMessage msg)
         {
             var type = (PacketType) msg.ReadByte();
             var packet = Packet.GetPacketFromType(type).Read(msg);
@@ -51,7 +77,7 @@ namespace Networking
             {
                 case PacketType.Connected:
                     var conn = (Connected) packet;
-                    SetInfo(conn.playerId, conn.maxPlayers);
+                    InitializeFromServer(conn.playerId, conn.maxPlayers);
                     break;
                 case PacketType.PlayerDisconnected:
                     //OnPlayerDisconnected((PlayerDisconnected)packet);
@@ -60,6 +86,24 @@ namespace Networking
                     var ws = (WorldState) packet;
                     AddWorldState(ws.worldState);
                     break;
+            }
+        }
+
+        internal override void OnGUI(float x, float y)
+        {
+            GUI.Box(new Rect(x, y += 20, 140, 100), "Client");
+            var rtt = 0;
+            if (client.ServerConnection != null)
+                rtt = Mathf.RoundToInt(client.ServerConnection.AverageRoundtripTime * 1000);
+
+            GUI.Label(new Rect(x + 5, y += 20, 140, 20),
+                $"Lag: {rtt} ms");
+            GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Interp: {Interpolation * 1000} ms");
+            if (PlayerId.HasValue && Players[PlayerId.Value] != null)
+            {
+                var ply = Players[PlayerId.Value];
+                GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Pos: {ply.Position}");
+                GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.Rotation.eulerAngles}");
             }
         }
     }

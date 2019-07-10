@@ -1,4 +1,4 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 using Networking;
 using UnityEngine;
 
@@ -11,11 +11,14 @@ public class NetworkManager : MonoBehaviour
         Client
     }
 
-    private Client client;
+    [CanBeNull] private Client client;
 
-    public GameObject localPlayerPrefab;
-    public NetworkActor networkPlayerPrefab;
-    private Server server;
+    public NetworkPlayer localPlayerPrefab;
+    public NetworkPlayer networkPlayerPrefab;
+    [CanBeNull] private Server server;
+
+    [CanBeNull] private string startupHost;
+    private int startupPort = 0;
 
     public NetworkMode Mode { get; set; } = NetworkMode.ListenServer;
 
@@ -29,25 +32,41 @@ public class NetworkManager : MonoBehaviour
 
         Debug.Log("Starting in mode: " + Mode);
 
-        switch (Mode)
-        {
-            case NetworkMode.Server:
-                server = new Server(Constants.MaxPlayers);
-                break;
-            case NetworkMode.ListenServer:
-                server = new Server(Constants.MaxPlayers);
-                client = new HostClient(server);
-                break;
-            case NetworkMode.Client:
-                client = new NetworkClient();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
+            server = new Server(Constants.MaxPlayers) {NetworkManager = this};
+
+        if (Mode == NetworkMode.ListenServer) client = new HostClient(server) {NetworkManager = this};
+
+        if (Mode == NetworkMode.Client) client = new NetworkClient {NetworkManager = this};
+
+        if (startupHost != null)
+            Connect(startupHost, startupPort);
+    }
+
+    public NetworkPlayer CreatePlayer(PlayerInfo info, bool local = false)
+    {
+        var ply = Instantiate(local ? localPlayerPrefab : networkPlayerPrefab);
+        ply.PlayerInfo = info;
+        ply.IsLocalPlayer = local;
+
+        return ply;
+    }
+
+    public void RemovePlayer(NetworkPlayer player)
+    {
+        Destroy(player.gameObject);
     }
 
     public void Connect(string host, int port = Constants.AppPort)
     {
+        if (client == null)
+        {
+            startupHost = host;
+            startupPort = port;
+            return;
+        }
+        
+        client.Connect(host, port);
     }
 
     private void Update()
@@ -63,5 +82,12 @@ public class NetworkManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        client?.Shutdown();
+        server?.Shutdown();
+    }
+
+    private void OnGUI()
+    {
+        client?.OnGUI(5, 20);
     }
 }

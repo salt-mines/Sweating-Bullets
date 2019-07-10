@@ -1,24 +1,21 @@
-﻿using System.Collections.Generic;
-using Networking.Packets;
+﻿using Networking.Packets;
 using UnityEngine;
 
 namespace Networking
 {
     internal abstract class Client
     {
-        public List<PlayerInfo> Players { get; } = new List<PlayerInfo>();
+        public NetworkManager NetworkManager { get; internal set; }
+
+        public PlayerInfo[] Players { get; private set; }
         public byte MaxPlayers { get; protected set; }
 
         public bool InterpolationEnabled { get; set; } = true;
-
         public float Interpolation { get; set; } = 0.1f;
 
         public byte? PlayerId { get; protected set; }
 
-        protected GameObject LocalActor { get; set; }
-        public GameObject LocalPlayerPrefab { get; set; }
-
-        public bool Connected => PlayerId != null;
+        public bool Connected => PlayerId.HasValue;
 
         public void Update()
         {
@@ -31,19 +28,34 @@ namespace Networking
             SendState();
         }
 
+        public virtual void Connect(string host, int port = Constants.AppPort)
+        {
+        }
+
+        public virtual void Shutdown()
+        {
+        }
+
         protected abstract void ProcessMessages();
 
         protected abstract void SendState();
 
-        protected void SetInfo(byte playerId, byte maxPlayers)
+        protected void InitializeFromServer(byte playerId, byte maxPlayers)
         {
             PlayerId = playerId;
             MaxPlayers = maxPlayers;
-            Players.Capacity = maxPlayers;
+            Players = new PlayerInfo[maxPlayers];
+            Players[playerId] = CreatePlayer(playerId, true);
         }
 
         private void OnPlayerDisconnected(PlayerDisconnected packet)
         {
+        }
+
+        protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
+        {
+            Players[id] = new PlayerInfo(id);
+            return Players[id];
         }
 
         protected void AddWorldState(PlayerState?[] worldState)
@@ -51,24 +63,15 @@ namespace Networking
             for (byte i = 0; i < worldState.Length; i++)
             {
                 var ps = worldState[i];
-                if (ps.HasValue)
+                if (!ps.HasValue) continue;
+
+                if (Players[i] == null) CreatePlayer(i);
+
+                Players[i].StateBuffer.AddLast(new TimedPlayerState
                 {
-                    if (Players.Count <= i || Players[i] == null)
-                    {
-                        var ply = new PlayerInfo(i);
-
-                        if (Players.Count <= i)
-                            Players.Add(ply);
-                        else
-                            Players[i] = ply;
-                    }
-
-                    Players[i].StateBuffer.AddLast(new TimedPlayerState
-                    {
-                        time = Time.time,
-                        state = ps.Value
-                    });
-                }
+                    time = Time.time,
+                    state = ps.Value
+                });
             }
         }
 
@@ -76,8 +79,6 @@ namespace Networking
         {
             // Don't update ourselves
             if (playerId == PlayerId) return;
-
-            Debug.LogFormat("P#{0}: pos {1}; rot {2}", playerId, state.position, state.rotation);
 
             //if (!networkActors.TryGetValue(playerId, out var actor))
             {
@@ -91,8 +92,11 @@ namespace Networking
 
         private void UpdateWorldState()
         {
+            var i = 0;
             foreach (var ply in Players)
             {
+                if (ply == null) continue;
+
                 foreach (var state in ply.StateBuffer) UpdatePlayerState(ply.Id, state.state);
                 ply.StateBuffer.Clear();
             }
@@ -140,5 +144,7 @@ namespace Networking
             //    }
             //}
         }
+
+        internal abstract void OnGUI(float x, float y);
     }
 }
