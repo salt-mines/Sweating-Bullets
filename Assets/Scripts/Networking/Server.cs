@@ -131,7 +131,7 @@ namespace Networking
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.ErrorMessage:
-                        //OnLibraryMessage(msg);
+                        NetworkLog.HandleMessage("Server", msg);
                         break;
                 }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
 
@@ -14,7 +13,7 @@ namespace Networking
 
         public float Interpolation { get; set; } = 0.1f;
 
-        public byte? PlayerId { get; protected set; } = null;
+        public byte? PlayerId { get; protected set; }
 
         protected GameObject LocalActor { get; set; }
         public GameObject LocalPlayerPrefab { get; set; }
@@ -59,13 +58,9 @@ namespace Networking
                         var ply = new PlayerInfo(i);
 
                         if (Players.Count <= i)
-                        {
                             Players.Add(ply);
-                        }
                         else
-                        {
                             Players[i] = ply;
-                        }
                     }
 
                     Players[i].StateBuffer.AddLast(new TimedPlayerState
@@ -98,10 +93,7 @@ namespace Networking
         {
             foreach (var ply in Players)
             {
-                foreach (var state in ply.StateBuffer)
-                {
-                    UpdatePlayerState(ply.Id, state.state);
-                }
+                foreach (var state in ply.StateBuffer) UpdatePlayerState(ply.Id, state.state);
                 ply.StateBuffer.Clear();
             }
 

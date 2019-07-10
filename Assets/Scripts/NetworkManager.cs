@@ -13,8 +13,6 @@ public class NetworkManager : MonoBehaviour
 
     private Client client;
 
-    private string instantConnectHost = null;
-
     public GameObject localPlayerPrefab;
     public NetworkActor networkPlayerPrefab;
     private Server server;
@@ -23,6 +21,12 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
+        if (Application.isBatchMode)
+        {
+            Debug.Log("Batch mode detected");
+            Mode = NetworkMode.Server;
+        }
+
         Debug.Log("Starting in mode: " + Mode);
 
         switch (Mode)

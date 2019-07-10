@@ -2,8 +2,6 @@
 
 public class NetworkPlayer : MonoBehaviour
 {
-    public Networking.Peer Peer { get; set; }
-
     private void Start()
     {
         //Peer = GameObject.Find("NetworkManager").GetComponent<NetworkManager>().Peer;

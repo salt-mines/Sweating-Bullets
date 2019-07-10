@@ -1,6 +1,5 @@
-﻿using Lidgren.Network;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using Lidgren.Network;
 using UnityEngine;
 
 namespace Networking.Packets
@@ -12,7 +11,7 @@ namespace Networking.Packets
         PlayerDisconnected = 11,
         PlayerMove = 12,
         PlayerShoot = 13,
-        WorldState = 20,
+        WorldState = 20
     }
 
     public interface IPacket
@@ -27,7 +26,7 @@ namespace Networking.Packets
     {
         public static IPacket GetPacketFromType(PacketType type)
         {
-            switch(type)
+            switch (type)
             {
                 case PacketType.Connected:
                     return new Connected();
@@ -45,11 +44,11 @@ namespace Networking.Packets
                     throw new NotImplementedException("Packet not implemented: " + type);
             }
         }
-        
+
         public static NetOutgoingMessage Write<T>(NetPeer peer, T packet) where T : IPacket
         {
             var msg = peer.CreateMessage();
-            msg.Write((byte)packet.Type);
+            msg.Write((byte) packet.Type);
             packet.Write(msg);
             return msg;
         }
@@ -152,7 +151,8 @@ namespace Networking.Packets
             return Write(msg, playerId, position, rotation);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position, Quaternion rotation)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
+            Quaternion rotation)
         {
             msg.Write(playerId);
             msg.Write(position.x);
@@ -198,13 +198,13 @@ namespace Networking.Packets
         public PacketType Type => PacketType.WorldState;
 
         public PlayerState?[] worldState;
-        
+
         public IPacket Read(NetIncomingMessage msg)
         {
             var length = msg.ReadByte();
             worldState = new PlayerState?[length];
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 var exists = msg.ReadBoolean();
                 if (exists)
@@ -225,8 +225,7 @@ namespace Networking.Packets
         public static NetOutgoingMessage Write(NetOutgoingMessage msg, PlayerState?[] worldState)
         {
             msg.Write(worldState.Length);
-            foreach (PlayerState? state in worldState)
-            {
+            foreach (var state in worldState)
                 if (!state.HasValue)
                 {
                     msg.Write(false);
@@ -236,7 +235,7 @@ namespace Networking.Packets
                     msg.Write(true);
                     state.Value.Write(msg);
                 }
-            }
+
             return msg;
         }
     }

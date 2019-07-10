@@ -19,7 +19,7 @@ namespace Networking
                 rotation = Quaternion.Lerp(s0.rotation, s1.rotation, ratio)
             };
         }
-        
+
         public static PlayerState Read(NetIncomingMessage msg)
         {
             return new PlayerState
@@ -35,7 +35,8 @@ namespace Networking
             return Write(msg, playerId, position, rotation);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position, Quaternion rotation)
+        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
+            Quaternion rotation)
         {
             msg.Write(playerId);
             msg.Write(position.x);

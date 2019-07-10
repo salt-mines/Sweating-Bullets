@@ -5,7 +5,7 @@ namespace Networking
 {
     internal class NetworkClient : Client
     {
-        private NetClient client;
+        private readonly NetClient client;
 
         internal NetworkClient()
         {
@@ -30,10 +30,7 @@ namespace Networking
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.ErrorMessage:
-                        //OnLibraryMessage(msg);
-                        break;
-                    default:
-                        //OnUnhandledMessage(msg);
+                        NetworkLog.HandleMessage("Client", msg);
                         break;
                 }
 
@@ -43,29 +40,25 @@ namespace Networking
 
         protected override void SendState()
         {
-
         }
 
         protected void OnDataMessage(NetIncomingMessage msg)
         {
-            var type = (PacketType)msg.ReadByte();
+            var type = (PacketType) msg.ReadByte();
             var packet = Packet.GetPacketFromType(type).Read(msg);
 
             switch (type)
             {
                 case PacketType.Connected:
-                    var conn = (Connected)packet;
+                    var conn = (Connected) packet;
                     SetInfo(conn.playerId, conn.maxPlayers);
                     break;
                 case PacketType.PlayerDisconnected:
                     //OnPlayerDisconnected((PlayerDisconnected)packet);
                     break;
                 case PacketType.WorldState:
-                    var ws = (WorldState)packet;
+                    var ws = (WorldState) packet;
                     AddWorldState(ws.worldState);
-                    break;
-                default:
-                    //base.OnDataMessage(msg);
                     break;
             }
         }

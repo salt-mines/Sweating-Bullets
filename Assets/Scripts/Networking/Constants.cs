@@ -1,6 +1,6 @@
 ﻿namespace Networking
 {
-    internal class Constants
+    internal static class Constants
     {
         public const int AppPort = 13456;
         public const string AppName = "saltfps";
