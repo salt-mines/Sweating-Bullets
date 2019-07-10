@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public float rateOfFire = 30f;
+    public float rateOfFire = 5f;
     public float range = 100f;
 
     public LayerMask hittableMask;
@@ -21,16 +21,19 @@ public class Gun : MonoBehaviour
         fpsCamera = GetComponentInParent<Camera>();
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
+
+        timeToFire = rateOfFire;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && Time.time >= timeToFire)
+        if (Input.GetButtonDown("Fire1") && rateOfFire <= timeToFire)
         {
-            timeToFire = Time.time + 1f / rateOfFire;
+            timeToFire = 0;
             Shoot();
         }
+        timeToFire += Time.deltaTime;
     }
 
     void Shoot()

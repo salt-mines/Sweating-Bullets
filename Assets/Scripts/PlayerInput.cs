@@ -31,22 +31,35 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    private GameManager gameManager;
+
     private void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         MouseLocked = true;
     }
 
     private void Update()
     {
-        Forward = Input.GetAxisRaw("Vertical");
-        Strafe = Input.GetAxisRaw("Horizontal");
+        if (!gameManager.paused)
+        {
+            Forward = Input.GetAxisRaw("Vertical");
+            Strafe = Input.GetAxisRaw("Horizontal");
 
-        MouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
-        MouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+            MouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+            MouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
-        Jump = Input.GetButton("Jump");
-        Sprint = Input.GetButton("Sprint");
-        Crouch = Input.GetButton("Crouch");
+            Jump = Input.GetButton("Jump");
+            Sprint = Input.GetButton("Sprint");
+            Crouch = Input.GetButton("Crouch");
+        }
+        else
+        {
+            Forward = 0;
+            Strafe = 0;
+            Jump = false;
+            Crouch = false;
+        }
 
         Cancel = Input.GetButtonDown("Cancel");
     }

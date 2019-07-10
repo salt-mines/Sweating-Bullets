@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public GameObject pausePanel;
 
     private PlayerInput playerInput;
-    private bool paused = false;
+    public bool paused = false;
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     public void OnPause()
     {
         pausePanel.SetActive(true);
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().enabled = false;
+        //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().enabled = false;
         playerInput.MouseLocked = false;
     }
 

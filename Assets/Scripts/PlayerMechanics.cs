@@ -10,11 +10,12 @@ public class PlayerMechanics : MonoBehaviour
     public float spawnTime = 10f;
     public float timeSpentDead = 0f;
 
+    public bool isAlive = true;
+
     private CharacterController characterController;
     private PlayerMovement playerMovement;
     private GameObject[] spawnPointList;
-
-    private bool isAlive = true;
+    
     private GameManager gameManager;
     private ScoreManager scoreManager;
 
@@ -58,8 +59,8 @@ public class PlayerMechanics : MonoBehaviour
 
         if(hit.transform.gameObject.layer == 9 && isAlive)
         {
-            playerMovement.enabled = false;
             characterController.enabled = false;
+            playerMovement.enabled = false;
             foreach (Transform child in transform)
             {
                 if(child.gameObject.tag == "MainCamera")
@@ -81,9 +82,10 @@ public class PlayerMechanics : MonoBehaviour
 
     public void RespawnPlayer()
     {
+        playerMovement.enabled = true;
+        
         var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)];
-        gameObject.transform.position = spawnPoint.transform.position;
-        gameObject.transform.rotation = spawnPoint.transform.rotation;
+        playerMovement.Reset(spawnPoint);
 
         foreach (Transform child in transform)
         {
@@ -94,6 +96,5 @@ public class PlayerMechanics : MonoBehaviour
             child.gameObject.SetActive(true);
         }
         characterController.enabled = true;
-        playerMovement.enabled = true;
     }
 }
