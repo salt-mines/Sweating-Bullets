@@ -80,14 +80,11 @@ namespace Networking
             // Don't update ourselves
             if (playerId == PlayerId) return;
 
-            //if (!networkActors.TryGetValue(playerId, out var actor))
-            {
-                //Debug.LogFormat("Player {0} at {1}, rotated {2}", playerId, state.position, state.rotation);
-                //actor = Object.Instantiate(NetworkPlayerPrefab);
-                //networkActors.Add(playerId, actor);
-            }
+            var ply = Players[playerId];
+            if (ply == null) return;
 
-            //actor.transform.SetPositionAndRotation(state.position, state.rotation);
+            ply.Position = state.position;
+            ply.Rotation = state.rotation;
         }
 
         private void UpdateWorldState()
