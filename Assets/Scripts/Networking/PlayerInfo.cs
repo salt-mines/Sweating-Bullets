@@ -26,5 +26,11 @@ namespace Networking
         public NetConnection Connection { get; }
 
         public LinkedList<TimedPlayerState> StateBuffer { get; } = new LinkedList<TimedPlayerState>();
+
+        public void SetFromState(PlayerState state)
+        {
+            Position = state.position;
+            Rotation = state.rotation;
+        }
     }
 }

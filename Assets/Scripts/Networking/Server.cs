@@ -54,8 +54,7 @@ namespace Networking
                 };
             }
 
-            SendToAll(Packet.Write(server, new WorldState {worldState = WorldState}),
-                NetDeliveryMethod.UnreliableSequenced);
+            SendToAll(new WorldState {worldState = WorldState}, NetDeliveryMethod.UnreliableSequenced);
         }
 
         public void Shutdown()
@@ -120,16 +119,18 @@ namespace Networking
 
         #region Packet sending
 
-        private void SendToOne(NetOutgoingMessage msg, NetConnection connection, NetDeliveryMethod method)
+        private void SendToOne<T>(T packet, NetConnection connection, NetDeliveryMethod method)
+            where T : IPacket
         {
-            server.SendMessage(msg, connection, method);
+            server.SendMessage(Packet.Write(server, packet), connection, method);
         }
 
-        private void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
+        private void SendToAll<T>(T packet, NetDeliveryMethod method)
+            where T : IPacket
         {
             if (server.ConnectionsCount == 0) return;
 
-            server.SendMessage(msg, server.Connections, method, 0);
+            server.SendMessage(Packet.Write(server, packet), server.Connections, method, 0);
         }
 
         #endregion
@@ -183,19 +184,18 @@ namespace Networking
 
             Debug.LogFormat("Conn [{0}]: {1}", "Server", player.Id);
 
-            SendToOne(Packet.Write(server, new Connected
+            SendToOne(new Connected
             {
                 playerId = player.Id,
                 maxPlayers = MaxPlayerCount
-            }), player.Connection, NetDeliveryMethod.ReliableUnordered);
+            }, player.Connection, NetDeliveryMethod.ReliableUnordered);
         }
 
         private void OnPlayerDisconnected(PlayerInfo player)
         {
             Debug.LogFormat("DC [{0}]: {1}", "Server", player.Id);
 
-            SendToAll(Packet.Write(server, new PlayerDisconnected {playerId = player.Id}),
-                NetDeliveryMethod.ReliableUnordered);
+            SendToAll(new PlayerDisconnected {playerId = player.Id}, NetDeliveryMethod.ReliableUnordered);
 
             RemovePlayer(player);
         }
@@ -203,13 +203,12 @@ namespace Networking
         private void OnDataMessage(NetIncomingMessage msg)
         {
             var type = (PacketType) msg.ReadByte();
-            var packet = Packet.GetPacketFromType(type).Read(msg);
             var sender = GetPlayerInfo(msg).Id;
 
             switch (type)
             {
                 case PacketType.PlayerMove:
-                    OnPlayerMove(sender, (PlayerMove) packet);
+                    OnPlayerMove(sender, PlayerMove.Read(msg));
                     break;
             }
         }

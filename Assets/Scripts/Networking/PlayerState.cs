@@ -30,12 +30,12 @@ namespace Networking
             };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId, position, rotation);
+            Write(msg, playerId, position, rotation);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
+        public static void Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
             Quaternion rotation)
         {
             msg.Write(playerId);
@@ -46,7 +46,6 @@ namespace Networking
             msg.Write(rotation.y);
             msg.Write(rotation.z);
             msg.Write(rotation.w);
-            return msg;
         }
     }
 

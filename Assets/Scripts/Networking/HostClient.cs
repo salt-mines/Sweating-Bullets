@@ -1,5 +1,6 @@
 ﻿using Networking.Packets;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
@@ -23,8 +24,7 @@ namespace Networking
 
         protected override void SendState()
         {
-            if (!PlayerId.HasValue) return;
-
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
             if (ply == null) return;
@@ -47,6 +47,7 @@ namespace Networking
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Pos: {ply.Position}");
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.Rotation.eulerAngles}");
             }
+
             GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Interp: {Interpolation * 1000} ms");
 
             x += 140;

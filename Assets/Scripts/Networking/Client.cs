@@ -1,5 +1,4 @@
-﻿using Networking.Packets;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Networking
 {
@@ -42,14 +41,11 @@ namespace Networking
 
         protected void InitializeFromServer(byte playerId, byte maxPlayers)
         {
-            PlayerId = playerId;
             MaxPlayers = maxPlayers;
             Players = new PlayerInfo[maxPlayers];
-            Players[playerId] = CreatePlayer(playerId, true);
-        }
 
-        private void OnPlayerDisconnected(PlayerDisconnected packet)
-        {
+            PlayerId = playerId;
+            CreatePlayer(playerId, true);
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -75,26 +71,17 @@ namespace Networking
             }
         }
 
-        private void UpdatePlayerState(byte playerId, PlayerState state)
-        {
-            // Don't update ourselves
-            if (playerId == PlayerId) return;
-
-            var ply = Players[playerId];
-            if (ply == null) return;
-
-            ply.Position = state.position;
-            ply.Rotation = state.rotation;
-        }
-
         private void UpdateWorldState()
         {
-            var i = 0;
             foreach (var ply in Players)
             {
                 if (ply == null) continue;
-
-                foreach (var state in ply.StateBuffer) UpdatePlayerState(ply.Id, state.state);
+                
+                // Update all players' positions except our own
+                foreach (var state in ply.StateBuffer)
+                    if (ply.Id != PlayerId) 
+                        ply.SetFromState(state.state);
+                
                 ply.StateBuffer.Clear();
             }
 

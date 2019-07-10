@@ -1,6 +1,7 @@
 ﻿using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
@@ -58,6 +59,7 @@ namespace Networking
 
         protected override void SendState()
         {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
             client.SendMessage(Packet.Write(client, new PlayerMove
@@ -71,19 +73,18 @@ namespace Networking
         private void OnDataMessage(NetIncomingMessage msg)
         {
             var type = (PacketType) msg.ReadByte();
-            var packet = Packet.GetPacketFromType(type).Read(msg);
 
             switch (type)
             {
                 case PacketType.Connected:
-                    var conn = (Connected) packet;
+                    var conn = Packets.Connected.Read(msg);
                     InitializeFromServer(conn.playerId, conn.maxPlayers);
                     break;
                 case PacketType.PlayerDisconnected:
                     //OnPlayerDisconnected((PlayerDisconnected)packet);
                     break;
                 case PacketType.WorldState:
-                    var ws = (WorldState) packet;
+                    var ws = WorldState.Read(msg);
                     AddWorldState(ws.worldState);
                     break;
             }

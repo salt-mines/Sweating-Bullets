@@ -18,8 +18,7 @@ namespace Networking.Packets
     {
         PacketType Type { get; }
 
-        IPacket Read(NetIncomingMessage msg);
-        NetOutgoingMessage Write(NetOutgoingMessage msg);
+        void Write(NetOutgoingMessage msg);
     }
 
     public static class Packet
@@ -61,23 +60,24 @@ namespace Networking.Packets
         public byte playerId;
         public byte maxPlayers;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static Connected Read(NetIncomingMessage msg)
         {
-            playerId = msg.ReadByte();
-            maxPlayers = msg.ReadByte();
-            return this;
+            return new Connected
+            {
+                playerId = msg.ReadByte(),
+                maxPlayers = msg.ReadByte()
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId, maxPlayers);
+            Write(msg, playerId, maxPlayers);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers)
+        public static void Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers)
         {
             msg.Write(playerId);
             msg.Write(maxPlayers);
-            return msg;
         }
     }
 
@@ -87,21 +87,22 @@ namespace Networking.Packets
 
         public byte playerId;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static PlayerConnected Read(NetIncomingMessage msg)
         {
-            playerId = msg.ReadByte();
-            return this;
+            return new PlayerConnected
+            {
+                playerId = msg.ReadByte()
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId);
+            Write(msg, playerId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
+        public static void Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write(playerId);
-            return msg;
         }
     }
 
@@ -111,21 +112,22 @@ namespace Networking.Packets
 
         public byte playerId;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static PlayerDisconnected Read(NetIncomingMessage msg)
         {
-            playerId = msg.ReadByte();
-            return this;
+            return new PlayerDisconnected
+            {
+                playerId = msg.ReadByte()
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId);
+            Write(msg, playerId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId)
+        public static void Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write(playerId);
-            return msg;
         }
     }
 
@@ -138,20 +140,22 @@ namespace Networking.Packets
         public Vector3 position;
         public Quaternion rotation;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static PlayerMove Read(NetIncomingMessage msg)
         {
-            playerId = msg.ReadByte();
-            position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
-            rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat());
-            return this;
+            return new PlayerMove
+            {
+                playerId = msg.ReadByte(),
+                position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()),
+                rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat())
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId, position, rotation);
+            Write(msg, playerId, position, rotation);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
+        public static void Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
             Quaternion rotation)
         {
             msg.Write(playerId);
@@ -162,7 +166,6 @@ namespace Networking.Packets
             msg.Write(rotation.y);
             msg.Write(rotation.z);
             msg.Write(rotation.w);
-            return msg;
         }
     }
 
@@ -173,23 +176,24 @@ namespace Networking.Packets
         public byte playerId;
         public byte targetId;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static PlayerShoot Read(NetIncomingMessage msg)
         {
-            playerId = msg.ReadByte();
-            targetId = msg.ReadByte();
-            return this;
+            return new PlayerShoot
+            {
+                playerId = msg.ReadByte(),
+                targetId = msg.ReadByte()
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, playerId, targetId);
+            Write(msg, playerId, targetId);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, byte playerId, byte targetId)
+        public static void Write(NetOutgoingMessage msg, byte playerId, byte targetId)
         {
             msg.Write(playerId);
             msg.Write(targetId);
-            return msg;
         }
     }
 
@@ -199,30 +203,31 @@ namespace Networking.Packets
 
         public PlayerState?[] worldState;
 
-        public IPacket Read(NetIncomingMessage msg)
+        public static WorldState Read(NetIncomingMessage msg)
         {
             var length = msg.ReadByte();
-            worldState = new PlayerState?[length];
+            var worldState = new PlayerState?[length];
 
             for (var i = 0; i < length; i++)
             {
-                var exists = msg.ReadBoolean();
-                if (exists)
-                {
-                    var ps = PlayerState.Read(msg);
-                    worldState[ps.playerId] = ps;
-                }
+                if (!msg.ReadBoolean()) continue;
+
+                var ps = PlayerState.Read(msg);
+                worldState[ps.playerId] = ps;
             }
 
-            return this;
+            return new WorldState
+            {
+                worldState = worldState
+            };
         }
 
-        public NetOutgoingMessage Write(NetOutgoingMessage msg)
+        public void Write(NetOutgoingMessage msg)
         {
-            return Write(msg, worldState);
+            Write(msg, worldState);
         }
 
-        public static NetOutgoingMessage Write(NetOutgoingMessage msg, PlayerState?[] worldState)
+        public static void Write(NetOutgoingMessage msg, PlayerState?[] worldState)
         {
             msg.Write((byte) worldState.Length);
             foreach (var state in worldState)
@@ -235,8 +240,6 @@ namespace Networking.Packets
                     msg.Write(true);
                     state.Value.Write(msg);
                 }
-
-            return msg;
         }
     }
 }
