@@ -32,6 +32,19 @@ namespace Networking
             return ply;
         }
 
+        protected override void RemovePlayer(byte id)
+        {
+            if (Players[id] != null)
+                NetworkManager.RemovePlayer(Players[id].PlayerObject);
+
+            base.RemovePlayer(id);
+        }
+
+        private void Send<T>(T packet, NetDeliveryMethod method) where T : IPacket
+        {
+            client.SendMessage(Packet.Write(client, packet), method);
+        }
+
         protected override void ProcessMessages()
         {
             NetIncomingMessage msg;
@@ -62,12 +75,12 @@ namespace Networking
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
-            client.SendMessage(Packet.Write(client, new PlayerMove
+            Send(new PlayerMove
             {
                 playerId = ply.Id,
                 position = ply.Position,
                 rotation = ply.Rotation
-            }), NetDeliveryMethod.UnreliableSequenced);
+            }, NetDeliveryMethod.UnreliableSequenced);
         }
 
         private void OnDataMessage(NetIncomingMessage msg)
@@ -81,13 +94,18 @@ namespace Networking
                     InitializeFromServer(conn.playerId, conn.maxPlayers);
                     break;
                 case PacketType.PlayerDisconnected:
-                    //OnPlayerDisconnected((PlayerDisconnected)packet);
+                    OnPlayerDisconnected(PlayerDisconnected.Read(msg));
                     break;
                 case PacketType.WorldState:
                     var ws = WorldState.Read(msg);
                     AddWorldState(ws.worldState);
                     break;
             }
+        }
+
+        private void OnPlayerDisconnected(PlayerDisconnected packet)
+        {
+            RemovePlayer(packet.playerId);
         }
 
         internal override void OnGUI(float x, float y)

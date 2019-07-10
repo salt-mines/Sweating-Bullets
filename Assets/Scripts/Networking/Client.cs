@@ -54,6 +54,16 @@ namespace Networking
             return Players[id];
         }
 
+        protected void RemovePlayer(PlayerInfo ply)
+        {
+            RemovePlayer(ply.Id);
+        }
+
+        protected virtual void RemovePlayer(byte id)
+        {
+            Players[id] = null;
+        }
+
         protected void AddWorldState(PlayerState?[] worldState)
         {
             for (byte i = 0; i < worldState.Length; i++)
