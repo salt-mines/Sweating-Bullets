@@ -59,6 +59,8 @@ public class PlayerInput : MonoBehaviour
             Strafe = 0;
             Jump = false;
             Crouch = false;
+            MouseX = 0;
+            MouseY = 0;
         }
 
         Cancel = Input.GetButtonDown("Cancel");

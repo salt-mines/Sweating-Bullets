@@ -1844,6 +1844,8 @@ MonoBehaviour:
   - {fileID: 96200592}
   - {fileID: 1385862697}
   - {fileID: 1601918707}
+  UIScorePrefab: {fileID: 2091959403119327511, guid: b8da185ca444fe34bba986af1114095c,
+    type: 3}
 --- !u!1 &1647772499
 GameObject:
   m_ObjectHideFlags: 0

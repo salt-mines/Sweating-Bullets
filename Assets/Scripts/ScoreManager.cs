@@ -10,6 +10,10 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI[] playerNamesTMP;
     public TextMeshProUGUI[] playerPointsTMP;
 
+    public GameObject UIScorePrefab;
+
+    private Dictionary<int, int> points = new Dictionary<int, int>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +31,6 @@ public class ScoreManager : MonoBehaviour
     public void PlayerJoin()
     {
         playerList = GameObject.FindGameObjectsWithTag("Player");
-        SetPlayerNames();
     }
 
     public void UpdateScoreText()
