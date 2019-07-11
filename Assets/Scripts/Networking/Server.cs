@@ -19,17 +19,24 @@ namespace Networking
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
                 Port = Constants.AppPort,
-                MaximumConnections = maxPlayers,
-#if UNITY_EDITOR
-                SimulatedMinimumLatency = 0.08f,
-                SimulatedRandomLatency = 0.02f,
-#endif
+                MaximumConnections = maxPlayers
             });
 
             server.Start();
         }
 
         public NetworkManager NetworkManager { get; internal set; }
+
+        public float SimulatedLag
+        {
+#if UNITY_EDITOR
+            get => server.Configuration.SimulatedMinimumLatency;
+            set => server.Configuration.SimulatedMinimumLatency = value;
+#else
+            get { return 0; }
+            set {}
+#endif
+        }
 
         public byte MaxPlayerCount { get; }
         public byte PlayerCount { get; private set; }
