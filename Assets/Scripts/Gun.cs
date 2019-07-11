@@ -30,7 +30,7 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1") && rateOfFire <= timeToFire)
+        if (player.PlayerInfo.Alive && Input.GetButtonDown("Fire1") && rateOfFire <= timeToFire)
         {
             timeToFire = 0;
             Shoot();
