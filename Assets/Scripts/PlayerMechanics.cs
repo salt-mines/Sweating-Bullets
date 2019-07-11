@@ -13,7 +13,7 @@ public class PlayerMechanics : MonoBehaviour
     private CharacterController characterController;
     private PlayerMovement playerMovement;
     private GameObject[] spawnPointList;
-    
+
     private GameManager gameManager;
     private ScoreManager scoreManager;
 
@@ -26,13 +26,13 @@ public class PlayerMechanics : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
-        
+
         if (!spawnPoints)
             spawnPoints = GameObject.Find("Spawnpoints");
 
         spawnPointList = new GameObject[spawnPoints.transform.childCount];
 
-        for(int i = 0; i<spawnPoints.transform.childCount; i++)
+        for (int i = 0; i < spawnPoints.transform.childCount; i++)
         {
             spawnPointList[i] = spawnPoints.transform.GetChild(i).gameObject;
         }
@@ -52,39 +52,36 @@ public class PlayerMechanics : MonoBehaviour
             RespawnPlayer();
             isAlive = true;
         }
+
         scoreManager.PlayerJoin();
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    public void Kill()
     {
+        isAlive = false;
 
-        if(hit.transform.gameObject.layer == 9 && isAlive)
+        characterController.enabled = false;
+        playerMovement.enabled = false;
+        foreach (Transform child in transform)
         {
-            characterController.enabled = false;
-            playerMovement.enabled = false;
-            foreach (Transform child in transform)
+            if (child.gameObject.CompareTag("MainCamera"))
             {
-                if(child.gameObject.CompareTag("MainCamera"))
+                foreach (Transform cameraChild in child.transform)
                 {
-                    foreach(Transform cameraChild in child.transform)
-                    {
-                        cameraChild.gameObject.SetActive(false);
-                    }
-                }
-                else
-                {
-                    child.gameObject.SetActive(false);
+                    cameraChild.gameObject.SetActive(false);
                 }
             }
-            isAlive = false;
-            Debug.Log("Death!");
+            else
+            {
+                child.gameObject.SetActive(false);
+            }
         }
     }
 
     public void RespawnPlayer()
     {
         playerMovement.enabled = true;
-        
+
         var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)];
         playerMovement.Reset(spawnPoint);
 
@@ -94,8 +91,10 @@ public class PlayerMechanics : MonoBehaviour
             {
                 cameraChild.gameObject.SetActive(true);
             }
+
             child.gameObject.SetActive(true);
         }
+
         characterController.enabled = true;
     }
 }

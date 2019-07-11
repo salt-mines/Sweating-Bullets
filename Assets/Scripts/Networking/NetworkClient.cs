@@ -107,12 +107,10 @@ namespace Networking
                     OnPlayerDisconnected(PlayerDisconnected.Read(msg));
                     break;
                 case PacketType.WorldState:
-                    var ws = WorldState.Read(msg);
-                    AddWorldState(ws.worldState);
+                    AddWorldState(WorldState.Read(msg).worldState);
                     break;
                 case PacketType.PlayerDeath:
-                    var pd = PlayerDeath.Read(msg);
-                    UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", pd.killerId, pd.playerId);
+                    OnPlayerDeath(PlayerDeath.Read(msg));
                     break;
             }
         }
@@ -120,6 +118,17 @@ namespace Networking
         private void OnPlayerDisconnected(PlayerDisconnected packet)
         {
             RemovePlayer(packet.playerId);
+        }
+
+        private void OnPlayerDeath(PlayerDeath packet)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            if (packet.playerId == PlayerId.Value)
+            {
+                Players[PlayerId.Value].PlayerObject.Kill();
+            }
+
+            UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
         }
 
         internal override void OnGUI(float x, float y)

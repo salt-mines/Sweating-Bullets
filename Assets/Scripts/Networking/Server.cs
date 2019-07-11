@@ -239,6 +239,8 @@ namespace Networking
             if (Players[sender] == null || Players[packet.targetId] == null)
                 return;
 
+            Players[packet.targetId].Alive = false;
+
             SendToAll(new PlayerDeath
             {
                 playerId = packet.targetId,

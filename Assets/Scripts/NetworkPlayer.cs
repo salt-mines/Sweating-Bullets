@@ -34,6 +34,11 @@ public class NetworkPlayer : MonoBehaviour
         }
     }
 
+    public void Kill()
+    {
+        GetComponent<PlayerMechanics>()?.Kill();
+    }
+
     public void Shoot(NetworkPlayer target)
     {
         NetworkClient.PlayerShoot(target.Id);

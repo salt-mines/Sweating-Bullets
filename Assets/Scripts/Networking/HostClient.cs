@@ -6,6 +6,8 @@ namespace Networking
 {
     internal sealed class HostClient : Client
     {
+        private bool wasAlive = true;
+        
         internal HostClient(Server server)
         {
             Server = server;
@@ -29,6 +31,13 @@ namespace Networking
         protected override void ProcessMessages()
         {
             AddWorldState(Server.WorldState);
+
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            if (!Server.Players[PlayerId.Value].Alive && wasAlive)
+            {
+                wasAlive = false;
+                Players[PlayerId.Value].PlayerObject.Kill();
+            }
         }
 
         protected override void SendState()
@@ -37,6 +46,8 @@ namespace Networking
             var ply = Players[PlayerId.Value];
 
             if (ply == null) return;
+
+            if (ply.Alive) wasAlive = true;
 
             Server.OnPlayerMove(ply.Id, ply.CreateMove());
         }
