@@ -73,6 +73,10 @@ namespace Networking
             server.Shutdown("Bye");
         }
 
+        #region Gameplay methods
+
+        #endregion
+
         #region Player methods
 
         public byte GetFreePlayerId()
@@ -221,6 +225,9 @@ namespace Networking
                 case PacketType.PlayerMove:
                     OnPlayerMove(sender, PlayerMove.Read(msg));
                     break;
+                case PacketType.PlayerShoot:
+                    OnPlayerShoot(sender, PlayerShoot.Read(msg));
+                    break;
             }
         }
 
@@ -231,6 +238,18 @@ namespace Networking
 
             ply.Position = packet.position;
             ply.Rotation = packet.rotation;
+        }
+
+        public void OnPlayerShoot(byte sender, PlayerShoot packet)
+        {
+            if (Players[sender] == null || Players[packet.targetId] == null)
+                return;
+
+            SendToAll(new PlayerDeath
+            {
+                playerId = packet.targetId,
+                killerId = sender
+            }, NetDeliveryMethod.ReliableUnordered);
         }
 
         #endregion

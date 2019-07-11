@@ -1,52 +1,60 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(NetworkPlayer))]
 public class Gun : MonoBehaviour
 {
-    public float rateOfFire = 5f;
-    public float range = 100f;
-
-    public NetworkPlayer player;
-    public LayerMask hittableMask;
-
-    private float timeToFire = 0f;
     private Camera fpsCamera;
 
     private GameManager gameManager;
+    public LayerMask hittableMask;
+
+    public NetworkPlayer player;
+    public float range = 100f;
+    public float rateOfFire = 1f;
     private ScoreManager scoreManager;
 
+    private float timeToFire;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        fpsCamera = GetComponentInParent<Camera>();
+        fpsCamera = GetComponentInChildren<Camera>();
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
+
+        player = GetComponent<NetworkPlayer>();
 
         timeToFire = rateOfFire;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetButtonDown("Fire1") && rateOfFire <= timeToFire)
         {
             timeToFire = 0;
             Shoot();
         }
+
         timeToFire += Time.deltaTime;
     }
 
-    void Shoot()
+    private void Shoot()
     {
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, hittableMask))
         {
             Debug.Log(hit.transform.name);
-            Debug.DrawRay(fpsCamera.transform.position, fpsCamera.transform.forward * hit.distance, Color.yellow, 2, false);
+            Debug.DrawRay(fpsCamera.transform.position, fpsCamera.transform.forward * hit.distance, Color.yellow, 2,
+                false);
+
             if (hit.transform.gameObject.layer == 9)
             {
-                // Kills hittable layer gameObject
-                Destroy(hit.transform.gameObject);
-                GetComponentInParent<PlayerMechanics>().points++;
+                var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
+                if (targetNetPlayer)
+                    player.Shoot(targetNetPlayer);
+
+                GetComponent<PlayerMechanics>().points++;
                 scoreManager.UpdateScoreText();
             }
         }

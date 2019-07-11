@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (!playerInput)
-            playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
+            playerInput = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerInput>();
 
         if (!playerInput)
             return;

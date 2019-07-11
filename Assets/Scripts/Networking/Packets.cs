@@ -11,6 +11,7 @@ namespace Networking.Packets
         PlayerDisconnected = 11,
         PlayerMove = 12,
         PlayerShoot = 13,
+        PlayerDeath = 14,
         WorldState = 20
     }
 
@@ -23,27 +24,6 @@ namespace Networking.Packets
 
     public static class Packet
     {
-        public static IPacket GetPacketFromType(PacketType type)
-        {
-            switch (type)
-            {
-                case PacketType.Connected:
-                    return new Connected();
-                case PacketType.PlayerConnected:
-                    return new PlayerConnected();
-                case PacketType.PlayerDisconnected:
-                    return new PlayerDisconnected();
-                case PacketType.PlayerMove:
-                    return new PlayerMove();
-                case PacketType.PlayerShoot:
-                    return new PlayerShoot();
-                case PacketType.WorldState:
-                    return new WorldState();
-                default:
-                    throw new NotImplementedException("Packet not implemented: " + type);
-            }
-        }
-
         public static NetOutgoingMessage Write<T>(NetPeer peer, T packet) where T : IPacket
         {
             var msg = peer.CreateMessage();
@@ -173,27 +153,55 @@ namespace Networking.Packets
     {
         public PacketType Type => PacketType.PlayerShoot;
 
-        public byte playerId;
+        public byte shooterId;
         public byte targetId;
 
         public static PlayerShoot Read(NetIncomingMessage msg)
         {
             return new PlayerShoot
             {
-                playerId = msg.ReadByte(),
+                shooterId = msg.ReadByte(),
                 targetId = msg.ReadByte()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId, targetId);
+            Write(msg, shooterId, targetId);
         }
 
         public static void Write(NetOutgoingMessage msg, byte playerId, byte targetId)
         {
             msg.Write(playerId);
             msg.Write(targetId);
+        }
+    }
+
+    public struct PlayerDeath : IPacket
+    {
+        public PacketType Type => PacketType.PlayerDeath;
+
+        public byte playerId;
+        public byte killerId;
+
+        public static PlayerDeath Read(NetIncomingMessage msg)
+        {
+            return new PlayerDeath
+            {
+                playerId = msg.ReadByte(),
+                killerId = msg.ReadByte()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            Write(msg, playerId, killerId);
+        }
+
+        public static void Write(NetOutgoingMessage msg, byte playerId, byte killerId)
+        {
+            msg.Write(playerId);
+            msg.Write(killerId);
         }
     }
 

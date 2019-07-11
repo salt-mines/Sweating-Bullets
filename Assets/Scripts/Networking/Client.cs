@@ -3,7 +3,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
-    internal abstract class Client
+    public abstract class Client
     {
         public NetworkManager NetworkManager { get; internal set; }
 
@@ -65,6 +65,10 @@ namespace Networking
             Players[id] = null;
         }
 
+        public abstract void PlayerShoot(byte targetId);
+        
+        #region State updates and interpolation
+
         protected void AddWorldState(PlayerState?[] worldState)
         {
             if (Players == null) return;
@@ -120,6 +124,8 @@ namespace Networking
                 ply.SetFromState(PlayerState.Lerp(from.state, to.state, ratio));
             }
         }
+        
+        #endregion
 
         internal abstract void OnGUI(float x, float y);
 

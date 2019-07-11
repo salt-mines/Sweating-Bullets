@@ -22,6 +22,7 @@ namespace Networking
             var ply = base.CreatePlayer(id, local);
             ply.PlayerObject = Server.Players[id].PlayerObject;
             ply.PlayerObject.PlayerInfo = ply;
+            ply.PlayerObject.NetworkClient = this;
             return ply;
         }
 
@@ -42,6 +43,16 @@ namespace Networking
                 playerId = ply.Id,
                 position = ply.Position,
                 rotation = ply.Rotation
+            });
+        }
+
+        public override void PlayerShoot(byte targetId)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            Server.OnPlayerShoot(PlayerId.Value, new PlayerShoot
+            {
+                shooterId = PlayerId.Value,
+                targetId = targetId
             });
         }
 

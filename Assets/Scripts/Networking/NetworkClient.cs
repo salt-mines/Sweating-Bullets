@@ -83,6 +83,16 @@ namespace Networking
             }, NetDeliveryMethod.UnreliableSequenced);
         }
 
+        public override void PlayerShoot(byte targetId)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            Send(new PlayerShoot
+            {
+                shooterId = PlayerId.Value,
+                targetId = targetId
+            }, NetDeliveryMethod.ReliableUnordered);
+        }
+
         private void OnDataMessage(NetIncomingMessage msg)
         {
             var type = (PacketType) msg.ReadByte();
@@ -99,6 +109,10 @@ namespace Networking
                 case PacketType.WorldState:
                     var ws = WorldState.Read(msg);
                     AddWorldState(ws.worldState);
+                    break;
+                case PacketType.PlayerDeath:
+                    var pd = PlayerDeath.Read(msg);
+                    UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", pd.killerId, pd.playerId);
                     break;
             }
         }

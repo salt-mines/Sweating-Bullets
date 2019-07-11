@@ -8,6 +8,8 @@ public class NetworkPlayer : MonoBehaviour
 
     public PlayerInfo PlayerInfo { get; internal set; }
 
+    public Client NetworkClient { get; set; }
+
     public bool IsLocalPlayer
     {
         get => isLocalPlayer;
@@ -29,7 +31,8 @@ public class NetworkPlayer : MonoBehaviour
         }
     }
 
-    public void Shoot(GameObject target)
+    public void Shoot(NetworkPlayer target)
     {
+        NetworkClient.PlayerShoot(target.Id);
     }
 }
