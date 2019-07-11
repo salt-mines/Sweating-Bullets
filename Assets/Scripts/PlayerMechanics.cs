@@ -80,7 +80,7 @@ public class PlayerMechanics : MonoBehaviour
             }
         }
 
-        if (uiDeadOverlayPrefab)
+        if (uiDeadOverlayPrefab && !uiDeadOverlay)
             uiDeadOverlay = Instantiate(uiDeadOverlayPrefab, GameObject.FindWithTag("Canvas").transform);
     }
 
@@ -89,7 +89,7 @@ public class PlayerMechanics : MonoBehaviour
         playerMovement.enabled = true;
 
         var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)];
-        playerMovement.Reset(spawnPoint);
+        playerMovement.ResetMovement(spawnPoint);
 
         foreach (Transform child in transform)
         {

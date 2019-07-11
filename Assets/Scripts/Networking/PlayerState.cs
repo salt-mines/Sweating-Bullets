@@ -19,7 +19,7 @@ namespace Networking
                 playerId = s0.playerId,
                 position = Vector3.Lerp(s0.position, s1.position, ratio),
                 rotation = Quaternion.Lerp(s0.rotation, s1.rotation, ratio),
-                alive = s1.alive
+                alive = s0.alive && s1.alive
             };
         }
 

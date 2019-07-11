@@ -3,14 +3,10 @@
 [RequireComponent(typeof(PlayerInput), typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Range(0, 100)]
-    public float movementSpeed = 6.0f;
-    [Range(0, 100)]
-    public float jumpSpeed = 8.0f;
-    [Range(0, 100)]
-    public float gravity = 20.0f;
-    [Range(0, 1)]
-    public float jumpMovementMod = 0.5f;
+    [Range(0, 100)] public float movementSpeed = 6.0f;
+    [Range(0, 100)] public float jumpSpeed = 8.0f;
+    [Range(0, 100)] public float gravity = 20.0f;
+    [Range(0, 1)] public float jumpMovementMod = 0.5f;
 
     private float vJumpSpeed = 0;
 
@@ -49,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 vJumpSpeed = jumpSpeed;
             }
+
             groundMovement = movement;
         }
         else
@@ -62,7 +59,6 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(movement * Time.deltaTime);
 
         transform.rotation = Quaternion.Euler(0, rotation.x, 0);
-
     }
 
     private void LateUpdate()
@@ -70,11 +66,10 @@ public class PlayerMovement : MonoBehaviour
         rotation.x += playerInput.MouseX;
         rotation.y = Mathf.Clamp(rotation.y - playerInput.MouseY, -89.99f, 89.99f);
         if (!gameManager.paused)
-        {   
+        {
             playerCamera.transform.rotation = Quaternion.Euler(rotation.y, rotation.x, 0);
         }
     }
-            
 
     private void AirMove()
     {
@@ -86,11 +81,11 @@ public class PlayerMovement : MonoBehaviour
         movement = groundMovement + airMovement;
     }
 
-    public void Reset(GameObject spawnPoint)
+    public void ResetMovement(GameObject spawnPoint)
     {
         transform.position = spawnPoint.transform.position;
         transform.rotation = spawnPoint.transform.rotation;
-        
+
         rotation.x = spawnPoint.transform.rotation.eulerAngles.y;
         rotation.y = 0;
 

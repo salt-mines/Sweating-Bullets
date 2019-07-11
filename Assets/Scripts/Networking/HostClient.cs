@@ -32,11 +32,16 @@ namespace Networking
         {
             AddWorldState(Server.WorldState);
 
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            if (!PlayerId.HasValue) return;
+            
             if (!Server.Players[PlayerId.Value].Alive && wasAlive)
             {
                 wasAlive = false;
                 Players[PlayerId.Value].PlayerObject.Kill();
+            }
+            else if (Server.Players[PlayerId.Value].Alive)
+            {
+                wasAlive = true;
             }
         }
 
@@ -46,8 +51,6 @@ namespace Networking
             var ply = Players[PlayerId.Value];
 
             if (ply == null) return;
-
-            if (ply.Alive) wasAlive = true;
 
             Server.OnPlayerMove(ply.Id, ply.CreateMove());
         }
