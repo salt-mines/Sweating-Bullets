@@ -7,18 +7,12 @@ public class PlayerMovement : MonoBehaviour
     public float movementSpeed = 6.0f;
     [Range(0, 100)]
     public float jumpSpeed = 8.0f;
-    
     [Range(0, 100)]
     public float gravity = 20.0f;
-    [Range(1, 5)]
-    public float sprintSpeedMod = 1.5f;
     [Range(0, 1)]
     public float jumpMovementMod = 0.5f;
-    [Range(0, 1)]
-    public float crouchSpeedMod = 0.5f;
 
     private float vJumpSpeed = 0;
-    private bool isCrouching;
 
     private Vector3 movement = Vector3.zero;
     private Vector3 groundMovement = Vector3.zero;
@@ -50,25 +44,7 @@ public class PlayerMovement : MonoBehaviour
             movement = new Vector3(playerInput.Strafe, 0, playerInput.Forward);
             movement.Normalize();
             movement = transform.TransformDirection(movement);
-            if (playerInput.Sprint && !isCrouching)
-            {
-                movement *= movementSpeed * sprintSpeedMod;
-            }
-            else
-            {
-                if (playerInput.Crouch)
-                {
-                    transform.localScale = new Vector3(1, 0.5f, 1);
-                    movement *= movementSpeed * crouchSpeedMod;
-                    isCrouching = true;
-                }
-                else if(!playerInput.Crouch)
-                {
-                    movement *= movementSpeed;
-                    transform.localScale = new Vector3(1, 1, 1);
-                    isCrouching = false;
-                }
-            }
+            movement *= movementSpeed;
             if (playerInput.Jump)
             {
                 vJumpSpeed = jumpSpeed;
