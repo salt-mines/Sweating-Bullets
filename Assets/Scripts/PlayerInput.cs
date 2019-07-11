@@ -11,11 +11,6 @@ public class PlayerInput : MonoBehaviour
     public float MouseY { get; private set; }
 
     public bool Jump { get; private set; }
-
-    public bool Sprint { get; private set; }
-
-    public bool Crouch { get; private set; }
-
     public bool Cancel { get; private set; }
 
     public bool MouseLocked
@@ -50,15 +45,12 @@ public class PlayerInput : MonoBehaviour
             MouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
             Jump = Input.GetButton("Jump");
-            Sprint = Input.GetButton("Sprint");
-            Crouch = Input.GetButton("Crouch");
         }
         else
         {
             Forward = 0;
             Strafe = 0;
             Jump = false;
-            Crouch = false;
             MouseX = 0;
             MouseY = 0;
         }
