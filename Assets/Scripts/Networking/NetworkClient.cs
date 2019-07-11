@@ -125,5 +125,9 @@ namespace Networking
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.Rotation.eulerAngles}");
             }
         }
+
+        internal override void OnDrawGizmos()
+        {
+        }
     }
 }

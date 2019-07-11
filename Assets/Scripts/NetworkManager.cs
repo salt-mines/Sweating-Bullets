@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Networking;
 using UnityEngine;
 
@@ -89,5 +90,10 @@ public class NetworkManager : MonoBehaviour
     private void OnGUI()
     {
         client?.OnGUI(5, 20);
+    }
+
+    private void OnDrawGizmos()
+    {
+        client?.OnDrawGizmos();
     }
 }

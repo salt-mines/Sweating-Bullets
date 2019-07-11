@@ -17,6 +17,14 @@ namespace Networking
 
         private Server Server { get; }
 
+        protected override PlayerInfo CreatePlayer(byte id, bool local = false)
+        {
+            var ply = base.CreatePlayer(id, local);
+            ply.PlayerObject = Server.Players[id].PlayerObject;
+            ply.PlayerObject.PlayerInfo = ply;
+            return ply;
+        }
+
         protected override void ProcessMessages()
         {
             AddWorldState(Server.WorldState);
@@ -54,6 +62,17 @@ namespace Networking
             y = origY;
             GUI.Box(new Rect(x + 5, y += 20, 100, 50), "Server");
             GUI.Label(new Rect(x + 10, y += 20, 100, 20), "Players: " + Server.PlayerCount);
+        }
+
+        internal override void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            foreach (var ply in Server.Players)
+            {
+                if (ply == null) continue;
+
+                Gizmos.DrawSphere(ply.Position, 0.1f);
+            }
         }
     }
 }

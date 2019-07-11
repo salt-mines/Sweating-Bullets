@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
@@ -22,7 +23,7 @@ namespace Networking
 
             if (!Connected) return;
 
-            UpdateWorldState();
+            InterpolatePlayers();
 
             SendState();
         }
@@ -66,12 +67,24 @@ namespace Networking
 
         protected void AddWorldState(PlayerState?[] worldState)
         {
+            if (Players == null) return;
+
             for (byte i = 0; i < worldState.Length; i++)
             {
                 var ps = worldState[i];
                 if (!ps.HasValue) continue;
 
                 if (Players[i] == null) CreatePlayer(i);
+
+                // Don't update our own state
+                if (PlayerId.HasValue && i == PlayerId.Value) continue;
+
+                if (!InterpolationEnabled)
+                {
+                    // Without interpolation, just update pos & rot directly
+                    Players[i].SetFromState(ps.Value);
+                    continue;
+                }
 
                 Players[i].StateBuffer.AddLast(new TimedPlayerState
                 {
@@ -81,64 +94,35 @@ namespace Networking
             }
         }
 
-        private void UpdateWorldState()
+        private void InterpolatePlayers()
         {
+            var pastTime = Time.time - Interpolation;
+
             foreach (var ply in Players)
             {
                 if (ply == null) continue;
-                
-                // Update all players' positions except our own
-                foreach (var state in ply.StateBuffer)
-                    if (ply.Id != PlayerId) 
-                        ply.SetFromState(state.state);
-                
-                ply.StateBuffer.Clear();
+
+                if (PlayerId.HasValue && ply.Id == PlayerId.Value) continue;
+
+                var buf = ply.StateBuffer;
+
+                while (buf.Count >= 2 && buf.First.Next.Value.time <= pastTime) buf.RemoveFirst();
+
+                if (buf.Count < 2) continue;
+
+                var from = buf.First.Value;
+                var to = buf.First.Next.Value;
+
+                if (!(from.time <= pastTime) || !(pastTime <= to.time)) continue;
+
+                var ratio = (pastTime - from.time) / (to.time - from.time);
+
+                ply.SetFromState(PlayerState.Lerp(from.state, to.state, ratio));
             }
-
-            //if (stateBuffer.Count == 0) return;
-
-            //var interpTime = Time.time - Interpolation;
-
-            //var from = stateBuffer.First;
-            //var to = from.Next;
-
-            //while (to != null && to.Value.time <= interpTime)
-            //{
-            //    from = to;
-            //    to = from.Next;
-            //    stateBuffer.RemoveFirst();
-            //}
-
-            //if (to != null)
-            //{
-            //    var ratio = (interpTime - from.Value.time) / (to.Value.time - from.Value.time);
-            //    var idSet = new HashSet<byte>(from.Value.worldState.Keys);
-            //    idSet.UnionWith(to.Value.worldState.Keys);
-
-            //    foreach (var id in idSet)
-            //    {
-            //        var fromExists = from.Value.worldState.TryGetValue(id, out var playerFrom);
-            //        var toExists = to.Value.worldState.TryGetValue(id, out var playerTo);
-
-            //        if (fromExists && toExists)
-            //        {
-            //            UpdatePlayerState(id, PlayerState.Lerp(playerFrom, playerTo, ratio));
-            //        }
-            //        else
-            //        {
-            //            UpdatePlayerState(id, toExists ? playerTo : playerFrom);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    foreach (var kv in from.Value.worldState)
-            //    {
-            //        UpdatePlayerState(kv.Key, kv.Value);
-            //    }
-            //}
         }
 
         internal abstract void OnGUI(float x, float y);
+
+        internal abstract void OnDrawGizmos();
     }
 }

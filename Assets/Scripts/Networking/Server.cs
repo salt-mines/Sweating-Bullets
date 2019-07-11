@@ -19,7 +19,11 @@ namespace Networking
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
                 Port = Constants.AppPort,
-                MaximumConnections = maxPlayers
+                MaximumConnections = maxPlayers,
+#if UNITY_EDITOR
+                SimulatedMinimumLatency = 0.08f,
+                SimulatedRandomLatency = 0.02f,
+#endif
             });
 
             server.Start();
