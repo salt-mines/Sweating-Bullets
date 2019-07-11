@@ -9,6 +9,12 @@ public class GameManager : MonoBehaviour
     private PlayerInput playerInput;
     public GameObject[] playerList;
 
+    private void Start()
+    {
+        QualitySettings.maxQueuedFrames = 0;
+        Application.targetFrameRate = 200;
+    }
+
     // Update is called once per frame
     private void Update()
     {
