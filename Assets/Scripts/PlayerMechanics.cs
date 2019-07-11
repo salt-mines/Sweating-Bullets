@@ -14,8 +14,11 @@ public class PlayerMechanics : MonoBehaviour
     private PlayerMovement playerMovement;
     private GameObject[] spawnPointList;
 
+    public GameObject uiDeadOverlayPrefab;
+
     private GameManager gameManager;
     private ScoreManager scoreManager;
+    private GameObject uiDeadOverlay;
 
     public int points;
 
@@ -76,6 +79,9 @@ public class PlayerMechanics : MonoBehaviour
                 child.gameObject.SetActive(false);
             }
         }
+
+        if (uiDeadOverlayPrefab)
+            uiDeadOverlay = Instantiate(uiDeadOverlayPrefab, GameObject.FindWithTag("Canvas").transform);
     }
 
     public void RespawnPlayer()
@@ -96,5 +102,8 @@ public class PlayerMechanics : MonoBehaviour
         }
 
         characterController.enabled = true;
+
+        if (uiDeadOverlay)
+            Destroy(uiDeadOverlay);
     }
 }

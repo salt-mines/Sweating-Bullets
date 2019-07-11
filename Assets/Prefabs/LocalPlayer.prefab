@@ -231,6 +231,8 @@ MonoBehaviour:
   spawnTime: 10
   timeSpentDead: 0
   isAlive: 1
+  uiDeadOverlayPrefab: {fileID: 2835313139644790552, guid: a0cc5fb567380414ea7e766d0e92c227,
+    type: 3}
   points: 0
 --- !u!114 &811614654237606861
 MonoBehaviour:
