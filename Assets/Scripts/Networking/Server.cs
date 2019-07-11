@@ -19,7 +19,10 @@ namespace Networking
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
                 Port = Constants.AppPort,
-                MaximumConnections = maxPlayers
+                MaximumConnections = maxPlayers,
+#if UNITY_EDITOR
+                ConnectionTimeout = 600
+#endif
             });
 
             server.Start();
@@ -57,12 +60,7 @@ namespace Networking
             {
                 if (player == null) continue;
 
-                WorldState[player.Id] = new PlayerState
-                {
-                    playerId = player.Id,
-                    position = player.Position,
-                    rotation = player.Rotation
-                };
+                WorldState[player.Id] = player.GetState();
             }
 
             SendToAll(new WorldState {worldState = WorldState}, NetDeliveryMethod.UnreliableSequenced);
@@ -233,11 +231,7 @@ namespace Networking
 
         internal void OnPlayerMove(byte sender, PlayerMove packet)
         {
-            var ply = Players[sender];
-            if (ply == null) return;
-
-            ply.Position = packet.position;
-            ply.Rotation = packet.rotation;
+            Players[sender]?.SetFromPacket(packet);
         }
 
         public void OnPlayerShoot(byte sender, PlayerShoot packet)

@@ -23,11 +23,14 @@ public class NetworkPlayer : MonoBehaviour
         {
             PlayerInfo.Position = tr.position;
             PlayerInfo.Rotation = tr.rotation;
+            PlayerInfo.Alive = GetComponent<PlayerMechanics>().isAlive;
         }
         else
         {
             tr.position = PlayerInfo.Position;
             tr.rotation = PlayerInfo.Rotation;
+            tr.GetChild(0).gameObject.SetActive(PlayerInfo.Alive);
+            tr.GetChild(1).gameObject.SetActive(PlayerInfo.Alive);
         }
     }
 

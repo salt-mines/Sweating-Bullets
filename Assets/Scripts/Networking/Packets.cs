@@ -120,23 +120,26 @@ namespace Networking.Packets
         public Vector3 position;
         public Quaternion rotation;
 
+        public bool alive;
+
         public static PlayerMove Read(NetIncomingMessage msg)
         {
             return new PlayerMove
             {
                 playerId = msg.ReadByte(),
                 position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()),
-                rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat())
+                rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()),
+                alive = msg.ReadBoolean()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId, position, rotation);
+            Write(msg, playerId, position, rotation, alive);
         }
 
         public static void Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
-            Quaternion rotation)
+            Quaternion rotation, bool alive)
         {
             msg.Write(playerId);
             msg.Write(position.x);
@@ -146,6 +149,7 @@ namespace Networking.Packets
             msg.Write(rotation.y);
             msg.Write(rotation.z);
             msg.Write(rotation.w);
+            msg.Write(alive);
         }
     }
 

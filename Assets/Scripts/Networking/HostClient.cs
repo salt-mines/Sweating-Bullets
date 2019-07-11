@@ -38,12 +38,7 @@ namespace Networking
 
             if (ply == null) return;
 
-            Server.OnPlayerMove(ply.Id, new PlayerMove
-            {
-                playerId = ply.Id,
-                position = ply.Position,
-                rotation = ply.Rotation
-            });
+            Server.OnPlayerMove(ply.Id, ply.CreateMove());
         }
 
         public override void PlayerShoot(byte targetId)

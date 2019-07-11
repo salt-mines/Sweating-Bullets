@@ -11,7 +11,12 @@ namespace Networking
 
         internal NetworkClient()
         {
-            client = new NetClient(new NetPeerConfiguration(Constants.AppName));
+            client = new NetClient(new NetPeerConfiguration(Constants.AppName)
+            {
+#if UNITY_EDITOR
+                ConnectionTimeout = 600
+#endif
+            });
             client.Start();
         }
 
@@ -75,12 +80,7 @@ namespace Networking
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
-            Send(new PlayerMove
-            {
-                playerId = ply.Id,
-                position = ply.Position,
-                rotation = ply.Rotation
-            }, NetDeliveryMethod.UnreliableSequenced);
+            Send(ply.CreateMove(), NetDeliveryMethod.UnreliableSequenced);
         }
 
         public override void PlayerShoot(byte targetId)
