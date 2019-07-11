@@ -2,7 +2,7 @@
 
 public class Gun : MonoBehaviour
 {
-    public float rateOfFire = 30f;
+    public float rateOfFire = 5f;
     public float range = 100f;
 
     public NetworkPlayer player;
@@ -11,20 +11,28 @@ public class Gun : MonoBehaviour
     private float timeToFire = 0f;
     private Camera fpsCamera;
 
+    private GameManager gameManager;
+    private ScoreManager scoreManager;
+
     // Start is called before the first frame update
     void Start()
     {
         fpsCamera = GetComponentInParent<Camera>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
+
+        timeToFire = rateOfFire;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && Time.time >= timeToFire)
+        if (Input.GetButtonDown("Fire1") && rateOfFire <= timeToFire)
         {
-            timeToFire = Time.time + 1f / rateOfFire;
+            timeToFire = 0;
             Shoot();
         }
+        timeToFire += Time.deltaTime;
     }
 
     void Shoot()
@@ -36,11 +44,10 @@ public class Gun : MonoBehaviour
             Debug.DrawRay(fpsCamera.transform.position, fpsCamera.transform.forward * hit.distance, Color.yellow, 2, false);
             if (hit.transform.gameObject.layer == 9)
             {
-                var parent = hit.transform.parent.gameObject;
-                if (parent.CompareTag("Player"))
-                {
-                    player.Shoot(parent);
-                }
+                // Kills hittable layer gameObject
+                Destroy(hit.transform.gameObject);
+                GetComponentInParent<PlayerMechanics>().points++;
+                scoreManager.UpdateScoreText();
             }
         }
     }
