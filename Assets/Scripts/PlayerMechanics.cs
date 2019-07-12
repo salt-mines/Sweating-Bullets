@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-
+[RequireComponent(typeof(CharacterController), typeof(PlayerMovement))]
 public class PlayerMechanics : MonoBehaviour
 {
     private GameObject spawnPoints;
@@ -12,6 +12,7 @@ public class PlayerMechanics : MonoBehaviour
 
     private CharacterController characterController;
     private PlayerMovement playerMovement;
+    private FirstPersonCamera playerCamera;
     private GameObject[] spawnPointList;
 
     public GameObject uiDeadOverlayPrefab;
@@ -27,6 +28,8 @@ public class PlayerMechanics : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         playerMovement = GetComponent<PlayerMovement>();
+        playerCamera = GetComponentInChildren<FirstPersonCamera>();
+
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         scoreManager = GameObject.Find("PointsPanel").GetComponent<ScoreManager>();
 
@@ -88,8 +91,10 @@ public class PlayerMechanics : MonoBehaviour
     {
         playerMovement.enabled = true;
 
-        var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)];
-        playerMovement.ResetMovement(spawnPoint);
+        var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)].transform;
+        playerMovement.ResetMovement();
+        transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        playerCamera.SetAngles(new Vector2(spawnPoint.transform.rotation.eulerAngles.y, 0));
 
         foreach (Transform child in transform)
         {
