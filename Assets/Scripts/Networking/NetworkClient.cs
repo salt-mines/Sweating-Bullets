@@ -151,6 +151,7 @@ namespace Networking
 
         internal override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
         }
     }
 }

@@ -10,6 +10,9 @@ namespace Networking
     {
         private readonly NetServer server;
 
+        private float nextSend;
+        private float nextTick;
+
         public Server(byte maxPlayers)
         {
             MaxPlayerCount = maxPlayers;
@@ -41,6 +44,9 @@ namespace Networking
 #endif
         }
 
+        public int TickRate { get; set; } = 64;
+        public int SendRate { get; set; } = 32;
+
         public byte MaxPlayerCount { get; }
         public byte PlayerCount { get; private set; }
 
@@ -49,10 +55,25 @@ namespace Networking
 
         public void Update()
         {
-            ProcessMessages();
+            var time = Time.time;
+            if (time >= nextTick)
+            {
+                ProcessMessages();
+                nextTick = time + 1f / TickRate;
+            }
         }
 
         public void LateUpdate()
+        {
+            var time = Time.time;
+            if (time >= nextSend)
+            {
+                SendState();
+                nextSend = time + 1f / SendRate;
+            }
+        }
+
+        public void SendState()
         {
             Array.Clear(WorldState, 0, WorldState.Length);
 

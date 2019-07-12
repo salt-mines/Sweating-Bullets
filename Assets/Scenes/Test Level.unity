@@ -722,11 +722,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkPlayerPrefab: {fileID: 7000317180751310371, guid: f8681e90884c10841b5010880017d636,
     type: 3}
+  mode: 1
+  tickRate: 64
+  sendRate: 32
   simulatedLag: 0
   localPlayerPrefab: {fileID: 3318192786354215941, guid: 77a728104dd8c31428fc485019c86661,
     type: 3}
   interpolationEnabled: 1
-  interpolation: 0.1
+  interpolation: 0.0625
 --- !u!4 &653587704
 Transform:
   m_ObjectHideFlags: 0

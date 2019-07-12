@@ -1,17 +1,22 @@
 ﻿using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
     public abstract class Client
     {
+        private float nextSend;
+        private float nextTick;
+
         public NetworkManager NetworkManager { get; internal set; }
 
         public PlayerInfo[] Players { get; private set; }
         public byte MaxPlayers { get; protected set; }
 
+        public int TickRate { get; set; } = Constants.TickRate;
+        public int SendRate { get; set; } = Constants.SendRate;
+
         public bool InterpolationEnabled { get; set; } = true;
-        public float Interpolation { get; set; } = 0.1f;
+        public float Interpolation { get; set; } = Constants.Interpolation;
 
         public byte? PlayerId { get; protected set; }
 
@@ -19,13 +24,22 @@ namespace Networking
 
         public void Update()
         {
-            ProcessMessages();
+            var time = Time.time;
+            if (time >= nextTick)
+            {
+                ProcessMessages();
+                nextTick = time + 1f / TickRate;
+            }
 
             if (!Connected) return;
 
             InterpolatePlayers();
 
-            SendState();
+            if (time >= nextSend)
+            {
+                SendState();
+                nextSend = time + 1f / SendRate;
+            }
         }
 
         public virtual void Connect(string host, int port = Constants.AppPort)
@@ -66,7 +80,21 @@ namespace Networking
         }
 
         public abstract void PlayerShoot(byte targetId);
-        
+
+        internal abstract void OnGUI(float x, float y);
+
+        internal virtual void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            foreach (var ply in Players)
+            {
+                if (ply == null) continue;
+                var buf = ply.StateBuffer;
+
+                foreach (var state in buf) Gizmos.DrawSphere(state.state.position, 0.1f);
+            }
+        }
+
         #region State updates and interpolation
 
         protected void AddWorldState(PlayerState?[] worldState)
@@ -124,11 +152,7 @@ namespace Networking
                 ply.SetFromState(PlayerState.Lerp(from.state, to.state, ratio));
             }
         }
-        
+
         #endregion
-
-        internal abstract void OnGUI(float x, float y);
-
-        internal abstract void OnDrawGizmos();
     }
 }

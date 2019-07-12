@@ -11,13 +11,52 @@ public class NetworkManager : MonoBehaviour
         Client
     }
 
+    #region Unity fields
+
+    [Header("Shared")] public NetworkPlayer networkPlayerPrefab;
+
+    public NetworkMode mode = NetworkMode.ListenServer;
+
+    [Range(1, 240)]
+    [Tooltip("How many updates per second to process")]
+    public int tickRate = Constants.TickRate;
+
+    [Range(1, 240)]
+    [Tooltip("How many updates per second to send")]
+    public int sendRate = Constants.SendRate;
+
+    [Header("Server")]
+    [Range(0, 1)]
+    [Tooltip("Simulated latency in seconds")]
+    public float simulatedLag;
+
+    [Header("Client")] public NetworkPlayer localPlayerPrefab;
+
+    public bool interpolationEnabled = true;
+
+    [Range(0, 1)]
+    [Tooltip("Interpolation time in seconds")]
+    public float interpolation = Constants.Interpolation;
+
+    #endregion
+
+    #region Class variables
+
     [CanBeNull] private Client client;
     [CanBeNull] private Server server;
 
     [CanBeNull] private string startupHost;
     private int startupPort;
 
-    public NetworkMode Mode { get; set; } = NetworkMode.ListenServer;
+    public NetworkMode Mode
+    {
+        get => mode;
+        set => mode = value;
+    }
+
+    #endregion
+
+    #region Unity events
 
     private void Start()
     {
@@ -30,17 +69,23 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("Starting in mode: " + Mode);
 
         if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
-        {
-            server = new Server(Constants.MaxPlayers) {NetworkManager = this};
-            server.SimulatedLag = simulatedLag;
-        }
+            server = new Server(Constants.MaxPlayers)
+            {
+                NetworkManager = this,
+                TickRate = tickRate,
+                SendRate = sendRate,
+                SimulatedLag = simulatedLag
+            };
 
-        if (Mode == NetworkMode.ListenServer) client = new HostClient(server) {NetworkManager = this};
+        if (Mode == NetworkMode.ListenServer) client = new HostClient(server);
 
-        if (Mode == NetworkMode.Client) client = new NetworkClient {NetworkManager = this};
+        if (Mode == NetworkMode.Client) client = new NetworkClient();
 
         if (client != null)
         {
+            client.NetworkManager = this;
+            client.TickRate = tickRate;
+            client.SendRate = sendRate;
             client.InterpolationEnabled = interpolationEnabled;
             client.Interpolation = interpolation;
         }
@@ -58,33 +103,6 @@ public class NetworkManager : MonoBehaviour
             client.InterpolationEnabled = interpolationEnabled;
             client.Interpolation = interpolation;
         }
-    }
-
-    public NetworkPlayer CreatePlayer(PlayerInfo info, bool local = false)
-    {
-        var ply = Instantiate(local ? localPlayerPrefab : networkPlayerPrefab);
-        ply.PlayerInfo = info;
-        ply.IsLocalPlayer = local;
-        ply.NetworkClient = client;
-
-        return ply;
-    }
-
-    public void RemovePlayer(NetworkPlayer player)
-    {
-        Destroy(player.gameObject);
-    }
-
-    public void Connect(string host, int port = Constants.AppPort)
-    {
-        if (client == null)
-        {
-            startupHost = host;
-            startupPort = port;
-            return;
-        }
-
-        client.Connect(host, port);
     }
 
     private void Update()
@@ -114,22 +132,36 @@ public class NetworkManager : MonoBehaviour
         client?.OnDrawGizmos();
     }
 
-    #region Unity fields
+    #endregion
 
-    [Header("Shared")] public NetworkPlayer networkPlayerPrefab;
+    #region Network methods
 
-    [Header("Server")]
-    [Range(0, 1)]
-    [Tooltip("Simulated latency in seconds")]
-    public float simulatedLag;
+    public NetworkPlayer CreatePlayer(PlayerInfo info, bool local = false)
+    {
+        var ply = Instantiate(local ? localPlayerPrefab : networkPlayerPrefab);
+        ply.PlayerInfo = info;
+        ply.IsLocalPlayer = local;
+        ply.NetworkClient = client;
 
-    [Header("Client")] public NetworkPlayer localPlayerPrefab;
+        return ply;
+    }
 
-    public bool interpolationEnabled = true;
+    public void RemovePlayer(NetworkPlayer player)
+    {
+        Destroy(player.gameObject);
+    }
 
-    [Range(0, 1)]
-    [Tooltip("Interpolation time in seconds")]
-    public float interpolation = 0.1f;
+    public void Connect(string host, int port = Constants.AppPort)
+    {
+        if (client == null)
+        {
+            startupHost = host;
+            startupPort = port;
+            return;
+        }
+
+        client.Connect(host, port);
+    }
 
     #endregion
 }
