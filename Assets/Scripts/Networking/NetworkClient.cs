@@ -28,6 +28,8 @@ namespace Networking
         public override void Shutdown()
         {
             client.Shutdown("Bye");
+            
+            base.Shutdown();
         }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)

@@ -21,6 +21,10 @@ public class Loader : MonoBehaviour
         if (SceneManager.sceneCount == 1)
             // If this is the only loaded scene, load main menu
             ChangeLevel(mainMenuScene, false);
+        else
+        {
+            currentLevel = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
+        }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -35,7 +39,7 @@ public class Loader : MonoBehaviour
         if (loadingScreenCanvas)
             loadingScreenCanvas.gameObject.SetActive(true);
 
-        if (currentLevel != null) UnloadCurrentLevel(!loadCommon);
+        if (currentLevel != null) UnloadCurrentLevel();
         if (!isCommonLoaded && loadCommon)
         {
             LoadScene(gameScene, false);
@@ -57,15 +61,13 @@ public class Loader : MonoBehaviour
             SceneManager.LoadScene(name, LoadSceneMode.Additive);
     }
 
-    private void UnloadCurrentLevel(bool unloadCommon = false)
+    private void UnloadCurrentLevel()
     {
         StartCoroutine(UnloadSceneAsync(currentLevel));
-        currentLevel = null;
-        if (unloadCommon)
-        {
+        if (isCommonLoaded)
             StartCoroutine(UnloadSceneAsync(gameScene));
-            isCommonLoaded = false;
-        }
+        currentLevel = null;
+        isCommonLoaded = false;
     }
 
     private IEnumerator LoadSceneAsync(string name)

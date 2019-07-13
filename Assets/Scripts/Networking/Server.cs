@@ -27,6 +27,8 @@ namespace Networking
                 ConnectionTimeout = 600
 #endif
             });
+            
+            server.Configuration.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
             server.Start();
         }
@@ -184,6 +186,9 @@ namespace Networking
                     case NetIncomingMessageType.StatusChanged:
                         OnStatusMessage(msg);
                         break;
+                    case NetIncomingMessageType.DiscoveryRequest:
+                        OnDiscoveryRequest(msg);
+                        break;
                     case NetIncomingMessageType.VerboseDebugMessage:
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.WarningMessage:
@@ -194,6 +199,16 @@ namespace Networking
 
                 server.Recycle(msg);
             }
+        }
+
+        private void OnDiscoveryRequest(NetIncomingMessage msg)
+        {
+            NetOutgoingMessage response = server.CreateMessage();
+            response.Write(PlayerCount);
+            response.Write(MaxPlayerCount);
+ 
+            // Send the response to the sender of the request
+            server.SendDiscoveryResponse(response, msg.SenderEndPoint);
         }
 
         private void OnStatusMessage(NetIncomingMessage msg)

@@ -6,9 +6,10 @@ public class NetworkManager : MonoBehaviour
 {
     public enum NetworkMode
     {
+        MenuClient,
+        Client,
         Server,
-        ListenServer,
-        Client
+        ListenServer
     }
 
     #region Unity fields
@@ -80,6 +81,8 @@ public class NetworkManager : MonoBehaviour
         if (Mode == NetworkMode.ListenServer) client = new HostClient(server);
 
         if (Mode == NetworkMode.Client) client = new NetworkClient();
+        
+        if (Mode == NetworkMode.MenuClient) client = new MenuClient();
 
         if (client != null)
         {
@@ -92,6 +95,18 @@ public class NetworkManager : MonoBehaviour
 
         if (startupHost != null)
             Connect(startupHost, startupPort);
+
+        if (Mode == NetworkMode.MenuClient)
+        {
+            var mc = (MenuClient) client;
+            mc.ServerDiscovered += OnDiscovery;
+            mc.DiscoverLocalServers();
+        }
+    }
+
+    private void OnDiscovery(object sender, ServerInfo info)
+    {
+        Debug.LogFormat("LAN server found: {0}", info);
     }
 
     private void OnValidate()

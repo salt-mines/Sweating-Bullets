@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5816ce1b6126b5d43ae21dc22dd50b82
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - networkPlayerPrefab: {fileID: 7000317180751310371, guid: f8681e90884c10841b5010880017d636,
+      type: 3}
+  - localPlayerPrefab: {fileID: 3318192786354215941, guid: 77a728104dd8c31428fc485019c86661,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

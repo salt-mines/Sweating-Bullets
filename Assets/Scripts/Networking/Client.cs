@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Networking
 {
@@ -48,6 +49,9 @@ namespace Networking
 
         public virtual void Shutdown()
         {
+            PlayerId = null;
+            if (Players != null)
+                Array.Clear(Players, 0, Players.Length);
         }
 
         protected abstract void ProcessMessages();
@@ -81,7 +85,9 @@ namespace Networking
 
         public abstract void PlayerShoot(byte targetId);
 
-        internal abstract void OnGUI(float x, float y);
+        internal virtual void OnGUI(float x, float y)
+        {
+        }
 
         internal virtual void OnDrawGizmos()
         {

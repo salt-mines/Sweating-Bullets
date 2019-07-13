@@ -7,7 +7,7 @@ namespace Networking
     internal sealed class HostClient : Client
     {
         private bool wasAlive = true;
-        
+
         internal HostClient(Server server)
         {
             Server = server;
@@ -33,7 +33,7 @@ namespace Networking
             AddWorldState(Server.WorldState);
 
             if (!PlayerId.HasValue) return;
-            
+
             if (!Server.Players[PlayerId.Value].Alive && wasAlive)
             {
                 wasAlive = false;
@@ -87,7 +87,7 @@ namespace Networking
         internal override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
-            
+
             Gizmos.color = Color.yellow;
             foreach (var ply in Server.Players)
             {
