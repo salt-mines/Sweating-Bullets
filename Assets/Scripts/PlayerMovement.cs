@@ -5,10 +5,17 @@ public class PlayerMovement : MonoBehaviour
 {
     #region Unity properties
 
-    [Range(0, 100)] public float movementSpeed = 6.0f;
-    [Range(0, 100)] public float jumpSpeed = 8.0f;
-    [Range(0, 100)] public float gravity = 20.0f;
-    [Range(0, 1)] public float jumpMovementMod = 0.5f;
+    [Range(0, 100)]
+    public float movementSpeed = 6.0f;
+
+    [Range(0, 100)]
+    public float jumpSpeed = 8.0f;
+
+    [Range(0, 100)]
+    public float gravity = 20.0f;
+
+    [Range(0, 1)]
+    public float jumpMovementMod = 0.5f;
 
     #endregion
 
@@ -37,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (characterController.isGrounded)
         {
