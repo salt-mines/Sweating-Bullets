@@ -43,10 +43,10 @@ public class NetworkManager : MonoBehaviour
 
     #region Class variables
 
-    [CanBeNull] private Client client;
-    [CanBeNull] private Server server;
+    public Client Client { get; private set; }
+    public Server Server { get; private set; }
 
-    [CanBeNull] private string startupHost;
+    private string startupHost;
     private int startupPort;
 
     public NetworkMode Mode
@@ -70,7 +70,7 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("Starting in mode: " + Mode);
 
         if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
-            server = new Server(Constants.MaxPlayers)
+            Server = new Server(Constants.MaxPlayers)
             {
                 NetworkManager = this,
                 TickRate = tickRate,
@@ -78,19 +78,19 @@ public class NetworkManager : MonoBehaviour
                 SimulatedLag = simulatedLag
             };
 
-        if (Mode == NetworkMode.ListenServer) client = new HostClient(server);
+        if (Mode == NetworkMode.ListenServer) Client = new HostClient(Server);
 
-        if (Mode == NetworkMode.Client) client = new NetworkClient();
+        if (Mode == NetworkMode.Client) Client = new NetworkClient();
         
-        if (Mode == NetworkMode.MenuClient) client = new MenuClient();
+        if (Mode == NetworkMode.MenuClient) Client = new MenuClient();
 
-        if (client != null)
+        if (Client != null)
         {
-            client.NetworkManager = this;
-            client.TickRate = tickRate;
-            client.SendRate = sendRate;
-            client.InterpolationEnabled = interpolationEnabled;
-            client.Interpolation = interpolation;
+            Client.NetworkManager = this;
+            Client.TickRate = tickRate;
+            Client.SendRate = sendRate;
+            Client.InterpolationEnabled = interpolationEnabled;
+            Client.Interpolation = interpolation;
         }
 
         if (startupHost != null)
@@ -98,9 +98,8 @@ public class NetworkManager : MonoBehaviour
 
         if (Mode == NetworkMode.MenuClient)
         {
-            var mc = (MenuClient) client;
+            var mc = (MenuClient) Client;
             mc.ServerDiscovered += OnDiscovery;
-            mc.DiscoverLocalServers();
         }
     }
 
@@ -111,40 +110,40 @@ public class NetworkManager : MonoBehaviour
 
     private void OnValidate()
     {
-        if (server != null) server.SimulatedLag = simulatedLag;
+        if (Server != null) Server.SimulatedLag = simulatedLag;
 
-        if (client != null)
+        if (Client != null)
         {
-            client.InterpolationEnabled = interpolationEnabled;
-            client.Interpolation = interpolation;
+            Client.InterpolationEnabled = interpolationEnabled;
+            Client.Interpolation = interpolation;
         }
     }
 
     private void Update()
     {
-        client?.Update();
-        server?.Update();
+        Client?.Update();
+        Server?.Update();
     }
 
     private void LateUpdate()
     {
-        server?.LateUpdate();
+        Server?.LateUpdate();
     }
 
     private void OnDestroy()
     {
-        client?.Shutdown();
-        server?.Shutdown();
+        Client?.Shutdown();
+        Server?.Shutdown();
     }
 
     private void OnGUI()
     {
-        client?.OnGUI(5, 20);
+        Client?.OnGUI(5, 20);
     }
 
     private void OnDrawGizmos()
     {
-        client?.OnDrawGizmos();
+        Client?.OnDrawGizmos();
     }
 
     #endregion
@@ -156,7 +155,7 @@ public class NetworkManager : MonoBehaviour
         var ply = Instantiate(local ? localPlayerPrefab : networkPlayerPrefab);
         ply.PlayerInfo = info;
         ply.IsLocalPlayer = local;
-        ply.NetworkClient = client;
+        ply.NetworkClient = Client;
 
         return ply;
     }
@@ -168,14 +167,14 @@ public class NetworkManager : MonoBehaviour
 
     public void Connect(string host, int port = Constants.AppPort)
     {
-        if (client == null)
+        if (Client == null)
         {
             startupHost = host;
             startupPort = port;
             return;
         }
 
-        client.Connect(host, port);
+        Client.Connect(host, port);
     }
 
     #endregion

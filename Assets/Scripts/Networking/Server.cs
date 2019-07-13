@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Networking
 {
-    internal sealed class Server
+    public sealed class Server
     {
         private readonly NetServer server;
 
@@ -109,7 +109,7 @@ namespace Networking
             throw new IndexOutOfRangeException("Too many players, no IDs left");
         }
 
-        public PlayerInfo CreatePlayer(bool local = false, byte? id = null, [CanBeNull] NetConnection connection = null)
+        public PlayerInfo CreatePlayer(bool local = false, byte? id = null, NetConnection connection = null)
         {
             if (!id.HasValue) id = GetFreePlayerId();
 

@@ -1,8 +1,9 @@
 ﻿using System;
+using Networking;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace MainMenu
+namespace UI
 {
     public class MainMenu : MonoBehaviour
     {
@@ -10,12 +11,15 @@ namespace MainMenu
         public ServerSelection serverMenuPrefab;
 
         private Loader loader;
+        private NetworkManager networkManager;
+        
         private NetworkManager.NetworkMode mode;
         private string host;
 
         private void Start()
         {
             loader = FindObjectOfType<Loader>();
+            networkManager = FindObjectOfType<NetworkManager>();
             
             SceneManager.sceneLoaded += SceneLoaded;
         }
@@ -25,6 +29,7 @@ namespace MainMenu
             if (!serverMenuPrefab) return;
 
             var menu = Instantiate(serverMenuPrefab, transform.parent);
+            menu.MenuClient = (MenuClient)networkManager.Client;
             menu.onJoin.AddListener(StartClient);
         }
 
@@ -56,15 +61,12 @@ namespace MainMenu
             Application.Quit();
         }
 
-        private void SceneLoaded(Scene scene, LoadSceneMode mode)
+        private void SceneLoaded(Scene scene, LoadSceneMode loadMode)
         {
-            var nmo = GameObject.Find("NetworkManager");
-            if (nmo == null) return;
-
-            var nm = nmo.GetComponent<NetworkManager>();
+            var nm = FindObjectOfType<NetworkManager>();
             if (nm == null) return;
 
-            nm.Mode = this.mode;
+            nm.Mode = mode;
 
             if (nm.Mode == NetworkManager.NetworkMode.Client)
             {

@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace MainMenu
+namespace UI
 {
     [RequireComponent(typeof(TMP_Dropdown))]
     public class QualityDropdown : MonoBehaviour

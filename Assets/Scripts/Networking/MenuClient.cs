@@ -6,7 +6,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
-    internal sealed class MenuClient : Client
+    public sealed class MenuClient : Client
     {
         private readonly NetClient client;
 
@@ -62,6 +62,10 @@ namespace Networking
         }
 
         public override void PlayerShoot(byte targetId)
+        {
+        }
+        
+        internal override void OnDrawGizmos()
         {
         }
 
