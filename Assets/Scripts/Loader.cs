@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Net;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,15 +17,16 @@ public class Loader : MonoBehaviour
     private string currentLevel;
     private bool isCommonLoaded;
 
+    public IPEndPoint ServerAddress { get; set; }
+    public NetworkManager.NetworkMode NetworkMode { get; set; } = NetworkManager.NetworkMode.MenuClient;
+
     private void Start()
     {
         if (SceneManager.sceneCount == 1)
             // If this is the only loaded scene, load main menu
             ChangeLevel(mainMenuScene, false);
         else
-        {
             currentLevel = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
-        }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -36,10 +38,17 @@ public class Loader : MonoBehaviour
 
     public void ChangeLevel(string name, bool loadCommon = true)
     {
+        StartCoroutine(ChangeLevelAsync(name, loadCommon));
+    }
+
+    private IEnumerator ChangeLevelAsync(string name, bool loadCommon = true)
+    {
         if (loadingScreenCanvas)
             loadingScreenCanvas.gameObject.SetActive(true);
 
-        if (currentLevel != null) UnloadCurrentLevel();
+        if (currentLevel != null)
+            yield return UnloadCurrentLevel();
+
         if (!isCommonLoaded && loadCommon)
         {
             LoadScene(gameScene, false);
@@ -61,11 +70,12 @@ public class Loader : MonoBehaviour
             SceneManager.LoadScene(name, LoadSceneMode.Additive);
     }
 
-    private void UnloadCurrentLevel()
+    private IEnumerator UnloadCurrentLevel()
     {
-        StartCoroutine(UnloadSceneAsync(currentLevel));
+        yield return UnloadSceneAsync(currentLevel);
         if (isCommonLoaded)
-            StartCoroutine(UnloadSceneAsync(gameScene));
+            yield return UnloadSceneAsync(gameScene);
+
         currentLevel = null;
         isCommonLoaded = false;
     }
@@ -79,7 +89,7 @@ public class Loader : MonoBehaviour
         {
             if (progressBar)
                 progressBar.Progress = op.progress;
-
+            
             yield return null;
         }
 
@@ -89,7 +99,6 @@ public class Loader : MonoBehaviour
     private IEnumerator UnloadSceneAsync(string name)
     {
         var op = SceneManager.UnloadSceneAsync(name);
-
         while (!op.isDone) yield return null;
     }
 
@@ -99,5 +108,15 @@ public class Loader : MonoBehaviour
             loadingScreenCanvas.gameObject.SetActive(false);
 
         SceneManager.SetActiveScene(scene);
+
+        if (scene.path == mainMenuScene.ScenePath) return;
+
+        var nm = FindObjectOfType<NetworkManager>();
+        if (nm == null) return;
+
+        nm.Mode = NetworkMode;
+
+        if (nm.Mode == NetworkManager.NetworkMode.Client && ServerAddress != null)
+            nm.Connect(ServerAddress.Address.ToString(), ServerAddress.Port);
     }
 }

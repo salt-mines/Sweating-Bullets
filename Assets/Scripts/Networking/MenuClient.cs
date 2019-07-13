@@ -1,8 +1,6 @@
 using System;
 using Lidgren.Network;
 using Networking.Packets;
-using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
@@ -10,14 +8,14 @@ namespace Networking
     {
         private readonly NetClient client;
 
-        public event EventHandler<ServerInfo> ServerDiscovered;
-
         internal MenuClient()
         {
             client = new NetClient(new NetPeerConfiguration(Constants.AppName));
             client.Configuration.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
             client.Start();
         }
+
+        public event EventHandler<ServerInfo> ServerDiscovered;
 
         public override void Shutdown()
         {
@@ -64,7 +62,7 @@ namespace Networking
         public override void PlayerShoot(byte targetId)
         {
         }
-        
+
         internal override void OnDrawGizmos()
         {
         }

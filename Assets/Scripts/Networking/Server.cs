@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace Networking
                 ConnectionTimeout = 600
 #endif
             });
-            
+
             server.Configuration.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
             server.Start();
@@ -203,10 +202,10 @@ namespace Networking
 
         private void OnDiscoveryRequest(NetIncomingMessage msg)
         {
-            NetOutgoingMessage response = server.CreateMessage();
+            var response = server.CreateMessage();
             response.Write(PlayerCount);
             response.Write(MaxPlayerCount);
- 
+
             // Send the response to the sender of the request
             server.SendDiscoveryResponse(response, msg.SenderEndPoint);
         }

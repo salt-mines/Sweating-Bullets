@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using Networking;
+﻿using Networking;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
@@ -95,17 +94,6 @@ public class NetworkManager : MonoBehaviour
 
         if (startupHost != null)
             Connect(startupHost, startupPort);
-
-        if (Mode == NetworkMode.MenuClient)
-        {
-            var mc = (MenuClient) Client;
-            mc.ServerDiscovered += OnDiscovery;
-        }
-    }
-
-    private void OnDiscovery(object sender, ServerInfo info)
-    {
-        Debug.LogFormat("LAN server found: {0}", info);
     }
 
     private void OnValidate()
