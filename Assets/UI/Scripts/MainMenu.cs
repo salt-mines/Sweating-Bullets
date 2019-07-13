@@ -9,11 +9,14 @@ namespace MainMenu
         public OptionsMenu optionsMenuPrefab;
         public ServerSelection serverMenuPrefab;
 
+        private Loader loader;
         private NetworkManager.NetworkMode mode;
         private string host;
 
         private void Start()
         {
+            loader = FindObjectOfType<Loader>();
+            
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
@@ -34,13 +37,13 @@ namespace MainMenu
             }
 
             mode = NetworkManager.NetworkMode.Client;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            loader.ChangeLevel("Test");
         }
 
         public void OnHost()
         {
             mode = NetworkManager.NetworkMode.ListenServer;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            loader.ChangeLevel("Test");
         }
 
         public void OnOptions()

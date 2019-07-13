@@ -440,10 +440,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreenCanvas: {fileID: 1023627777}
+  progressBar: {fileID: 4680578640924871838}
   mainMenuScene:
     sceneAsset: {fileID: 102900000, guid: 13bcaa38b99d8914184f9fc751f4fc4d, type: 3}
     scenePath: Assets/Scenes/Main Menu.unity
-  progressBar: {fileID: 4680578640924871838}
+  gameScene:
+    sceneAsset: {fileID: 102900000, guid: 6e3a4e3ad2ccad744a0041ea79fa5059, type: 3}
+    scenePath: Assets/Scenes/Game.unity
 --- !u!224 &1656213143 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4680578641420894730, guid: ad47c90b0d86f4a4f90d69f0b81c1aeb,

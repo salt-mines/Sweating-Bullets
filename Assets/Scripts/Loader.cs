@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using JetBrains.Annotations;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,24 +6,66 @@ using UnityEngine.SceneManagement;
 public class Loader : MonoBehaviour
 {
     public Canvas loadingScreenCanvas;
-    public SceneReference mainMenuScene;
     public ProgressBar progressBar;
+
+    public SceneReference mainMenuScene;
+
+    [Tooltip("Scene containing common gameplay objects.")]
+    public SceneReference gameScene;
+
+    private string currentLevel;
+    private bool isCommonLoaded;
 
     private void Start()
     {
         if (SceneManager.sceneCount == 1)
             // If this is the only loaded scene, load main menu
-            LoadScene(mainMenuScene.ScenePath);
+            ChangeLevel(mainMenuScene, false);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public void LoadScene(string name)
+    public void LoadMainMenu()
+    {
+        ChangeLevel(mainMenuScene, false);
+    }
+
+    public void ChangeLevel(string name, bool loadCommon = true)
     {
         if (loadingScreenCanvas)
             loadingScreenCanvas.gameObject.SetActive(true);
-        
-        StartCoroutine(LoadSceneAsync(name));
+
+        if (currentLevel != null) UnloadCurrentLevel(!loadCommon);
+        if (!isCommonLoaded && loadCommon)
+        {
+            LoadScene(gameScene, false);
+            isCommonLoaded = true;
+        }
+
+        currentLevel = name;
+        LoadScene(currentLevel);
+    }
+
+    private void LoadScene(string name, bool loadAsync = true)
+    {
+        if (loadingScreenCanvas)
+            loadingScreenCanvas.gameObject.SetActive(true);
+
+        if (loadAsync)
+            StartCoroutine(LoadSceneAsync(name));
+        else
+            SceneManager.LoadScene(name, LoadSceneMode.Additive);
+    }
+
+    private void UnloadCurrentLevel(bool unloadCommon = false)
+    {
+        StartCoroutine(UnloadSceneAsync(currentLevel));
+        currentLevel = null;
+        if (unloadCommon)
+        {
+            StartCoroutine(UnloadSceneAsync(gameScene));
+            isCommonLoaded = false;
+        }
     }
 
     private IEnumerator LoadSceneAsync(string name)
@@ -43,11 +84,18 @@ public class Loader : MonoBehaviour
         op.allowSceneActivation = true;
     }
 
+    private IEnumerator UnloadSceneAsync(string name)
+    {
+        var op = SceneManager.UnloadSceneAsync(name);
+
+        while (!op.isDone) yield return null;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (loadingScreenCanvas)
             loadingScreenCanvas.gameObject.SetActive(false);
-        
+
         SceneManager.SetActiveScene(scene);
     }
 }
