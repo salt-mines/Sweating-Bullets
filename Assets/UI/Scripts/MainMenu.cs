@@ -1,40 +1,33 @@
-﻿using System.Net;
-using Networking;
+﻿using Networking;
 using UnityEngine;
 
 namespace UI
 {
     public class MainMenu : MonoBehaviour
     {
-        public OptionsMenu optionsMenuPrefab;
-        public ServerSelection serverMenuPrefab;
+        public OptionsMenu optionsMenu;
+        public ServerSelection serverMenu;
 
         private Loader loader;
         private NetworkManager networkManager;
-
-        private IPEndPoint server;
 
         private void Start()
         {
             loader = FindObjectOfType<Loader>();
             networkManager = FindObjectOfType<NetworkManager>();
+
+            serverMenu.MenuClient = (MenuClient) networkManager.Client;
+            serverMenu.onJoin.AddListener(StartClient);
         }
 
         public void OnJoin()
         {
-            if (!serverMenuPrefab) return;
-
-            var menu = Instantiate(serverMenuPrefab, transform.parent);
-            menu.MenuClient = (MenuClient) networkManager.Client;
-            menu.onJoin.AddListener(StartClient);
+            serverMenu.gameObject.SetActive(true);
         }
 
-        private void StartClient(string host)
+        private void StartClient(ServerInfo info)
         {
-            server = new IPEndPoint(string.IsNullOrEmpty(host) ? IPAddress.Loopback : IPAddress.Parse(host),
-                Constants.AppPort);
-
-            loader.ServerAddress = server;
+            loader.ServerAddress = info.IP;
             loader.NetworkMode = NetworkManager.NetworkMode.Client;
             loader.ChangeLevel("Test");
         }
@@ -47,7 +40,7 @@ namespace UI
 
         public void OnOptions()
         {
-            if (optionsMenuPrefab) Instantiate(optionsMenuPrefab, transform.parent);
+            optionsMenu.gameObject.SetActive(true);
         }
 
         public void OnQuit()

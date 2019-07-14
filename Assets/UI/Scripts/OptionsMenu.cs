@@ -43,7 +43,7 @@ namespace UI
 
         public void OnClickOk()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
         private void OnMasterVolumeChanged(float value)

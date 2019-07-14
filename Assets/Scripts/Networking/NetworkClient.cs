@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using System;
+using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
@@ -20,6 +21,8 @@ namespace Networking
             client.Start();
         }
 
+        public event EventHandler<StatusChangeEvent> StatusChanged;
+
         public override void Connect(string host, int port = Constants.AppPort)
         {
             client.Connect(host, port);
@@ -28,7 +31,7 @@ namespace Networking
         public override void Shutdown()
         {
             client.Shutdown("Bye");
-            
+
             base.Shutdown();
         }
 
@@ -63,7 +66,7 @@ namespace Networking
                         OnDataMessage(msg);
                         break;
                     case NetIncomingMessageType.StatusChanged:
-                        //OnStatusMessage(msg);
+                        OnStatusMessage(msg);
                         break;
                     case NetIncomingMessageType.VerboseDebugMessage:
                     case NetIncomingMessageType.DebugMessage:
@@ -93,6 +96,15 @@ namespace Networking
                 shooterId = PlayerId.Value,
                 targetId = targetId
             }, NetDeliveryMethod.ReliableUnordered);
+        }
+
+        private void OnStatusMessage(NetIncomingMessage msg)
+        {
+            StatusChanged?.Invoke(this, new StatusChangeEvent
+            {
+                Status = (NetConnectionStatus) msg.ReadByte(),
+                Reason = msg.ReadString()
+            });
         }
 
         private void OnDataMessage(NetIncomingMessage msg)
@@ -125,10 +137,7 @@ namespace Networking
         private void OnPlayerDeath(PlayerDeath packet)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            if (packet.playerId == PlayerId.Value)
-            {
-                Players[PlayerId.Value].PlayerObject.Kill();
-            }
+            if (packet.playerId == PlayerId.Value) Players[PlayerId.Value].PlayerObject.Kill();
 
             UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
         }
@@ -154,6 +163,12 @@ namespace Networking
         internal override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
+        }
+
+        public class StatusChangeEvent : EventArgs
+        {
+            public NetConnectionStatus Status { get; set; }
+            public string Reason { get; set; }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Lidgren.Network;
 using Networking.Packets;
 
@@ -11,6 +12,8 @@ namespace Networking
         internal MenuClient()
         {
             client = new NetClient(new NetPeerConfiguration(Constants.AppName));
+            client.Configuration.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
+            client.Configuration.EnableMessageType(NetIncomingMessageType.DebugMessage);
             client.Configuration.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
             client.Start();
         }
@@ -26,6 +29,11 @@ namespace Networking
         public void DiscoverLocalServers(int port = Constants.AppPort)
         {
             client.DiscoverLocalPeers(port);
+        }
+
+        public void DiscoverServer(IPEndPoint ip)
+        {
+            client.DiscoverKnownPeer(ip);
         }
 
         private void Send<T>(T packet, NetDeliveryMethod method) where T : IPacket
