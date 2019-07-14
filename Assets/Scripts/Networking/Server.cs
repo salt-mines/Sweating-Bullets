@@ -12,11 +12,14 @@ namespace Networking
         private float nextSend;
         private float nextTick;
 
-        public Server(byte maxPlayers)
+        public Server(byte maxPlayers, Loader loader)
         {
             MaxPlayerCount = maxPlayers;
             Players = new PlayerInfo[maxPlayers];
             WorldState = new PlayerState?[maxPlayers];
+
+            Loader = loader;
+            LevelManager = loader.LevelManager;
 
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
@@ -30,8 +33,12 @@ namespace Networking
             server.Configuration.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
             server.Start();
+
+            LevelManager.ChangeLevel(LevelManager.StartingLevel);
         }
 
+        public Loader Loader { get; }
+        public LevelManager LevelManager { get; }
         public NetworkManager NetworkManager { get; internal set; }
 
         public float SimulatedLag
@@ -54,6 +61,8 @@ namespace Networking
         public PlayerInfo[] Players { get; }
         public PlayerState?[] WorldState { get; }
 
+        public string Level => LevelManager.CurrentLevel;
+        
         public void Update()
         {
             var time = Time.time;
@@ -235,7 +244,8 @@ namespace Networking
             SendToOne(new Connected
             {
                 playerId = player.Id,
-                maxPlayers = MaxPlayerCount
+                maxPlayers = MaxPlayerCount,
+                levelName = Level
             }, player.Connection, NetDeliveryMethod.ReliableUnordered);
         }
 

@@ -10,16 +10,25 @@ namespace Networking
     {
         private readonly NetClient client;
 
-        internal NetworkClient()
+        internal NetworkClient(Loader loader)
         {
+            Loader = loader;
+            LevelManager = Loader.LevelManager;
+            
+            Loader.LevelLoaded += (o, s) => LevelLoaded(s);
+            
             client = new NetClient(new NetPeerConfiguration(Constants.AppName)
             {
 #if UNITY_EDITOR
                 ConnectionTimeout = 600
 #endif
             });
+
             client.Start();
         }
+        
+        private Loader Loader { get; }
+        private LevelManager LevelManager { get; }
 
         public event EventHandler<StatusChangeEvent> StatusChanged;
 
@@ -33,6 +42,21 @@ namespace Networking
             client.Shutdown("Bye");
 
             base.Shutdown();
+        }
+
+        protected override void InitializeFromServer(byte playerId, byte maxPlayers, string level)
+        {
+            base.InitializeFromServer(playerId, maxPlayers, level);
+
+            LevelManager.ChangeLevel(level);
+        }
+
+        private void LevelLoaded(string level)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+
+            Loaded = true;
+            CreatePlayer(PlayerId.Value, true);
         }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -114,8 +138,7 @@ namespace Networking
             switch (type)
             {
                 case PacketType.Connected:
-                    var conn = Packets.Connected.Read(msg);
-                    InitializeFromServer(conn.playerId, conn.maxPlayers);
+                    InitializeFromServer(Packets.Connected.Read(msg));
                     break;
                 case PacketType.PlayerDisconnected:
                     OnPlayerDisconnected(PlayerDisconnected.Read(msg));
@@ -158,11 +181,6 @@ namespace Networking
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Pos: {ply.Position}");
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.Rotation.eulerAngles}");
             }
-        }
-
-        internal override void OnDrawGizmos()
-        {
-            base.OnDrawGizmos();
         }
 
         public class StatusChangeEvent : EventArgs

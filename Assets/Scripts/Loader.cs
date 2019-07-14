@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
+using Networking;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,110 +16,149 @@ public class Loader : MonoBehaviour
 
     [Tooltip("Scene containing common gameplay objects.")]
     public SceneReference gameScene;
+    
+    [SerializeField]
+    private List<SceneReference> availableLevels = new List<SceneReference>();
 
-    private string currentLevel;
     private bool isCommonLoaded;
+    private bool awoken;
+    private Scene preloadedScene;
+    
+    public LevelManager LevelManager { get; private set; }
 
     public IPEndPoint ServerAddress { get; set; }
-    public NetworkManager.NetworkMode NetworkMode { get; set; } = NetworkManager.NetworkMode.MenuClient;
+    public NetworkManager.NetworkMode NetworkMode { get; set; } = NetworkManager.NetworkMode.ListenServer;
+
+    public event EventHandler<string> LevelLoaded;
+
+    private void Awake()
+    {
+        if (awoken) return;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        awoken = true;
+
+        preloadedScene = SceneManager.GetActiveScene();
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void Start()
     {
+        LevelManager = new LevelManager(availableLevels);
+        LevelManager.LevelChanging += LevelChanging;
+        
+        // If this is the only loaded scene, load main menu
         if (SceneManager.sceneCount == 1)
-            // If this is the only loaded scene, load main menu
-            ChangeLevel(mainMenuScene, false);
-        else
-            currentLevel = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
+        {
+            StartCoroutine(LoadSceneAsync(mainMenuScene));
+        }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        // At the start, the active scene gets loaded possibly before our Boot scene,
+        // so call OnSceneLoaded manually to ensure that stuff gets initialized properly.
+        OnSceneLoaded(preloadedScene, LoadSceneMode.Additive);
+    }
+
+    private void LevelChanging(object sender, string newLevel)
+    {
+        StartCoroutine(UnloadAndLoadAsync(LevelManager.CurrentLevel, newLevel));
     }
 
     public void LoadMainMenu()
     {
-        ChangeLevel(mainMenuScene, false);
+        SceneManager.LoadScene(gameObject.scene.buildIndex);
     }
 
-    public void ChangeLevel(string name, bool loadCommon = true)
+    /// <summary>
+    ///     Load common game scene, optionally with the given starting level.
+    /// </summary>
+    /// <param name="startingLevel">optional starting level</param>
+    public void StartGame(string startingLevel = null)
     {
-        StartCoroutine(ChangeLevelAsync(name, loadCommon));
+        if (isCommonLoaded) return;
+        
+        if (startingLevel != null)
+            LevelManager.StartingLevel = startingLevel;
+
+        StartCoroutine(UnloadAndLoadAsync(mainMenuScene, gameScene));
+        isCommonLoaded = true;
     }
 
-    private IEnumerator ChangeLevelAsync(string name, bool loadCommon = true)
+    private IEnumerator UnloadAndLoadAsync(string unload, string load)
     {
-        if (loadingScreenCanvas)
-            loadingScreenCanvas.gameObject.SetActive(true);
-
-        if (currentLevel != null)
-            yield return UnloadCurrentLevel();
-
-        if (!isCommonLoaded && loadCommon)
-        {
-            LoadScene(gameScene, false);
-            isCommonLoaded = true;
-        }
-
-        currentLevel = name;
-        LoadScene(currentLevel);
+        yield return UnloadSceneAsync(unload);
+        yield return LoadSceneAsync(load);
     }
 
-    private void LoadScene(string name, bool loadAsync = true)
+    private IEnumerator LoadSceneAsync(string scene)
     {
-        if (loadingScreenCanvas)
-            loadingScreenCanvas.gameObject.SetActive(true);
-
-        if (loadAsync)
-            StartCoroutine(LoadSceneAsync(name));
-        else
-            SceneManager.LoadScene(name, LoadSceneMode.Additive);
-    }
-
-    private IEnumerator UnloadCurrentLevel()
-    {
-        yield return UnloadSceneAsync(currentLevel);
-        if (isCommonLoaded)
-            yield return UnloadSceneAsync(gameScene);
-
-        currentLevel = null;
-        isCommonLoaded = false;
-    }
-
-    private IEnumerator LoadSceneAsync(string name)
-    {
-        var op = SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
+        var op = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
         op.allowSceneActivation = false;
 
         while (op.progress < 0.9f)
         {
             if (progressBar)
                 progressBar.Progress = op.progress;
-            
+
             yield return null;
         }
 
         op.allowSceneActivation = true;
     }
 
-    private IEnumerator UnloadSceneAsync(string name)
+    private IEnumerator UnloadSceneAsync(string scene)
     {
-        var op = SceneManager.UnloadSceneAsync(name);
+        AsyncOperation op;
+        try
+        {
+            op = SceneManager.UnloadSceneAsync(scene);
+        }
+        catch (ArgumentException)
+        {
+            yield break;
+        }
+        
         while (!op.isDone) yield return null;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (loadingScreenCanvas)
+        if (scene == gameObject.scene) return;
+
+        var isCommon = scene.path == gameScene.ScenePath;
+        var isMainMenu = scene.path == mainMenuScene.ScenePath;
+
+        if (loadingScreenCanvas && !isCommon)
             loadingScreenCanvas.gameObject.SetActive(false);
 
+        if (isCommon)
+        {
+            var nm = FindObjectOfType<NetworkManager>();
+
+            if (nm.Client is NetworkClient nc)
+            {
+                nc.StatusChanged += OnNetworkStatus;
+            }
+            
+            nm.Level = LevelManager.StartingLevel;
+            nm.StartNet(this, NetworkMode, ServerAddress);
+
+            return;
+        }
+
+        if (isMainMenu) return;
+
+        // Set the actual level as active
         SceneManager.SetActiveScene(scene);
 
-        if (scene.path == mainMenuScene.ScenePath) return;
+        LevelLoaded?.Invoke(this, scene.name);
+    }
 
-        var nm = FindObjectOfType<NetworkManager>();
-        if (nm == null) return;
-
-        nm.Mode = NetworkMode;
-
-        if (nm.Mode == NetworkManager.NetworkMode.Client && ServerAddress != null)
-            nm.Connect(ServerAddress.Address.ToString(), ServerAddress.Port);
+    private void OnNetworkStatus(object sender, NetworkClient.StatusChangeEvent statusChangeEvent)
+    {
+        Debug.Log(statusChangeEvent.ToString());
     }
 }

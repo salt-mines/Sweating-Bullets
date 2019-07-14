@@ -15,7 +15,8 @@ namespace UI
         {
             loader = FindObjectOfType<Loader>();
             networkManager = FindObjectOfType<NetworkManager>();
-
+            networkManager.StartNet(loader, NetworkManager.NetworkMode.MenuClient);
+            
             serverMenu.MenuClient = (MenuClient) networkManager.Client;
             serverMenu.onJoin.AddListener(StartClient);
         }
@@ -29,13 +30,13 @@ namespace UI
         {
             loader.ServerAddress = info.IP;
             loader.NetworkMode = NetworkManager.NetworkMode.Client;
-            loader.ChangeLevel("Test");
+            loader.StartGame();
         }
 
         public void OnHost()
         {
             loader.NetworkMode = NetworkManager.NetworkMode.ListenServer;
-            loader.ChangeLevel("Test");
+            loader.StartGame(loader.LevelManager.AvailableLevels[0]);
         }
 
         public void OnOptions()

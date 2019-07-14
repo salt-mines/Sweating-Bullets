@@ -11,13 +11,18 @@ namespace Networking
         internal HostClient(Server server)
         {
             Server = server;
-
-            var ply = Server.CreatePlayer(true);
-            InitializeFromServer(ply.Id, Server.MaxPlayerCount);
-            ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
+            Server.Loader.LevelLoaded += (o, s) => LevelLoaded(s);
         }
 
         private Server Server { get; }
+
+        private void LevelLoaded(string level)
+        {
+            var ply = Server.CreatePlayer(true);
+            InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level);
+            ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
+            Loaded = true;
+        }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)
         {

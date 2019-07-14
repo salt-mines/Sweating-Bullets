@@ -1,5 +1,4 @@
-﻿using System;
-using Lidgren.Network;
+﻿using Lidgren.Network;
 using UnityEngine;
 
 namespace Networking.Packets
@@ -40,24 +39,28 @@ namespace Networking.Packets
         public byte playerId;
         public byte maxPlayers;
 
+        public string levelName;
+
         public static Connected Read(NetIncomingMessage msg)
         {
             return new Connected
             {
                 playerId = msg.ReadByte(),
-                maxPlayers = msg.ReadByte()
+                maxPlayers = msg.ReadByte(),
+                levelName = msg.ReadString()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId, maxPlayers);
+            Write(msg, playerId, maxPlayers, levelName);
         }
 
-        public static void Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers)
+        public static void Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers, string levelName)
         {
             msg.Write(playerId);
             msg.Write(maxPlayers);
+            msg.Write(levelName);
         }
     }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using Networking.Packets;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
@@ -22,6 +24,7 @@ namespace Networking
         public byte? PlayerId { get; protected set; }
 
         public bool Connected => PlayerId.HasValue;
+        public bool Loaded { get; protected set; }
 
         public void Update()
         {
@@ -32,7 +35,7 @@ namespace Networking
                 nextTick = time + 1f / TickRate;
             }
 
-            if (!Connected) return;
+            if (!Connected || !Loaded) return;
 
             InterpolatePlayers();
 
@@ -49,6 +52,7 @@ namespace Networking
 
         public virtual void Shutdown()
         {
+            UnityEngine.Debug.Log($"{this} shutting down.");
             PlayerId = null;
             if (Players != null)
                 Array.Clear(Players, 0, Players.Length);
@@ -58,13 +62,18 @@ namespace Networking
 
         protected abstract void SendState();
 
-        protected void InitializeFromServer(byte playerId, byte maxPlayers)
+        protected void InitializeFromServer(Connected packet)
         {
+            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName);
+        }
+
+        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level)
+        {
+            UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
+
             MaxPlayers = maxPlayers;
             Players = new PlayerInfo[maxPlayers];
-
             PlayerId = playerId;
-            CreatePlayer(playerId, true);
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -91,6 +100,8 @@ namespace Networking
 
         internal virtual void OnDrawGizmos()
         {
+            if (!Loaded) return;
+            
             Gizmos.color = Color.green;
             foreach (var ply in Players)
             {
@@ -105,7 +116,7 @@ namespace Networking
 
         protected void AddWorldState(PlayerState?[] worldState)
         {
-            if (Players == null) return;
+            if (Players == null || !Loaded) return;
 
             for (byte i = 0; i < worldState.Length; i++)
             {
@@ -134,6 +145,8 @@ namespace Networking
 
         private void InterpolatePlayers()
         {
+            if (Players == null || !Loaded) return;
+
             var pastTime = Time.time - Interpolation;
 
             foreach (var ply in Players)

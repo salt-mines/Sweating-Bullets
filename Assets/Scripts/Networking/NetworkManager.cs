@@ -1,4 +1,5 @@
-﻿using Networking;
+﻿using System.Net;
+using Networking;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
@@ -13,7 +14,8 @@ public class NetworkManager : MonoBehaviour
 
     #region Unity fields
 
-    [Header("Shared")] public NetworkPlayer networkPlayerPrefab;
+    [Header("Shared")]
+    public NetworkPlayer networkPlayerPrefab;
 
     public NetworkMode mode = NetworkMode.ListenServer;
 
@@ -30,7 +32,8 @@ public class NetworkManager : MonoBehaviour
     [Tooltip("Simulated latency in seconds")]
     public float simulatedLag;
 
-    [Header("Client")] public NetworkPlayer localPlayerPrefab;
+    [Header("Client")]
+    public NetworkPlayer localPlayerPrefab;
 
     public bool interpolationEnabled = true;
 
@@ -42,11 +45,10 @@ public class NetworkManager : MonoBehaviour
 
     #region Class variables
 
+    private Loader Loader { get; set; }
+    public string Level { get; set; }
     public Client Client { get; private set; }
     public Server Server { get; private set; }
-
-    private string startupHost;
-    private int startupPort;
 
     public NetworkMode Mode
     {
@@ -58,18 +60,24 @@ public class NetworkManager : MonoBehaviour
 
     #region Unity events
 
-    private void Start()
+    public void StartNet(Loader loader, NetworkMode mode, IPEndPoint host = null)
     {
+        if (Client != null || Server != null) return;
+
+        Mode = mode;
+
         if (Application.isBatchMode)
         {
             Debug.Log("Batch mode detected");
             Mode = NetworkMode.Server;
         }
 
+        Loader = loader;
+
         Debug.Log("Starting in mode: " + Mode);
 
         if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
-            Server = new Server(Constants.MaxPlayers)
+            Server = new Server(Constants.MaxPlayers, Loader)
             {
                 NetworkManager = this,
                 TickRate = tickRate,
@@ -79,8 +87,8 @@ public class NetworkManager : MonoBehaviour
 
         if (Mode == NetworkMode.ListenServer) Client = new HostClient(Server);
 
-        if (Mode == NetworkMode.Client) Client = new NetworkClient();
-        
+        if (Mode == NetworkMode.Client) Client = new NetworkClient(Loader);
+
         if (Mode == NetworkMode.MenuClient) Client = new MenuClient();
 
         if (Client != null)
@@ -92,8 +100,8 @@ public class NetworkManager : MonoBehaviour
             Client.Interpolation = interpolation;
         }
 
-        if (startupHost != null)
-            Connect(startupHost, startupPort);
+        if (Mode == NetworkMode.Client && host != null)
+            Client?.Connect(host.Address.ToString(), host.Port);
     }
 
     private void OnValidate()
@@ -151,18 +159,6 @@ public class NetworkManager : MonoBehaviour
     public void RemovePlayer(NetworkPlayer player)
     {
         Destroy(player.gameObject);
-    }
-
-    public void Connect(string host, int port = Constants.AppPort)
-    {
-        if (Client == null)
-        {
-            startupHost = host;
-            startupPort = port;
-            return;
-        }
-
-        Client.Connect(host, port);
     }
 
     #endregion
