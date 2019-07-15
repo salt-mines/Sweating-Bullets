@@ -18,14 +18,12 @@ public class PlayerMovement : MonoBehaviour
 
     #region Movement state variables
 
-    private float verticalSpeed;
-
     private Vector3 velocity = Vector3.zero;
 
     public Vector3 Velocity
     {
         get => velocity;
-        private set => velocity = value;
+        set => velocity = value;
     }
 
     private Vector3 targetMovement = Vector3.zero;
@@ -60,11 +58,13 @@ public class PlayerMovement : MonoBehaviour
             velocity.z = targetMovement.z;
 
             if (playerInput.Jump)
-                verticalSpeed = jumpSpeed;
+                velocity.y = jumpSpeed;
         }
 
-        verticalSpeed -= gravity * Time.deltaTime;
-        velocity.y = verticalSpeed;
+        if (!characterController.isGrounded)
+        {
+            velocity.y -= gravity * Time.deltaTime;
+        }
 
         characterController.Move(velocity * Time.deltaTime);
     }
@@ -75,7 +75,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void ResetMovement()
     {
-        verticalSpeed = 0;
         velocity = Vector3.zero;
         targetMovement = Vector3.zero;
     }
