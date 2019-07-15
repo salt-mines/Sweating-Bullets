@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using Game;
+using UnityEngine;
 
 public class FirstPersonCamera : MonoBehaviour
 {
-    public PlayerInput input;
+    private GameInput input;
     private Transform player;
 
     private Vector2 viewAngles = Vector2.zero;
 
     private void Awake()
     {
+        input = FindObjectOfType<GameInput>();
         player = transform.parent;
     }
 

@@ -610,6 +610,8 @@ GameObject:
   m_Component:
   - component: {fileID: 341453354}
   - component: {fileID: 341453353}
+  - component: {fileID: 341453355}
+  - component: {fileID: 341453356}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -631,7 +633,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paused: 0
   pausePanel: {fileID: 1920348672}
-  playerList: []
 --- !u!4 &341453354
 Transform:
   m_ObjectHideFlags: 0
@@ -646,6 +647,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &341453355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341453352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cf118aeccf834397c0131e654427b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivity: 0.1
+--- !u!114 &341453356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341453352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de96386bb1cc4e99ad29cc4c34d3bcf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &535186779 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8091586086005693621, guid: b8da185ca444fe34bba986af1114095c,

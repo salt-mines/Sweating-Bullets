@@ -1,4 +1,5 @@
-﻿using Networking;
+﻿using Game;
+using Networking;
 using UnityEngine;
 
 public class NetworkPlayer : MonoBehaviour
