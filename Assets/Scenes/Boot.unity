@@ -452,6 +452,8 @@ MonoBehaviour:
     scenePath: Assets/Scenes/Levels/Test.unity
   - sceneAsset: {fileID: 102900000, guid: 634734a89fc9e5448a843723b716bfc4, type: 3}
     scenePath: Assets/Scenes/Levels/Test2.unity
+  - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
+    scenePath: Assets/Scenes/Levels/Level1.unity
 --- !u!224 &1656213143 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4680578641420894730, guid: ad47c90b0d86f4a4f90d69f0b81c1aeb,
