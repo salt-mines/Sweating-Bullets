@@ -5,16 +5,23 @@ namespace Game
     [RequireComponent(typeof(NetworkPlayer))]
     public class PlayerShooting : MonoBehaviour
     {
-        private GameInput input;
-        private NetworkPlayer player;
-        private Camera fpsCamera;
-
         public LayerMask hittableMask;
 
         public float range = 100f;
         public float rateOfFire = 1f;
+        
+        public LineRenderer linePrefab;
+        public Transform barrelPoint;
+
+        public float lineLifetime = 1f;
+
+        private GameInput input;
+        private NetworkPlayer player;
+        private Camera fpsCamera;
 
         private float timeToFire;
+        
+        private readonly Vector3[] linePoints = new Vector3[2];
 
         // Start is called before the first frame update
         private void Start()
@@ -41,18 +48,33 @@ namespace Game
         private void Shoot()
         {
             var cameraTransform = fpsCamera.transform;
+            var from = cameraTransform.position;
+            var to = cameraTransform.forward;
 
-            if (!Physics.Raycast(cameraTransform.position, cameraTransform.forward, out var hit, range,
-                hittableMask)) return;
+            if (!Physics.Raycast(from, to, out var hit, range,
+                hittableMask))
+            {
+                SpawnLine(barrelPoint.position, to * range);
+                return;
+            }
 
-            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * hit.distance, Color.yellow, 2,
-                false);
+            SpawnLine(barrelPoint.position, hit.point);
 
             if (hit.transform.gameObject.layer != 9) return;
 
             var targetNetPlayer = hit.transform.gameObject.GetComponent<NetworkPlayer>();
             if (targetNetPlayer)
                 player.Shoot(targetNetPlayer);
+        }
+
+        private void SpawnLine(Vector3 from, Vector3 to)
+        {
+            var line = Instantiate(linePrefab);
+
+            linePoints[0] = from;
+            linePoints[1] = to;
+            line.SetPositions(linePoints);
+            Destroy(line.gameObject, lineLifetime);
         }
     }
 }

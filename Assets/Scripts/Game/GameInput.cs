@@ -38,7 +38,13 @@ namespace Game
         {
             Cancel = Input.GetButtonDown("Cancel");
 
-            if (BlockInput) return;
+            if (BlockInput)
+            {
+                Forward = Strafe = MouseX = MouseY = 0;
+                Fire = Jump = false;
+
+                return;
+            }
 
             Forward = Input.GetAxisRaw("Vertical");
             Strafe = Input.GetAxisRaw("Horizontal");
