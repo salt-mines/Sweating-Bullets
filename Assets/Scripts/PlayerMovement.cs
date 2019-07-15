@@ -14,18 +14,21 @@ public class PlayerMovement : MonoBehaviour
     [Range(0, 100)]
     public float gravity = 20.0f;
 
-    [Range(0, 1)]
-    public float jumpMovementMod = 0.5f;
-
     #endregion
 
     #region Movement state variables
 
-    private float vJumpSpeed;
+    private float verticalSpeed;
 
-    private Vector3 movement = Vector3.zero;
-    private Vector3 groundMovement = Vector3.zero;
-    private Vector3 airMovement = Vector3.zero;
+    private Vector3 velocity = Vector3.zero;
+
+    public Vector3 Velocity
+    {
+        get => velocity;
+        private set => velocity = value;
+    }
+
+    private Vector3 targetMovement = Vector3.zero;
 
     #endregion
 
@@ -46,51 +49,35 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (characterController.isGrounded)
+        targetMovement.x = playerInput.Strafe;
+        targetMovement.z = playerInput.Forward;
+        targetMovement.Normalize();
+        targetMovement = transform.TransformDirection(targetMovement * movementSpeed);
+
+        if (characterController.isGrounded && velocity.y <= 0)
         {
-            vJumpSpeed = 0f;
-            movement.x = playerInput.Strafe;
-            movement.z = playerInput.Forward;
-            movement.Normalize();
+            velocity.x = targetMovement.x;
+            velocity.z = targetMovement.z;
 
-            movement = transform.TransformDirection(movement) * movementSpeed;
-
-            if (playerInput.Jump) vJumpSpeed = jumpSpeed;
-
-            groundMovement = movement;
-        }
-        else
-        {
-            AirMove();
+            if (playerInput.Jump)
+                verticalSpeed = jumpSpeed;
         }
 
-        vJumpSpeed -= gravity * Time.deltaTime;
-        movement.y = vJumpSpeed;
+        verticalSpeed -= gravity * Time.deltaTime;
+        velocity.y = verticalSpeed;
 
-        characterController.Move(movement * Time.deltaTime);
+        characterController.Move(velocity * Time.deltaTime);
     }
 
     #endregion
 
     #region Movement methods
 
-    private void AirMove()
-    {
-        airMovement.x = playerInput.Strafe;
-        airMovement.z = playerInput.Forward;
-
-        airMovement.Normalize();
-        airMovement = jumpMovementMod * transform.TransformDirection(airMovement);
-
-        movement = groundMovement + airMovement;
-    }
-
     public void ResetMovement()
     {
-        vJumpSpeed = 0;
-        movement = Vector3.zero;
-        airMovement = Vector3.zero;
-        groundMovement = Vector3.zero;
+        verticalSpeed = 0;
+        velocity = Vector3.zero;
+        targetMovement = Vector3.zero;
     }
 
     #endregion
