@@ -350,7 +350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1023627773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -492,18 +492,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd1f1258f90258c49842af525ca69a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadingScreen: {fileID: 352931644}
+  mainMenuScene:
+    sceneAsset: {fileID: 102900000, guid: 13bcaa38b99d8914184f9fc751f4fc4d, type: 3}
+    scenePath: Assets/Scenes/Main Menu.unity
+  gameScene:
+    sceneAsset: {fileID: 102900000, guid: 6e3a4e3ad2ccad744a0041ea79fa5059, type: 3}
+    scenePath: Assets/Scenes/Game.unity
   availableLevels:
   - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     scenePath: Assets/Scenes/Levels/Test.unity
   - sceneAsset: {fileID: 102900000, guid: 634734a89fc9e5448a843723b716bfc4, type: 3}
     scenePath: Assets/Scenes/Levels/Test2.unity
-  gameScene:
-    sceneAsset: {fileID: 102900000, guid: 6e3a4e3ad2ccad744a0041ea79fa5059, type: 3}
-    scenePath: Assets/Scenes/Game.unity
-  mainMenuScene:
-    sceneAsset: {fileID: 102900000, guid: 13bcaa38b99d8914184f9fc751f4fc4d, type: 3}
-    scenePath: Assets/Scenes/Main Menu.unity
-  loadingScreen: {fileID: 352931644}
 --- !u!224 &1656213143 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4680578641420894730, guid: ad47c90b0d86f4a4f90d69f0b81c1aeb,

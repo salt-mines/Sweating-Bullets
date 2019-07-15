@@ -1,44 +1,46 @@
 ﻿using TMPro;
-using UI;
 using UnityEngine;
 
-public class LoadingScreen : MonoBehaviour
+namespace UI
 {
-    [SerializeField]
-    private ProgressBar progressBar;
-
-    [SerializeField]
-    private TextMeshProUGUI loadingStatusText;
-
-    [SerializeField]
-    private TextMeshProUGUI connectingStatusText;
-
-    /// <summary>
-    ///     Progress of loading screen in float [0, 1.0]
-    /// </summary>
-    public float Progress
+    public class LoadingScreen : MonoBehaviour
     {
-        get => progressBar.Progress;
-        set => progressBar.Progress = value;
-    }
+        [SerializeField]
+        public ProgressBar progressBar;
 
-    public string LoadingStatus
-    {
-        get => loadingStatusText.text;
-        set => loadingStatusText.text = value;
-    }
+        [SerializeField]
+        public TextMeshProUGUI loadingStatusText;
 
-    public string ConnectingStatus
-    {
-        get => connectingStatusText.text;
-        set => connectingStatusText.text = value;
-    }
+        [SerializeField]
+        public TextMeshProUGUI connectingStatusText;
 
-    public void Show(bool show, bool parentToo)
-    {
-        gameObject.SetActive(show);
+        /// <summary>
+        ///     Progress of loading screen in float [0, 1.0]
+        /// </summary>
+        public float Progress
+        {
+            get => progressBar.Progress;
+            set => progressBar.Progress = value;
+        }
 
-        if (parentToo)
-            transform.parent.gameObject.SetActive(show);
+        public string LoadingStatus
+        {
+            get => loadingStatusText.text;
+            set => loadingStatusText.text = value;
+        }
+
+        public string ConnectingStatus
+        {
+            get => connectingStatusText.text;
+            set => connectingStatusText.text = value;
+        }
+
+        public void Show(bool show, bool parentToo)
+        {
+            gameObject.SetActive(show);
+
+            if (parentToo)
+                transform.parent.gameObject.SetActive(show);
+        }
     }
 }

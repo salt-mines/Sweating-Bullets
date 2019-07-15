@@ -34,7 +34,7 @@ namespace Networking
 
             server.Start();
 
-            LevelManager.ChangeLevel(LevelManager.StartingLevel);
+            LevelManager.ChangeToStartingLevel();
         }
 
         public Loader Loader { get; }

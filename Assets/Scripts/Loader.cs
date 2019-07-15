@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Net;
 using Lidgren.Network;
 using Networking;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
     [SerializeField]
-    private LoadingScreen loadingScreen;
+    public LoadingScreen loadingScreen;
 
     public SceneReference mainMenuScene;
 
@@ -18,7 +19,7 @@ public class Loader : MonoBehaviour
     public SceneReference gameScene;
 
     [SerializeField]
-    private List<SceneReference> availableLevels = new List<SceneReference>();
+    public List<SceneReference> availableLevels = new List<SceneReference>();
 
     private bool awoken;
     private bool isCommonLoaded;
@@ -42,6 +43,19 @@ public class Loader : MonoBehaviour
         LevelManager.LevelChanging += LevelChanging;
 
         preloadedScene = SceneManager.GetActiveScene();
+
+        for (var i = 0; i < SceneManager.sceneCount; i++)
+        {
+            var sc = SceneManager.GetSceneAt(i);
+
+            if (sc == gameObject.scene ||
+                sc.path == gameScene.ScenePath ||
+                sc.path == mainMenuScene.ScenePath)
+                continue;
+
+            LevelManager.StartingLevel = sc.name;
+            LevelManager.StartingLevelLoaded = true;
+        }
     }
 
     private void OnDestroy()
@@ -118,6 +132,8 @@ public class Loader : MonoBehaviour
         {
             yield break;
         }
+
+        if (op == null) yield break;
 
         while (!op.isDone) yield return null;
     }
