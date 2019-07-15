@@ -2,25 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Lidgren.Network;
 using Networking;
-using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
-    [SerializeField] private List<SceneReference> availableLevels = new List<SceneReference>();
-    private bool awoken;
+    [SerializeField]
+    private LoadingScreen loadingScreen;
+
+    public SceneReference mainMenuScene;
 
     [Tooltip("Scene containing common gameplay objects.")]
     public SceneReference gameScene;
 
-    private bool isCommonLoaded;
-    public Canvas loadingScreenCanvas;
+    [SerializeField]
+    private List<SceneReference> availableLevels = new List<SceneReference>();
 
-    public SceneReference mainMenuScene;
+    private bool awoken;
+    private bool isCommonLoaded;
     private Scene preloadedScene;
-    public ProgressBar progressBar;
 
     public LevelManager LevelManager { get; private set; }
 
@@ -35,6 +37,9 @@ public class Loader : MonoBehaviour
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         awoken = true;
+
+        LevelManager = new LevelManager(availableLevels);
+        LevelManager.LevelChanging += LevelChanging;
 
         preloadedScene = SceneManager.GetActiveScene();
     }
@@ -52,12 +57,6 @@ public class Loader : MonoBehaviour
         // At the start, the active scene gets loaded possibly before our Boot scene,
         // so call OnSceneLoaded manually to ensure that stuff gets initialized properly.
         OnSceneLoaded(preloadedScene, LoadSceneMode.Additive);
-    }
-
-    private void CreateLevelManager()
-    {
-        LevelManager = new LevelManager(availableLevels);
-        LevelManager.LevelChanging += LevelChanging;
     }
 
     private void LevelChanging(object sender, string newLevel)
@@ -78,9 +77,6 @@ public class Loader : MonoBehaviour
     {
         if (isCommonLoaded) return;
 
-        if (LevelManager == null)
-            CreateLevelManager();
-
         if (startingLevel != null)
             LevelManager.StartingLevel = startingLevel;
 
@@ -96,13 +92,14 @@ public class Loader : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(string scene)
     {
+        loadingScreen.Show(true, true);
+
         var op = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
         op.allowSceneActivation = false;
 
         while (op.progress < 0.9f)
         {
-            if (progressBar)
-                progressBar.Progress = op.progress;
+            loadingScreen.Progress = op.progress;
 
             yield return null;
         }
@@ -133,20 +130,17 @@ public class Loader : MonoBehaviour
         var isCommon = scene.path == gameScene.ScenePath;
         var isMainMenu = scene.path == mainMenuScene.ScenePath;
 
-        if (loadingScreenCanvas && !isCommon)
-            loadingScreenCanvas.gameObject.SetActive(false);
+        if (!isCommon)
+            loadingScreen.Show(false, true);
 
         if (isCommon)
         {
             var nm = FindObjectOfType<NetworkManager>();
 
-            if (nm.Client is NetworkClient nc) nc.StatusChanged += OnNetworkStatus;
-
-            if (LevelManager == null)
-                CreateLevelManager();
-
             nm.Level = LevelManager.StartingLevel;
             nm.StartNet(this, NetworkMode, ServerAddress);
+
+            if (nm.Client is NetworkClient nc) nc.StatusChanged += OnNetworkStatus;
 
             return;
         }
@@ -161,6 +155,11 @@ public class Loader : MonoBehaviour
 
     private void OnNetworkStatus(object sender, NetworkClient.StatusChangeEvent statusChangeEvent)
     {
-        Debug.Log(statusChangeEvent.ToString());
+        Debug.Log(statusChangeEvent.Status);
+
+        loadingScreen.ConnectingStatus = statusChangeEvent.Status.ToString();
+
+        if (statusChangeEvent.Status == NetConnectionStatus.Disconnected)
+            LoadMainMenu();
     }
 }
