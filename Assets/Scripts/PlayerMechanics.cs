@@ -42,6 +42,8 @@ public class PlayerMechanics : MonoBehaviour
         {
             spawnPointList[i] = spawnPoints.transform.GetChild(i).gameObject;
         }
+
+        RespawnPlayer();
     }
 
     // Update is called once per frame
