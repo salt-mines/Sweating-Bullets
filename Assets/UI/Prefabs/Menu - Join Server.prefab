@@ -926,6 +926,7 @@ MonoBehaviour:
   inputField: {fileID: 7947817859405599634}
   statusText: {fileID: 5611136774175146441}
   serverList: {fileID: 7589475508171379058}
+  firstSelected: {fileID: 7947817859405599637}
   serverInfoPrefab: {fileID: 6067277295401192205, guid: 68b66a5d851c1054d83d8cdcc7b2249d,
     type: 3}
   errorColor: {r: 1, g: 0.3537736, b: 0.3537736, a: 1}
@@ -1022,9 +1023,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 7751869635015921255}
+    m_SelectOnDown: {fileID: 941009059259644154}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1055,14 +1056,14 @@ MonoBehaviour:
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 4
+  m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 1
+  m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 4
+  m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -1078,18 +1079,7 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3806674986425161812}
-        m_MethodName: FieldSelected
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: TMPro.TMP_InputField+SelectionEvent, Unity.TextMeshPro, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_OnDeselect:
@@ -1862,6 +1852,21 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 7947817859405599634}
+    - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 7751869635015921255}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -1894,6 +1899,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
+--- !u!114 &941009059259644154 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+    type: 3}
+  m_PrefabInstance: {fileID: 637079747505828373}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &941009059259644148 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 421225547485825761, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
@@ -2025,7 +2042,7 @@ PrefabInstance:
     - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
@@ -2239,7 +2256,7 @@ PrefabInstance:
     - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
@@ -2310,12 +2327,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
---- !u!224 &7751869635015921257 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 421225547485825761, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
-    type: 3}
-  m_PrefabInstance: {fileID: 7947817859994125448}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7751869635015921255 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 421225547485825775, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
@@ -2328,3 +2339,9 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &7751869635015921257 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 421225547485825761, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7947817859994125448}
+  m_PrefabAsset: {fileID: 0}

@@ -1,4 +1,5 @@
-﻿using Networking;
+﻿using Game;
+using Networking;
 using UnityEngine;
 
 namespace UI
@@ -19,6 +20,8 @@ namespace UI
             
             serverMenu.MenuClient = (MenuClient) networkManager.Client;
             serverMenu.onJoin.AddListener(StartClient);
+
+            GameInput.MouseLocked = false;
         }
 
         public void OnJoin()

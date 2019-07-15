@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace UI
@@ -14,6 +15,8 @@ namespace UI
         public Slider musicVolumeSlider;
         public string soundVolumeParameter;
         public Slider soundVolumeSlider;
+
+        public GameObject firstSelected;
 
         private void Start()
         {
@@ -39,6 +42,14 @@ namespace UI
                 soundVolumeSlider.value = DecibelToLinear(value);
                 soundVolumeSlider.onValueChanged.AddListener(OnSoundVolumeChanged);
             }
+        }
+
+        private void OnEnable()
+        {
+            var es = FindObjectOfType<EventSystem>();
+            if (!es || !firstSelected) return;
+
+            es.SetSelectedGameObject(firstSelected);
         }
 
         public void OnClickOk()

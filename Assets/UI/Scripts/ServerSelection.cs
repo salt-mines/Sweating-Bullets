@@ -6,6 +6,7 @@ using Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace UI
@@ -20,6 +21,8 @@ namespace UI
         public TMP_InputField inputField;
         public TextMeshProUGUI statusText;
         public ScrollRect serverList;
+
+        public GameObject firstSelected;
 
         public RectTransform serverInfoPrefab;
 
@@ -40,8 +43,18 @@ namespace UI
 
         private void Start()
         {
+            inputField.onSelect.AddListener(FieldSelected);
+
             if (onJoin == null)
                 onJoin = new JoinEvent();
+        }
+
+        private void OnEnable()
+        {
+            var es = FindObjectOfType<EventSystem>();
+            if (!es || !firstSelected) return;
+
+            es.SetSelectedGameObject(firstSelected);
         }
 
         private void Update()
