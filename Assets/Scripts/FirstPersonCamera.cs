@@ -7,7 +7,7 @@ public class FirstPersonCamera : MonoBehaviour
 
     private Vector2 viewAngles = Vector2.zero;
 
-    private void Start()
+    private void Awake()
     {
         player = transform.parent;
     }
