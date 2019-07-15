@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 targetMovement = Vector3.zero;
 
+    private bool hitCeiling;
+
     #endregion
 
     #region Components
@@ -54,11 +56,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (characterController.isGrounded && velocity.y <= 0)
         {
+            hitCeiling = false;
+
             velocity.x = targetMovement.x;
             velocity.z = targetMovement.z;
 
             if (playerInput.Jump)
                 velocity.y = jumpSpeed;
+        }
+
+        if (!hitCeiling && characterController.collisionFlags.HasFlag(CollisionFlags.Above))
+        {
+            hitCeiling = true;
+            velocity.y = 0;
         }
 
         if (!characterController.isGrounded)
