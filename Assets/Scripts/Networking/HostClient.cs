@@ -57,7 +57,7 @@ namespace Networking
 
             if (ply == null) return;
 
-            Server.OnPlayerMove(ply.Id, ply.CreateMove());
+            Server.OnPlayerMove(ply.Id, ply.GetState());
         }
 
         public override void PlayerShoot(byte targetId)

@@ -62,6 +62,7 @@ namespace Game
 
                 velocity.x = targetMovement.x;
                 velocity.z = targetMovement.z;
+                velocity.y = 0;
 
                 if (gameInput.Jump)
                     velocity.y = jumpSpeed;

@@ -109,7 +109,7 @@ namespace Networking
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
-            Send(ply.CreateMove(), NetDeliveryMethod.UnreliableSequenced);
+            Send(ply.GetState(), NetDeliveryMethod.UnreliableSequenced);
         }
 
         public override void PlayerShoot(byte targetId)

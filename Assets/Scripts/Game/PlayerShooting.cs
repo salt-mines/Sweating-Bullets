@@ -9,7 +9,7 @@ namespace Game
 
         public float range = 100f;
         public float rateOfFire = 1f;
-        
+
         public LineRenderer linePrefab;
         public Weapon weapon;
 
@@ -20,7 +20,7 @@ namespace Game
         private Camera fpsCamera;
 
         private float timeToFire;
-        
+
         private readonly Vector3[] linePoints = new Vector3[2];
 
         // Start is called before the first frame update
@@ -62,7 +62,7 @@ namespace Game
 
             if (hit.transform.gameObject.layer != 9) return;
 
-            var targetNetPlayer = hit.transform.gameObject.GetComponent<NetworkPlayer>();
+            var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
             if (targetNetPlayer)
                 player.Shoot(targetNetPlayer);
         }

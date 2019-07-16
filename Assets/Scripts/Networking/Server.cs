@@ -266,7 +266,7 @@ namespace Networking
             switch (type)
             {
                 case PacketType.PlayerMove:
-                    OnPlayerMove(sender, PlayerMove.Read(msg));
+                    OnPlayerMove(sender, PlayerState.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
                     OnPlayerShoot(sender, PlayerShoot.Read(msg));
@@ -274,9 +274,9 @@ namespace Networking
             }
         }
 
-        internal void OnPlayerMove(byte sender, PlayerMove packet)
+        internal void OnPlayerMove(byte sender, PlayerState packet)
         {
-            Players[sender]?.SetFromPacket(packet);
+            Players[sender]?.SetFromState(packet);
         }
 
         public void OnPlayerShoot(byte sender, PlayerShoot packet)

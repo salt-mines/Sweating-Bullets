@@ -114,48 +114,6 @@ namespace Networking.Packets
         }
     }
 
-    public struct PlayerMove : IPacket
-    {
-        public PacketType Type => PacketType.PlayerMove;
-
-        public byte playerId;
-
-        public Vector3 position;
-        public Quaternion rotation;
-
-        public bool alive;
-
-        public static PlayerMove Read(NetIncomingMessage msg)
-        {
-            return new PlayerMove
-            {
-                playerId = msg.ReadByte(),
-                position = new Vector3(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()),
-                rotation = new Quaternion(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()),
-                alive = msg.ReadBoolean()
-            };
-        }
-
-        public void Write(NetOutgoingMessage msg)
-        {
-            Write(msg, playerId, position, rotation, alive);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
-            Quaternion rotation, bool alive)
-        {
-            msg.Write(playerId);
-            msg.Write(position.x);
-            msg.Write(position.y);
-            msg.Write(position.z);
-            msg.Write(rotation.x);
-            msg.Write(rotation.y);
-            msg.Write(rotation.z);
-            msg.Write(rotation.w);
-            msg.Write(alive);
-        }
-    }
-
     public struct PlayerShoot : IPacket
     {
         public PacketType Type => PacketType.PlayerShoot;

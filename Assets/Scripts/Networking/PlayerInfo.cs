@@ -20,7 +20,10 @@ namespace Networking
 
         public byte Id { get; }
 
+        public string Name { get; set; }
+
         public Vector3 Position { get; set; } = Vector3.zero;
+        public Vector3 Velocity { get; set; } = Vector3.zero;
         public Quaternion Rotation { get; set; } = Quaternion.identity;
 
         public bool Alive { get; set; } = true;
@@ -36,6 +39,7 @@ namespace Networking
             {
                 playerId = Id,
                 position = Position,
+                velocity = Velocity,
                 rotation = Rotation,
                 alive = Alive
             };
@@ -44,26 +48,9 @@ namespace Networking
         public void SetFromState(PlayerState state)
         {
             Position = state.position;
+            Velocity = state.velocity;
             Rotation = state.rotation;
             Alive = state.alive;
-        }
-        
-        public PlayerMove CreateMove()
-        {
-            return new PlayerMove
-            {
-                playerId = Id,
-                position = Position,
-                rotation = Rotation,
-                alive = Alive
-            };
-        }
-
-        public void SetFromPacket(PlayerMove packet)
-        {
-            Position = packet.position;
-            Rotation = packet.rotation;
-            Alive = packet.alive;
         }
     }
 }
