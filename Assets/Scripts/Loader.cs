@@ -159,10 +159,9 @@ public class Loader : MonoBehaviour
             return;
         }
 
-        if (isMainMenu) return;
-
-        // Set the actual level as active
         SceneManager.SetActiveScene(scene);
+
+        if (isMainMenu) return;
 
         LevelLoaded?.Invoke(this, scene.name);
     }
