@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Networking;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class NetworkManager : MonoBehaviour
     [Header("Shared")]
     public NetworkPlayer networkPlayerPrefab;
 
-    public NetworkMode mode = NetworkMode.ListenServer;
+    [FormerlySerializedAs("mode")]
+    public NetworkMode networkMode = NetworkMode.ListenServer;
 
     [Range(1, 240)]
     [Tooltip("How many updates per second to process")]
@@ -46,25 +48,26 @@ public class NetworkManager : MonoBehaviour
     #region Class variables
 
     private Loader Loader { get; set; }
-    public string Level { get; set; }
     public Client Client { get; private set; }
     public Server Server { get; private set; }
+    
+    public ServerConfig ServerConfig { get; set; }
 
     public NetworkMode Mode
     {
-        get => mode;
-        set => mode = value;
+        get => networkMode;
+        set => networkMode = value;
     }
 
     #endregion
 
     #region Unity events
 
-    public void StartNet(Loader loader, NetworkMode mode, IPEndPoint host = null)
+    public void StartNet(Loader loader, NetworkMode netMode, IPEndPoint host = null)
     {
         if (Client != null || Server != null) return;
 
-        Mode = mode;
+        Mode = netMode;
 
         if (Application.isBatchMode)
         {
@@ -77,7 +80,7 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("Starting in mode: " + Mode);
 
         if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
-            Server = new Server(Constants.MaxPlayers, Loader)
+            Server = new Server(ServerConfig, Loader)
             {
                 NetworkManager = this,
                 TickRate = tickRate,

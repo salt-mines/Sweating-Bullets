@@ -23,9 +23,9 @@ public class Loader : MonoBehaviour
     [SerializeField]
     public List<SceneReference> availableLevels = new List<SceneReference>();
 
-    private bool awoken;
     private bool isCommonLoaded;
     private Scene preloadedScene;
+    private ServerConfig serverConfig;
 
     public LevelManager LevelManager { get; private set; }
 
@@ -36,10 +36,7 @@ public class Loader : MonoBehaviour
 
     private void Awake()
     {
-        if (awoken) return;
-
         SceneManager.sceneLoaded += OnSceneLoaded;
-        awoken = true;
 
         LevelManager = new LevelManager(availableLevels);
         LevelManager.LevelChanging += LevelChanging;
@@ -89,12 +86,11 @@ public class Loader : MonoBehaviour
     ///     Load common game scene, optionally with the given starting level.
     /// </summary>
     /// <param name="startingLevel">optional starting level</param>
-    public void StartGame(string startingLevel = null)
+    public void StartGame(ServerConfig serverConfig = null)
     {
         if (isCommonLoaded) return;
 
-        if (startingLevel != null)
-            LevelManager.StartingLevel = startingLevel;
+        this.serverConfig = serverConfig;
 
         StartCoroutine(UnloadAndLoadAsync(mainMenuScene, gameScene));
         isCommonLoaded = true;
@@ -155,7 +151,7 @@ public class Loader : MonoBehaviour
         {
             var nm = FindObjectOfType<NetworkManager>();
 
-            nm.Level = LevelManager.StartingLevel;
+            nm.ServerConfig = serverConfig;
             nm.StartNet(this, NetworkMode, ServerAddress);
 
             if (nm.Client is NetworkClient nc) nc.StatusChanged += OnNetworkStatus;

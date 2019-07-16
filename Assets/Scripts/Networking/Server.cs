@@ -12,19 +12,20 @@ namespace Networking
         private float nextSend;
         private float nextTick;
 
-        public Server(byte maxPlayers, Loader loader)
+        public Server(ServerConfig config, Loader loader)
         {
-            MaxPlayerCount = maxPlayers;
-            Players = new PlayerInfo[maxPlayers];
-            WorldState = new PlayerState?[maxPlayers];
+            MaxPlayerCount = config.MaxPlayerCount;
+            Players = new PlayerInfo[MaxPlayerCount];
+            WorldState = new PlayerState?[MaxPlayerCount];
 
             Loader = loader;
             LevelManager = loader.LevelManager;
+            LevelManager.StartingLevel = config.StartingLevel;
 
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
                 Port = Constants.AppPort,
-                MaximumConnections = maxPlayers,
+                MaximumConnections = MaxPlayerCount,
 #if UNITY_EDITOR
                 ConnectionTimeout = 600
 #endif

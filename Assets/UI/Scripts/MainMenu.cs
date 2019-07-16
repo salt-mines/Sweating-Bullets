@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using System;
+using Game;
 using Networking;
 using UnityEngine;
 
@@ -8,25 +9,29 @@ namespace UI
     {
         public OptionsMenu optionsMenu;
         public ServerSelection serverMenu;
+        public HostGameDialog hostGameDialog;
 
         private Loader loader;
         private NetworkManager networkManager;
 
-        private void Start()
+        private void Awake()
         {
             loader = FindObjectOfType<Loader>();
             networkManager = FindObjectOfType<NetworkManager>();
+
+            hostGameDialog.LevelManager = loader.LevelManager;
+        }
+
+        private void Start()
+        {
             networkManager.StartNet(loader, NetworkManager.NetworkMode.MenuClient);
 
             serverMenu.MenuClient = (MenuClient) networkManager.Client;
+            
+            hostGameDialog.onHostGame.AddListener(StartHost);
             serverMenu.onJoin.AddListener(StartClient);
 
             GameInput.MouseLocked = false;
-        }
-
-        public void OnJoin()
-        {
-            serverMenu.gameObject.SetActive(true);
         }
 
         private void StartClient(ServerInfo info)
@@ -36,18 +41,28 @@ namespace UI
             loader.StartGame();
         }
 
-        public void OnHost()
+        private void StartHost(ServerConfig config)
         {
             loader.NetworkMode = NetworkManager.NetworkMode.ListenServer;
-            loader.StartGame(loader.LevelManager.AvailableLevels[0]);
+            loader.StartGame(config);
         }
 
-        public void OnOptions()
+        public void OnClickJoin()
+        {
+            serverMenu.gameObject.SetActive(true);
+        }
+        
+        public void OnClickHost()
+        {
+            hostGameDialog.gameObject.SetActive(true);
+        }
+
+        public void OnClickOptions()
         {
             optionsMenu.gameObject.SetActive(true);
         }
 
-        public void OnQuit()
+        public void OnClickQuit()
         {
             Application.Quit();
         }

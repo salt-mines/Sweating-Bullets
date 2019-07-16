@@ -5,7 +5,7 @@
         public const int AppPort = 13456;
         public const string AppName = "saltfps";
 
-        public const int MaxPlayers = 8;
+        public const byte MaxPlayers = 8;
 
         public const int TickRate = 64;
         public const int SendRate = 32;
