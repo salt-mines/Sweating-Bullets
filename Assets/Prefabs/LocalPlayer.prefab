@@ -310,6 +310,7 @@ GameObject:
   - component: {fileID: 558453926996941829}
   - component: {fileID: 7552002768477837027}
   - component: {fileID: 4587515195910316148}
+  - component: {fileID: 1770701234570907816}
   m_Layer: 8
   m_Name: Camera - View Model
   m_TagString: Untagged
@@ -390,7 +391,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 558453926996941829}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 256
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 1
   antialiasingMode: 0
@@ -435,6 +436,23 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1770701234570907816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6908000367216697610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: 63a0732b2571b3848a698b9fd90ddbdb, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 1
 --- !u!1001 &346983408756166908
 PrefabInstance:
   m_ObjectHideFlags: 0

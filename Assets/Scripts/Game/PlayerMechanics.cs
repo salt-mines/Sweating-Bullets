@@ -29,7 +29,7 @@ namespace Game
             playerCamera = GetComponentInChildren<FirstPersonCamera>();
 
             if (!spawnPoints)
-                spawnPoints = GameObject.Find("Spawnpoints");
+                spawnPoints = FindObjectOfType<LevelInfo>().spawnPointParent;
 
             spawnPointList = new GameObject[spawnPoints.transform.childCount];
 
