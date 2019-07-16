@@ -17,7 +17,7 @@ namespace UI
             loader = FindObjectOfType<Loader>();
             networkManager = FindObjectOfType<NetworkManager>();
             networkManager.StartNet(loader, NetworkManager.NetworkMode.MenuClient);
-            
+
             serverMenu.MenuClient = (MenuClient) networkManager.Client;
             serverMenu.onJoin.AddListener(StartClient);
 

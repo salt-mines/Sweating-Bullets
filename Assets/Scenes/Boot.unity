@@ -503,8 +503,6 @@ MonoBehaviour:
   availableLevels:
   - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
     scenePath: Assets/Scenes/Levels/Level1.unity
-  - sceneAsset: {fileID: 102900000, guid: 634734a89fc9e5448a843723b716bfc4, type: 3}
-    scenePath: Assets/Scenes/Levels/Test2.unity
   - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     scenePath: Assets/Scenes/Levels/Test.unity
 --- !u!224 &1656213143 stripped
