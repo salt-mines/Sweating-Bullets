@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using Lidgren.Network;
+using NaughtyAttributes;
 using Networking;
 using UI;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class Loader : MonoBehaviour
     [Tooltip("Scene containing common gameplay objects.")]
     public SceneReference gameScene;
 
+    [ReorderableList]
     [SerializeField]
     public List<SceneReference> availableLevels = new List<SceneReference>();
 
