@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using System.Collections.Generic;
+using Lidgren.Network;
 using UnityEngine;
 
 namespace Networking.Packets
@@ -6,6 +7,7 @@ namespace Networking.Packets
     public enum PacketType : byte
     {
         Connected = 0,
+        PlayerExtraInfo = 5,
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerMove = 12,
@@ -41,14 +43,26 @@ namespace Networking.Packets
 
         public string levelName;
 
+        public List<PlayerConnected> currentPlayers;
+
         public static Connected Read(NetIncomingMessage msg)
         {
             return new Connected
             {
                 playerId = msg.ReadByte(),
                 maxPlayers = msg.ReadByte(),
-                levelName = msg.ReadString()
+                levelName = msg.ReadString(),
+                currentPlayers = ReadPlayerList(msg)
             };
+        }
+
+        private static List<PlayerConnected> ReadPlayerList(NetIncomingMessage msg)
+        {
+            var length = msg.ReadByte();
+            var list = new List<PlayerConnected>(length);
+            for (var i = 0; i < length; i++)
+                list.Add(PlayerConnected.Read(msg));
+            return list;
         }
 
         public void Write(NetOutgoingMessage msg)
@@ -56,6 +70,32 @@ namespace Networking.Packets
             msg.Write(playerId);
             msg.Write(maxPlayers);
             msg.Write(levelName);
+
+            msg.Write((byte) currentPlayers.Count);
+            foreach (var pl in currentPlayers)
+            {
+                pl.Write(msg);
+            }
+        }
+    }
+    
+    public struct PlayerExtraInfo : IPacket
+    {
+        public PacketType Type => PacketType.PlayerExtraInfo;
+
+        public string name;
+
+        public static PlayerExtraInfo Read(NetIncomingMessage msg)
+        {
+            return new PlayerExtraInfo
+            {
+                name = msg.ReadString()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write(name);
         }
     }
 
@@ -64,18 +104,21 @@ namespace Networking.Packets
         public PacketType Type => PacketType.PlayerConnected;
 
         public byte playerId;
+        public PlayerExtraInfo extraInfo;
 
         public static PlayerConnected Read(NetIncomingMessage msg)
         {
             return new PlayerConnected
             {
-                playerId = msg.ReadByte()
+                playerId = msg.ReadByte(),
+                extraInfo = PlayerExtraInfo.Read(msg)
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
             msg.Write(playerId);
+            extraInfo.Write(msg);
         }
     }
 

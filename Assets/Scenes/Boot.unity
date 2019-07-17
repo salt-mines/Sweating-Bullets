@@ -502,10 +502,10 @@ MonoBehaviour:
     sceneAsset: {fileID: 102900000, guid: 6e3a4e3ad2ccad744a0041ea79fa5059, type: 3}
     scenePath: Assets/Scenes/Game.unity
   availableLevels:
-  - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
-    scenePath: Assets/Scenes/Levels/Level1.unity
   - sceneAsset: {fileID: 102900000, guid: eeb9f19b011bbc549b87d2cf5726a9b8, type: 3}
     scenePath: Assets/Scenes/Levels/Arena Factory.unity
+  - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
+    scenePath: Assets/Scenes/Levels/Level1.unity
   - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     scenePath: Assets/Scenes/Levels/Test.unity
 --- !u!114 &1425483753

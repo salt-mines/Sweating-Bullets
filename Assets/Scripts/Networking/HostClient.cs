@@ -19,8 +19,9 @@ namespace Networking
         private void LevelLoaded(string level)
         {
             var ply = Server.CreatePlayer(true);
-            InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level);
+            InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
+            Server.ReceivePlayerInfo(ply.Id, "Boof");
             Loaded = true;
         }
 
@@ -43,6 +44,7 @@ namespace Networking
             {
                 wasAlive = false;
                 Players[PlayerId.Value].PlayerObject.Kill();
+                UnityEngine.Debug.Log("Death!");
             }
             else if (Server.Players[PlayerId.Value].Alive)
             {
@@ -63,6 +65,8 @@ namespace Networking
         public override void PlayerShoot(byte targetId)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
+            
             Server.OnPlayerShoot(PlayerId.Value, new PlayerShoot
             {
                 shooterId = PlayerId.Value,

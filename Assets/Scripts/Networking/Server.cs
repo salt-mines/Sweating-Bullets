@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -245,6 +246,26 @@ namespace Networking
             }
         }
 
+        internal List<PlayerConnected> BuildPlayerList(byte? excludeId = null)
+        {
+            var list = new List<PlayerConnected>(Players.Length);
+            foreach (var pl in Players)
+            {
+                if (pl == null || excludeId == pl.Id) continue;
+                
+                list.Add(new PlayerConnected
+                {
+                    playerId = pl.Id,
+                    extraInfo = new PlayerExtraInfo
+                    {
+                        name = pl.Name
+                    }
+                });
+            }
+
+            return list;
+        }
+
         private void OnPlayerConnected(NetConnection connection)
         {
             var player = CreatePlayer(false, null, connection);
@@ -255,7 +276,8 @@ namespace Networking
             {
                 playerId = player.Id,
                 maxPlayers = MaxPlayerCount,
-                levelName = Level
+                levelName = Level,
+                currentPlayers = BuildPlayerList(player.Id)
             }, player.Connection, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -275,6 +297,9 @@ namespace Networking
 
             switch (type)
             {
+                case PacketType.PlayerExtraInfo:
+                    ReceivePlayerInfo(sender, PlayerExtraInfo.Read(msg).name);
+                    break;
                 case PacketType.PlayerMove:
                     OnPlayerMove(sender, PlayerState.Read(msg));
                     break;
@@ -282,6 +307,19 @@ namespace Networking
                     OnPlayerShoot(sender, PlayerShoot.Read(msg));
                     break;
             }
+        }
+
+        internal void ReceivePlayerInfo(byte sender, string name)
+        {
+            var ply = Players[sender];
+            if (ply == null)
+            {
+                Debug.LogWarning("Received SendPlayerInfo without player existing");
+                return;
+            }
+            
+            Debug.Log($"Setting player {sender}'s name to '{name}'");
+            ply.Name = name;
         }
 
         internal void OnPlayerMove(byte sender, PlayerState packet)

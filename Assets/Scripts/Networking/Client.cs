@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Networking.Packets;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
@@ -64,16 +65,24 @@ namespace Networking
 
         protected void InitializeFromServer(Connected packet)
         {
-            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName);
+            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers);
         }
 
-        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level)
+        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level, List<PlayerConnected> currentPlayers)
         {
             UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
             MaxPlayers = maxPlayers;
             Players = new PlayerInfo[maxPlayers];
             PlayerId = playerId;
+
+            UnityEngine.Debug.Log("Received player list");
+            foreach (var pl in currentPlayers)
+            {
+                var p = CreatePlayer(pl.playerId);
+                p.Name = pl.extraInfo.name;
+                UnityEngine.Debug.Log($"Id: {p.Id}; Name: {p.Name}");
+            }
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)

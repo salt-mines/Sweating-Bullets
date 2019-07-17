@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -14,9 +15,9 @@ namespace Networking
         {
             Loader = loader;
             LevelManager = Loader.LevelManager;
-            
+
             Loader.LevelLoaded += (o, s) => LevelLoaded(s);
-            
+
             client = new NetClient(new NetPeerConfiguration(Constants.AppName)
             {
 #if UNITY_EDITOR
@@ -26,7 +27,7 @@ namespace Networking
 
             client.Start();
         }
-        
+
         private Loader Loader { get; }
         private LevelManager LevelManager { get; }
 
@@ -44,9 +45,10 @@ namespace Networking
             base.Shutdown();
         }
 
-        protected override void InitializeFromServer(byte playerId, byte maxPlayers, string level)
+        protected override void InitializeFromServer(byte playerId, byte maxPlayers, string level,
+            List<PlayerConnected> currentPlayers)
         {
-            base.InitializeFromServer(playerId, maxPlayers, level);
+            base.InitializeFromServer(playerId, maxPlayers, level, currentPlayers);
 
             LevelManager.ChangeLevel(level);
         }
@@ -115,6 +117,8 @@ namespace Networking
         public override void PlayerShoot(byte targetId)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
+
             Send(new PlayerShoot
             {
                 shooterId = PlayerId.Value,
@@ -124,11 +128,21 @@ namespace Networking
 
         private void OnStatusMessage(NetIncomingMessage msg)
         {
+            var status = (NetConnectionStatus) msg.ReadByte();
+            var reason = msg.ReadString();
+
             StatusChanged?.Invoke(this, new StatusChangeEvent
             {
-                Status = (NetConnectionStatus) msg.ReadByte(),
-                Reason = msg.ReadString()
+                Status = status,
+                Reason = reason
             });
+
+            if (status != NetConnectionStatus.Connected) return;
+
+            Send(new PlayerExtraInfo
+            {
+                name = "Foob"
+            }, NetDeliveryMethod.ReliableUnordered);
         }
 
         private void OnDataMessage(NetIncomingMessage msg)
@@ -160,7 +174,11 @@ namespace Networking
         private void OnPlayerDeath(PlayerDeath packet)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            if (packet.playerId == PlayerId.Value) Players[PlayerId.Value].PlayerObject.Kill();
+            if (packet.playerId == PlayerId.Value)
+            {
+                Players[PlayerId.Value].PlayerObject.Kill();
+                UnityEngine.Debug.Log("Death!");
+            }
 
             UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
         }
