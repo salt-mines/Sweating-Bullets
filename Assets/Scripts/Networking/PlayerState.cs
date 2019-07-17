@@ -47,12 +47,6 @@ namespace Networking
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId, position, velocity, rotation, teleported, alive);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId, Vector3 position,
-            Vector3 velocity, Quaternion rotation, bool teleported, bool alive)
-        {
             msg.Write(playerId);
             BufferUtils.Write(msg, position);
             BufferUtils.Write(msg, velocity);

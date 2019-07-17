@@ -53,11 +53,6 @@ namespace Networking.Packets
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId, maxPlayers, levelName);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId, byte maxPlayers, string levelName)
-        {
             msg.Write(playerId);
             msg.Write(maxPlayers);
             msg.Write(levelName);
@@ -80,11 +75,6 @@ namespace Networking.Packets
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, playerId);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId)
-        {
             msg.Write(playerId);
         }
     }
@@ -104,11 +94,6 @@ namespace Networking.Packets
         }
 
         public void Write(NetOutgoingMessage msg)
-        {
-            Write(msg, playerId);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId)
         {
             msg.Write(playerId);
         }
@@ -132,12 +117,7 @@ namespace Networking.Packets
 
         public void Write(NetOutgoingMessage msg)
         {
-            Write(msg, shooterId, targetId);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId, byte targetId)
-        {
-            msg.Write(playerId);
+            msg.Write(shooterId);
             msg.Write(targetId);
         }
     }
@@ -159,11 +139,6 @@ namespace Networking.Packets
         }
 
         public void Write(NetOutgoingMessage msg)
-        {
-            Write(msg, playerId, killerId);
-        }
-
-        public static void Write(NetOutgoingMessage msg, byte playerId, byte killerId)
         {
             msg.Write(playerId);
             msg.Write(killerId);
@@ -196,11 +171,6 @@ namespace Networking.Packets
         }
 
         public void Write(NetOutgoingMessage msg)
-        {
-            Write(msg, worldState);
-        }
-
-        public static void Write(NetOutgoingMessage msg, PlayerState?[] worldState)
         {
             msg.Write((byte) worldState.Length);
             foreach (var state in worldState)
