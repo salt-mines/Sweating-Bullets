@@ -47,7 +47,7 @@ public class NetworkManager : MonoBehaviour
 
     #region Class variables
 
-    private Loader Loader { get; set; }
+    internal Loader Loader { get; set; }
     public Client Client { get; private set; }
     public Server Server { get; private set; }
     

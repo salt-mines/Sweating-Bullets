@@ -1,5 +1,4 @@
-﻿using System;
-using Game;
+﻿using Game;
 using Networking;
 using UnityEngine;
 
@@ -14,10 +13,22 @@ namespace UI
         private Loader loader;
         private NetworkManager networkManager;
 
+        public Preferences Preferences
+        {
+            get => optionsMenu ? optionsMenu.Preferences : null;
+            set
+            {
+                if (optionsMenu)
+                    optionsMenu.Preferences = value;
+            }
+        }
+
         private void Awake()
         {
             loader = FindObjectOfType<Loader>();
             networkManager = FindObjectOfType<NetworkManager>();
+
+            optionsMenu.preferencesSetter = FindObjectOfType<PreferencesSetter>();
 
             hostGameDialog.LevelManager = loader.LevelManager;
         }

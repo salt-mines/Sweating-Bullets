@@ -141,7 +141,7 @@ namespace Networking
 
             Send(new PlayerExtraInfo
             {
-                name = "Foob"
+                name = Preferences.Name
             }, NetDeliveryMethod.ReliableUnordered);
         }
 

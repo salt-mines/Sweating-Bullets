@@ -11,7 +11,7 @@ namespace Game
 
         private void Start()
         {
-            gameInput = GetComponent<GameInput>();
+            gameInput = FindObjectOfType<GameInput>();
         }
 
         // Update is called once per frame

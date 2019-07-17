@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Audio;
+﻿using System;
+using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -7,41 +8,38 @@ namespace UI
 {
     public class OptionsMenu : MonoBehaviour
     {
-        public AudioMixer audioMixer;
+        public PreferencesSetter preferencesSetter;
 
-        public string masterVolumeParameter;
+        public TMP_InputField nameField;
+        public Slider sensitivitySlider;
+
         public Slider masterVolumeSlider;
-        public string musicVolumeParameter;
         public Slider musicVolumeSlider;
-        public string soundVolumeParameter;
-        public Slider soundVolumeSlider;
+        public Slider effectsVolumeSlider;
 
         public GameObject firstSelected;
 
+        internal Preferences Preferences { get; set; }
+
         private void Start()
         {
-            if (audioMixer == null) return;
+            if (preferencesSetter == null)
+                throw new ArgumentException("OptionsMenu requires AudioPreferencesSetter");
 
-            if (masterVolumeSlider != null && !string.IsNullOrEmpty(masterVolumeParameter))
-            {
-                audioMixer.GetFloat(masterVolumeParameter, out var value);
-                masterVolumeSlider.value = DecibelToLinear(value);
-                masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
-            }
+            masterVolumeSlider.value = Preferences.MasterVolume;
+            masterVolumeSlider.onValueChanged.AddListener(preferencesSetter.SetMasterVolume);
 
-            if (musicVolumeSlider != null && !string.IsNullOrEmpty(musicVolumeParameter))
-            {
-                audioMixer.GetFloat(musicVolumeParameter, out var value);
-                musicVolumeSlider.value = DecibelToLinear(value);
-                musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-            }
+            musicVolumeSlider.value = Preferences.MusicVolume;
+            musicVolumeSlider.onValueChanged.AddListener(preferencesSetter.SetMusicVolume);
 
-            if (soundVolumeSlider != null && !string.IsNullOrEmpty(soundVolumeParameter))
-            {
-                audioMixer.GetFloat(soundVolumeParameter, out var value);
-                soundVolumeSlider.value = DecibelToLinear(value);
-                soundVolumeSlider.onValueChanged.AddListener(OnSoundVolumeChanged);
-            }
+            effectsVolumeSlider.value = Preferences.EffectsVolume;
+            effectsVolumeSlider.onValueChanged.AddListener(preferencesSetter.SetEffectsVolume);
+
+            nameField.text = Preferences.Name;
+            nameField.onEndEdit.AddListener(OnEndTypingName);
+
+            sensitivitySlider.value = Preferences.Sensitivity;
+            sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
         }
 
         private void OnEnable()
@@ -52,37 +50,20 @@ namespace UI
             es.SetSelectedGameObject(firstSelected);
         }
 
+        private void OnEndTypingName(string _)
+        {
+            Preferences.Name = nameField.text;
+        }
+
+        private void OnSensitivityChanged(float _)
+        {
+            preferencesSetter.SetSensitivity(sensitivitySlider.value);
+        }
+
         public void OnClickOk()
         {
+            Preferences.Save();
             gameObject.SetActive(false);
-        }
-
-        private void OnMasterVolumeChanged(float value)
-        {
-            audioMixer.SetFloat(masterVolumeParameter, LinearToDecibel(value));
-        }
-
-        private void OnMusicVolumeChanged(float value)
-        {
-            audioMixer.SetFloat(musicVolumeParameter, LinearToDecibel(value));
-        }
-
-        private void OnSoundVolumeChanged(float value)
-        {
-            audioMixer.SetFloat(soundVolumeParameter, LinearToDecibel(value));
-        }
-
-        private static float DecibelToLinear(float db)
-        {
-            return Mathf.Pow(10.0f, db / 20.0f);
-        }
-
-        private static float LinearToDecibel(float linear)
-        {
-            if (linear == 0f)
-                return -120f;
-
-            return Mathf.Log10(linear) * 20f;
         }
     }
 }

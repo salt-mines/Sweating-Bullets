@@ -27,6 +27,7 @@ public class Loader : MonoBehaviour
     private Scene preloadedScene;
     private ServerConfig serverConfig;
 
+    public Preferences Preferences { get; } = new Preferences();
     public LevelManager LevelManager { get; private set; }
 
     public IPEndPoint ServerAddress { get; set; }
@@ -36,6 +37,10 @@ public class Loader : MonoBehaviour
 
     private void Awake()
     {
+        Preferences.Load();
+
+        GetComponent<PreferencesSetter>().Preferences = Preferences;
+        
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         LevelManager = new LevelManager(availableLevels);
@@ -161,7 +166,11 @@ public class Loader : MonoBehaviour
 
         SceneManager.SetActiveScene(scene);
 
-        if (isMainMenu) return;
+        if (isMainMenu)
+        {
+            FindObjectOfType<MainMenu>().Preferences = Preferences;
+            return;
+        }
 
         LevelLoaded?.Invoke(this, scene.name);
     }

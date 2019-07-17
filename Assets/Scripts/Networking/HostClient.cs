@@ -21,7 +21,7 @@ namespace Networking
             var ply = Server.CreatePlayer(true);
             InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
-            Server.ReceivePlayerInfo(ply.Id, "Boof");
+            Server.ReceivePlayerInfo(ply.Id, Preferences.Name);
             Loaded = true;
         }
 

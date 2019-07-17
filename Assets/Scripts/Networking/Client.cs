@@ -27,6 +27,8 @@ namespace Networking
         public bool Connected => PlayerId.HasValue;
         public bool Loaded { get; protected set; }
 
+        protected Preferences Preferences => NetworkManager.Loader.Preferences;
+
         public void Update()
         {
             var time = Time.time;

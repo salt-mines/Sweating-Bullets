@@ -14,6 +14,11 @@ public class FirstPersonCamera : MonoBehaviour
         player = transform.parent;
     }
 
+    private void Start()
+    {
+        GameInput.MouseLocked = true;
+    }
+
     private void Update()
     {
         viewAngles.x += input.MouseX;

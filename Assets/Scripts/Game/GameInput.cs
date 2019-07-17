@@ -29,11 +29,6 @@ namespace Game
             }
         }
 
-        private void Start()
-        {
-            MouseLocked = true;
-        }
-
         private void Update()
         {
             Cancel = Input.GetButtonDown("Cancel");
