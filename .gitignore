@@ -5,6 +5,16 @@
 [Bb]uilds/
 [Ll]ogs/
 
+# Generated lightmaps
+LightingData.asset
+LightingData.asset.meta
+LightmapSnapshot.asset
+LightmapSnapshot.asset.meta
+Lightmap-*.exr
+Lightmap-*.exr.meta
+Lightmap-*.png
+Lightmap-*.png.meta
+
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
 
