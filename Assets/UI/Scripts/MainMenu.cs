@@ -27,7 +27,7 @@ namespace UI
             networkManager.StartNet(loader, NetworkManager.NetworkMode.MenuClient);
 
             serverMenu.MenuClient = (MenuClient) networkManager.Client;
-            
+
             hostGameDialog.onHostGame.AddListener(StartHost);
             serverMenu.onJoin.AddListener(StartClient);
 
@@ -51,7 +51,7 @@ namespace UI
         {
             serverMenu.gameObject.SetActive(true);
         }
-        
+
         public void OnClickHost()
         {
             hostGameDialog.gameObject.SetActive(true);
