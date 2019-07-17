@@ -14,6 +14,15 @@ namespace Networking
 
         public Server(ServerConfig config, Loader loader)
         {
+            if (config == null)
+            {
+                config = new ServerConfig
+                {
+                    MaxPlayerCount = Constants.MaxPlayers,
+                    StartingLevel = loader.LevelManager.StartingLevel
+                };
+            }
+
             MaxPlayerCount = config.MaxPlayerCount;
             Players = new PlayerInfo[MaxPlayerCount];
             WorldState = new PlayerState?[MaxPlayerCount];
@@ -63,7 +72,7 @@ namespace Networking
         public PlayerState?[] WorldState { get; }
 
         public string Level => LevelManager.CurrentLevel;
-        
+
         public void Update()
         {
             var time = Time.time;

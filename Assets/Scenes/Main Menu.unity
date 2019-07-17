@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -96,7 +96,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 4f5e119de91c2cf4da1e2c99c8d97968,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -287,11 +288,6 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 370311157}
-    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -316,6 +312,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: Options
+      objectReference: {fileID: 0}
+    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
@@ -1092,11 +1093,6 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 1017126186}
-    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_text
@@ -1147,6 +1143,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.pageCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
@@ -2044,11 +2045,6 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
       objectReference: {fileID: 1017126186}
-    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -2078,6 +2074,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontStyle
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
@@ -3542,11 +3543,6 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 1806134611}
-    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_text
@@ -3602,6 +3598,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.pageCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 421225548051296394, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}

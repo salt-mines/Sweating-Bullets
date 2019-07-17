@@ -1986,6 +1986,11 @@ PrefabInstance:
       propertyPath: levelAuthor
       value: pasimakit
       objectReference: {fileID: 0}
+    - target: {fileID: 2168366872810426640, guid: 3f38822dcc26c3c469ab5311af10be31,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f38822dcc26c3c469ab5311af10be31, type: 3}
 --- !u!4 &207598572 stripped
@@ -2044,7 +2049,7 @@ PrefabInstance:
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
