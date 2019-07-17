@@ -96,7 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 112000000, guid: 3d333bde8a6d2b444a15bf2cac6ff18e,
+  m_LightingDataAsset: {fileID: 112000006, guid: e52acfb4419d62c44820e08d08984371,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -505,7 +505,7 @@ MonoBehaviour:
   - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
     scenePath: Assets/Scenes/Levels/Level1.unity
   - sceneAsset: {fileID: 102900000, guid: eeb9f19b011bbc549b87d2cf5726a9b8, type: 3}
-    scenePath: Assets/Scenes/Levels/Level2.unity
+    scenePath: Assets/Scenes/Levels/Arena Factory.unity
   - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     scenePath: Assets/Scenes/Levels/Test.unity
 --- !u!114 &1425483753
