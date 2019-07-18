@@ -525,12 +525,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -2050006980461810219, guid: 30832af2397a5044eb7e497903f6e257,
+    - target: {fileID: 8349005981450364212, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4468850574140991331, guid: 30832af2397a5044eb7e497903f6e257,
         type: 3}
       propertyPath: m_CastShadows
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1651062367082650294, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -2050006980461810219, guid: 30832af2397a5044eb7e497903f6e257,
         type: 3}
       propertyPath: m_CastShadows
       value: 3
@@ -544,11 +554,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4468850574140991331, guid: 30832af2397a5044eb7e497903f6e257,
-        type: 3}
-      propertyPath: m_CastShadows
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6411404458229897551, guid: 30832af2397a5044eb7e497903f6e257,
         type: 3}
@@ -608,6 +613,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 558453926996941829}
     m_Modifications:
+    - target: {fileID: 391039380526803595, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_Name
+      value: Weapon - Pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 391039380526803595, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5349462875122007656, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -648,36 +663,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.w
       value: 0.99986273
       objectReference: {fileID: 0}
-    - target: {fileID: 391039380526803595, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_Name
-      value: Weapon - Pistol
-      objectReference: {fileID: 0}
-    - target: {fileID: 391039380526803595, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5173727144612447216, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5173727144612447216, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_ReceiveShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3994497231103660410, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3994497231103660410, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_ReceiveShadows
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3854567308667328629, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_Layer
@@ -688,12 +673,7 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 8686169091026705745, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1952519729962250061, guid: f4de7a044160e33438afa67c5c3cdbbd,
+    - target: {fileID: 6266983614615430691, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_Layer
       value: 8
@@ -703,20 +683,45 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 6266983614615430691, guid: f4de7a044160e33438afa67c5c3cdbbd,
+    - target: {fileID: 7762193966499872273, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
-      propertyPath: m_Layer
-      value: 8
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7861493498295786958, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7762193966499872273, guid: f4de7a044160e33438afa67c5c3cdbbd,
+    - target: {fileID: 5173727144612447216, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5173727144612447216, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994497231103660410, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994497231103660410, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686169091026705745, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952519729962250061, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
