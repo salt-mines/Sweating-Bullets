@@ -259,11 +259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46638f5b80f9df4d9368865f19be289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnTime: 10
+  spawnTime: 6
   timeSpentDead: 0
   isAlive: 1
-  uiDeadOverlayPrefab: {fileID: 2835313139644790552, guid: a0cc5fb567380414ea7e766d0e92c227,
-    type: 3}
 --- !u!114 &811614654237606861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,7 +282,7 @@ MonoBehaviour:
   linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
     type: 3}
   weapon: {fileID: 3834848118573618154}
-  lineLifetime: 2
+  lineLifetime: 1.2
 --- !u!95 &6988845162436518067
 Animator:
   serializedVersion: 3

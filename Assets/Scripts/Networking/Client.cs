@@ -23,9 +23,14 @@ namespace Networking
         public float Interpolation { get; set; } = Constants.Interpolation;
 
         public byte? PlayerId { get; protected set; }
+        public PlayerInfo LocalPlayer => PlayerId.HasValue ? Players[PlayerId.Value] : null;
 
         public bool Connected => PlayerId.HasValue;
         public bool Loaded { get; protected set; }
+
+        public event EventHandler<PlayerInfo> PlayerJoined;
+        public event EventHandler<PlayerInfo> PlayerLeft;
+        public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
         protected Preferences Preferences => NetworkManager.Loader.Preferences;
 
@@ -70,7 +75,7 @@ namespace Networking
             InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers);
         }
 
-        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level, List<PlayerConnected> currentPlayers)
+        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level, List<PlayerExtraInfo> currentPlayers)
         {
             UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
@@ -82,14 +87,34 @@ namespace Networking
             foreach (var pl in currentPlayers)
             {
                 var p = CreatePlayer(pl.playerId);
-                p.Name = pl.extraInfo.name;
+                OnPlayerSentInfo(pl);
                 UnityEngine.Debug.Log($"Id: {p.Id}; Name: {p.Name}");
             }
+        }
+
+        protected virtual void OnPlayerJoined(PlayerInfo player)
+        {
+            PlayerJoined?.Invoke(this, player);
+        }
+        
+        protected virtual void OnPlayerLeft(PlayerInfo player)
+        {
+            PlayerLeft?.Invoke(this, player);
+        }
+
+        protected virtual void OnPlayerSentInfo(PlayerExtraInfo info)
+        {
+            var pl = Players[info.playerId];
+            if (pl == null) return;
+            pl.Name = info.name;
+            
+            PlayerSentInfo?.Invoke(this, info);
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
         {
             Players[id] = new PlayerInfo(id);
+            OnPlayerJoined(Players[id]);
             return Players[id];
         }
 
@@ -100,6 +125,7 @@ namespace Networking
 
         protected virtual void RemovePlayer(byte id)
         {
+            OnPlayerLeft(Players[id]);
             Players[id] = null;
         }
 
@@ -134,7 +160,7 @@ namespace Networking
                 var ps = worldState[i];
                 if (!ps.HasValue) continue;
 
-                if (Players[i] == null) CreatePlayer(i);
+                if (Players[i] == null) continue;
 
                 // Don't update our own state
                 if (PlayerId.HasValue && i == PlayerId.Value) continue;

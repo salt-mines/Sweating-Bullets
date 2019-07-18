@@ -138,7 +138,7 @@ public class NetworkManager : MonoBehaviour
 
     private void OnGUI()
     {
-        Client?.OnGUI(5, 20);
+        Client?.OnGUI(5, Screen.height - 100);
     }
 
     private void OnDrawGizmos()

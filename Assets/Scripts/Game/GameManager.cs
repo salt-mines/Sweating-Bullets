@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UI;
+using UnityEngine;
 
 namespace Game
 {
@@ -6,6 +7,7 @@ namespace Game
     {
         public bool paused;
         public GameObject pausePanel;
+        public DeadOverlay deadOverlay;
 
         private GameInput gameInput;
 

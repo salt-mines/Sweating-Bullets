@@ -11,7 +11,7 @@ namespace Networking.Packets
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerMove = 12,
-        PlayerShoot = 13,
+        PlayerKill = 13,
         PlayerDeath = 14,
         WorldState = 20
     }
@@ -43,7 +43,7 @@ namespace Networking.Packets
 
         public string levelName;
 
-        public List<PlayerConnected> currentPlayers;
+        public List<PlayerExtraInfo> currentPlayers;
 
         public static Connected Read(NetIncomingMessage msg)
         {
@@ -56,12 +56,12 @@ namespace Networking.Packets
             };
         }
 
-        private static List<PlayerConnected> ReadPlayerList(NetIncomingMessage msg)
+        private static List<PlayerExtraInfo> ReadPlayerList(NetIncomingMessage msg)
         {
             var length = msg.ReadByte();
-            var list = new List<PlayerConnected>(length);
+            var list = new List<PlayerExtraInfo>(length);
             for (var i = 0; i < length; i++)
-                list.Add(PlayerConnected.Read(msg));
+                list.Add(PlayerExtraInfo.Read(msg));
             return list;
         }
 
@@ -83,18 +83,21 @@ namespace Networking.Packets
     {
         public PacketType Type => PacketType.PlayerExtraInfo;
 
+        public byte playerId;
         public string name;
 
         public static PlayerExtraInfo Read(NetIncomingMessage msg)
         {
             return new PlayerExtraInfo
             {
+                playerId = msg.ReadByte(),
                 name = msg.ReadString()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
+            msg.Write(playerId);
             msg.Write(name);
         }
     }
@@ -104,21 +107,18 @@ namespace Networking.Packets
         public PacketType Type => PacketType.PlayerConnected;
 
         public byte playerId;
-        public PlayerExtraInfo extraInfo;
 
         public static PlayerConnected Read(NetIncomingMessage msg)
         {
             return new PlayerConnected
             {
-                playerId = msg.ReadByte(),
-                extraInfo = PlayerExtraInfo.Read(msg)
+                playerId = msg.ReadByte()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
             msg.Write(playerId);
-            extraInfo.Write(msg);
         }
     }
 
@@ -142,25 +142,25 @@ namespace Networking.Packets
         }
     }
 
-    public struct PlayerShoot : IPacket
+    public struct PlayerKill : IPacket
     {
-        public PacketType Type => PacketType.PlayerShoot;
+        public PacketType Type => PacketType.PlayerKill;
 
-        public byte shooterId;
+        public byte killerId;
         public byte targetId;
 
-        public static PlayerShoot Read(NetIncomingMessage msg)
+        public static PlayerKill Read(NetIncomingMessage msg)
         {
-            return new PlayerShoot
+            return new PlayerKill
             {
-                shooterId = msg.ReadByte(),
+                killerId = msg.ReadByte(),
                 targetId = msg.ReadByte()
             };
         }
 
         public void Write(NetOutgoingMessage msg)
         {
-            msg.Write(shooterId);
+            msg.Write(killerId);
             msg.Write(targetId);
         }
     }

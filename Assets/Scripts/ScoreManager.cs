@@ -1,110 +1,55 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Networking;
+using Networking.Packets;
+using UI;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public GameObject[] playerList;
-    private List <Player> playerListD;
+    public ScoreRow scoreRowPrefab;
 
-    public TextMeshProUGUI[] playerNamesTMP;
-    public TextMeshProUGUI[] playerPointsTMP;
+    public LayoutGroup playerList;
 
-    public GameObject UIScorePrefab;
+    private NetworkManager networkManager;
 
-    
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        PlayerJoin();
-        SetPlayerNames();
-        UpdateScoreText();
+        networkManager = FindObjectOfType<NetworkManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        var cl = networkManager.Client;
+        if (cl == null) return;
+
+        cl.PlayerJoined += (sender, info) => { AddPlayer(info); };
+        cl.PlayerLeft += (sender, info) => { RemovePlayer(info.Id); };
+        cl.PlayerSentInfo += (sender, info) => { UpdatePlayer(info); };
+
+        if (cl.LocalPlayer != null) AddPlayer(cl.LocalPlayer);
     }
 
-    public void PlayerJoin()
+    public void AddPlayer(PlayerInfo player)
     {
-        //playerList = GameObject.FindGameObjectsWithTag("Player");
-        //playerListD.Add(new Player());
+        Debug.Log($"AddPlayer {player}");
+        var row = Instantiate(scoreRowPrefab.gameObject, playerList.transform);
+        row.GetComponent<ScoreRow>().PlayerInfo = player;
     }
 
-    public void UpdateScoreText()
+    public void RemovePlayer(byte id)
     {
-//        for(int i = 0; i < playerList.Length; i++)
-//        {
-//            playerPointsTMP[i].text = playerList[i].GetComponent<PlayerMechanics>().points.ToString();
-//        }
+        foreach (RectTransform tr in playerList.transform)
+            if (tr.GetComponent<ScoreRow>().PlayerInfo.Id == id)
+                Destroy(tr.gameObject);
     }
 
-    private void SetPlayerNames()
+    public void UpdatePlayer(PlayerExtraInfo info)
     {
-//        for (int i = 0; i < playerList.Length; i++)
-//        {
-//            playerNamesTMP[i].text = "P" + (i+1);
-//        }
-    }
-    public enum Points
-    {
-        Kill,
-        Death
-    }
-    internal class Score
-    {
-        private readonly Dictionary<Points, int> points = new Dictionary<Points, int>();
-
-        public Score()
+        foreach (RectTransform tr in playerList.transform)
         {
-            foreach (Points point in Enum.GetValues(typeof(Points)))
-            {
-                points.Add(point, 0);
-            }
-        }
-        public int getTypeOfScore(Points point)
-        {
-            return points[point];
-        }
-        public void increaseTypeOfScore(Points point, int amount = 1)
-        {
-            points[point] += amount;
-        }
-    }
-
-    internal class Player
-    {
-        public string Name { get; set; }
-        public Score Score { get; set; }
-
-        public Player(string name = "Anonymous")
-        {
-            Name = name;
-            Score = new Score();
-        }
-
-        public int getTypeOfScore(Points point)
-        {
-            return Score.getTypeOfScore(point);
-        }
-
-        public void changeScore(Points point, int amount)
-        {
-            Score.increaseTypeOfScore(point, amount);
-        }
-
-        public void Death()
-        {
-            Score.increaseTypeOfScore(Points.Death);
-        }
-        public void Kill()
-        {
-            Score.increaseTypeOfScore(Points.Kill);
+            var player = tr.GetComponent<ScoreRow>();
+            if (player && player.PlayerInfo.Id == info.playerId)
+                player.UpdateName(info.name);
         }
     }
 }

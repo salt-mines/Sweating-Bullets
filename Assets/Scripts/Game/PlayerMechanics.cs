@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UI;
+using UnityEngine;
 
 namespace Game
 {
@@ -17,9 +18,7 @@ namespace Game
         private FirstPersonCamera playerCamera;
         private GameObject[] spawnPointList;
 
-        public GameObject uiDeadOverlayPrefab;
-
-        private GameObject uiDeadOverlay;
+        private DeadOverlay uiDeadOverlay;
 
         // Start is called before the first frame update
         private void Start()
@@ -27,6 +26,8 @@ namespace Game
             characterController = GetComponent<CharacterController>();
             playerMovement = GetComponent<PlayerMovement>();
             playerCamera = GetComponentInChildren<FirstPersonCamera>();
+
+            uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
 
             if (!spawnPoints)
                 spawnPoints = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
@@ -70,8 +71,8 @@ namespace Game
                 else
                     child.gameObject.SetActive(false);
 
-            if (uiDeadOverlayPrefab && !uiDeadOverlay)
-                uiDeadOverlay = Instantiate(uiDeadOverlayPrefab, GameObject.FindWithTag("Canvas").transform);
+            if (uiDeadOverlay)
+                uiDeadOverlay.gameObject.SetActive(true);
         }
 
         public void RespawnPlayer()
@@ -93,7 +94,7 @@ namespace Game
             characterController.enabled = true;
 
             if (uiDeadOverlay)
-                Destroy(uiDeadOverlay);
+                uiDeadOverlay.gameObject.SetActive(false);
         }
     }
 }

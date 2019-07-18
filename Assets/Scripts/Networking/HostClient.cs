@@ -1,27 +1,55 @@
 ﻿using Networking.Packets;
 using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
     internal sealed class HostClient : Client
     {
-        private bool wasAlive = true;
-
         internal HostClient(Server server)
         {
             Server = server;
             Server.Loader.LevelLoaded += (o, s) => LevelLoaded(s);
+            Server.PlayerJoined += OnPlayerJoined;
+            Server.PlayerLeft += OnPlayerLeft;
+            Server.PlayerSentInfo += OnPlayerSentInfo;
+            Server.PlayerDied += OnPlayerDeath;
         }
 
         private Server Server { get; }
 
+        private void OnPlayerJoined(object sender, PlayerInfo player)
+        {
+            var p = CreatePlayer(player.Id);
+            Debug.Log($"Id: {p.Id} joined");
+        }
+        
+        private void OnPlayerLeft(object sender, PlayerInfo player)
+        {
+            RemovePlayer(player.Id);
+        }
+        
+        private void OnPlayerSentInfo(object sender, PlayerExtraInfo info)
+        {
+            OnPlayerSentInfo(info);
+        }
+
+        private void OnPlayerDeath(object sender, PlayerDeath death)
+        {
+            if (!PlayerId.HasValue || death.playerId != PlayerId) return;
+
+            Players[death.playerId].PlayerObject.Kill();
+            Debug.Log("Death!");
+        }
+
         private void LevelLoaded(string level)
         {
             var ply = Server.CreatePlayer(true);
+            
             InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
-            Server.ReceivePlayerInfo(ply.Id, Preferences.Name);
+            var info = new PlayerExtraInfo {name = Preferences.Name};
+            Server.ReceivePlayerInfo(ply.Id, info);
+            OnPlayerSentInfo(info);
             Loaded = true;
         }
 
@@ -37,24 +65,11 @@ namespace Networking
         protected override void ProcessMessages()
         {
             AddWorldState(Server.WorldState);
-
-            if (!PlayerId.HasValue) return;
-
-            if (!Server.Players[PlayerId.Value].Alive && wasAlive)
-            {
-                wasAlive = false;
-                Players[PlayerId.Value].PlayerObject.Kill();
-                UnityEngine.Debug.Log("Death!");
-            }
-            else if (Server.Players[PlayerId.Value].Alive)
-            {
-                wasAlive = true;
-            }
         }
 
         protected override void SendState()
         {
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             var ply = Players[PlayerId.Value];
 
             if (ply == null) return;
@@ -64,12 +79,12 @@ namespace Networking
 
         public override void PlayerShoot(byte targetId)
         {
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
-            
-            Server.OnPlayerShoot(PlayerId.Value, new PlayerShoot
+            System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            Debug.LogFormat("Shooting Player {0}", targetId);
+
+            Server.OnPlayerKill(PlayerId.Value, new PlayerKill
             {
-                shooterId = PlayerId.Value,
+                killerId = PlayerId.Value,
                 targetId = targetId
             });
         }

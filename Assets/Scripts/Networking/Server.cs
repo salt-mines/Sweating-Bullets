@@ -16,13 +16,11 @@ namespace Networking
         public Server(ServerConfig config, Loader loader)
         {
             if (config == null)
-            {
                 config = new ServerConfig
                 {
                     MaxPlayerCount = Constants.MaxPlayers,
                     StartingLevel = loader.LevelManager.StartingLevel
                 };
-            }
 
             MaxPlayerCount = config.MaxPlayerCount;
             Players = new PlayerInfo[MaxPlayerCount];
@@ -74,6 +72,14 @@ namespace Networking
 
         public string Level => LevelManager.CurrentLevel;
 
+        public event EventHandler<PlayerInfo> PlayerJoined;
+        public event EventHandler<PlayerInfo> PlayerLeft;
+
+        public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
+
+        public event EventHandler<PlayerDeath> PlayerDied;
+        public event EventHandler<PlayerInfo> PlayerRespawned;
+
         public void Update()
         {
             var time = Time.time;
@@ -112,10 +118,6 @@ namespace Networking
         {
             server.Shutdown("Bye");
         }
-
-        #region Gameplay methods
-
-        #endregion
 
         #region Player methods
 
@@ -246,20 +248,17 @@ namespace Networking
             }
         }
 
-        internal List<PlayerConnected> BuildPlayerList(byte? excludeId = null)
+        internal List<PlayerExtraInfo> BuildPlayerList(byte? excludeId = null)
         {
-            var list = new List<PlayerConnected>(Players.Length);
+            var list = new List<PlayerExtraInfo>(Players.Length);
             foreach (var pl in Players)
             {
                 if (pl == null || excludeId == pl.Id) continue;
-                
-                list.Add(new PlayerConnected
+
+                list.Add(new PlayerExtraInfo
                 {
                     playerId = pl.Id,
-                    extraInfo = new PlayerExtraInfo
-                    {
-                        name = pl.Name
-                    }
+                    name = pl.Name
                 });
             }
 
@@ -272,6 +271,8 @@ namespace Networking
 
             Debug.LogFormat("Conn [{0}]: {1}", "Server", player.Id);
 
+            PlayerJoined?.Invoke(this, player);
+
             SendToOne(new Connected
             {
                 playerId = player.Id,
@@ -279,11 +280,18 @@ namespace Networking
                 levelName = Level,
                 currentPlayers = BuildPlayerList(player.Id)
             }, player.Connection, NetDeliveryMethod.ReliableUnordered);
+
+            SendToAll(new PlayerConnected
+            {
+                playerId = player.Id
+            }, NetDeliveryMethod.ReliableUnordered);
         }
 
         private void OnPlayerDisconnected(PlayerInfo player)
         {
             Debug.LogFormat("DC [{0}]: {1}", "Server", player.Id);
+
+            PlayerLeft?.Invoke(this, player);
 
             SendToAll(new PlayerDisconnected {playerId = player.Id}, NetDeliveryMethod.ReliableUnordered);
 
@@ -298,18 +306,18 @@ namespace Networking
             switch (type)
             {
                 case PacketType.PlayerExtraInfo:
-                    ReceivePlayerInfo(sender, PlayerExtraInfo.Read(msg).name);
+                    ReceivePlayerInfo(sender, PlayerExtraInfo.Read(msg));
                     break;
                 case PacketType.PlayerMove:
                     OnPlayerMove(sender, PlayerState.Read(msg));
                     break;
-                case PacketType.PlayerShoot:
-                    OnPlayerShoot(sender, PlayerShoot.Read(msg));
+                case PacketType.PlayerKill:
+                    OnPlayerKill(sender, PlayerKill.Read(msg));
                     break;
             }
         }
 
-        internal void ReceivePlayerInfo(byte sender, string name)
+        internal void ReceivePlayerInfo(byte sender, PlayerExtraInfo packet)
         {
             var ply = Players[sender];
             if (ply == null)
@@ -317,9 +325,19 @@ namespace Networking
                 Debug.LogWarning("Received SendPlayerInfo without player existing");
                 return;
             }
+
+            Debug.Log($"Setting player {sender}'s name to '{packet.name}'");
+            ply.Name = packet.name;
+
+            var newPacket = new PlayerExtraInfo
+            {
+                playerId = ply.Id,
+                name = ply.Name
+            };
             
-            Debug.Log($"Setting player {sender}'s name to '{name}'");
-            ply.Name = name;
+            SendToAll(newPacket, NetDeliveryMethod.ReliableUnordered);
+
+            PlayerSentInfo?.Invoke(this, newPacket);
         }
 
         internal void OnPlayerMove(byte sender, PlayerState packet)
@@ -327,18 +345,21 @@ namespace Networking
             Players[sender]?.SetFromState(packet);
         }
 
-        public void OnPlayerShoot(byte sender, PlayerShoot packet)
+        public void OnPlayerKill(byte sender, PlayerKill packet)
         {
             if (Players[sender] == null || Players[packet.targetId] == null)
                 return;
 
             Players[packet.targetId].Alive = false;
 
-            SendToAll(new PlayerDeath
+            var death = new PlayerDeath
             {
                 playerId = packet.targetId,
                 killerId = sender
-            }, NetDeliveryMethod.ReliableUnordered);
+            };
+            SendToAll(death, NetDeliveryMethod.ReliableUnordered);
+
+            PlayerDied?.Invoke(this, death);
         }
 
         #endregion

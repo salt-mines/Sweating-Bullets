@@ -53,5 +53,10 @@ namespace Networking
             ViewAngles = state.viewAngles;
             Alive = state.alive;
         }
+
+        public override string ToString()
+        {
+            return $"Player[{Id}] {{ {Name}; {(Alive ? "Alive" : "Dead")} }}";
+        }
     }
 }
