@@ -2,6 +2,7 @@
 using Networking;
 using UnityEngine;
 using UnityEngine.Serialization;
+using NetworkPlayer = Game.NetworkPlayer;
 
 public class NetworkManager : MonoBehaviour
 {

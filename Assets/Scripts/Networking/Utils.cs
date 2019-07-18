@@ -5,6 +5,12 @@ namespace Networking
 {
     public static class BufferUtils
     {
+        public static void Write(NetBuffer buf, Vector2 vec)
+        {
+            buf.Write(vec.x);
+            buf.Write(vec.y);
+        }
+
         public static void Write(NetBuffer buf, Vector3 vec)
         {
             buf.Write(vec.x);
@@ -18,6 +24,11 @@ namespace Networking
             buf.Write(quaternion.y);
             buf.Write(quaternion.z);
             buf.Write(quaternion.w);
+        }
+
+        public static Vector2 ReadVector2(NetBuffer buf)
+        {
+            return new Vector2(buf.ReadFloat(), buf.ReadFloat());
         }
 
         public static Vector3 ReadVector3(NetBuffer buf)
