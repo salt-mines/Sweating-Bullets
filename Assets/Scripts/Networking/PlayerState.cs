@@ -37,9 +37,9 @@ namespace Networking
             return new PlayerState
             {
                 playerId = msg.ReadByte(),
-                position = BufferUtils.ReadVector3(msg),
-                velocity = BufferUtils.ReadVector3(msg),
-                viewAngles = BufferUtils.ReadVector2(msg),
+                position = msg.ReadVector3(),
+                velocity = msg.ReadVector3(),
+                viewAngles = msg.ReadVector2(),
                 teleported = msg.ReadBoolean(),
                 alive = msg.ReadBoolean()
             };
@@ -48,9 +48,9 @@ namespace Networking
         public void Write(NetOutgoingMessage msg)
         {
             msg.Write(playerId);
-            BufferUtils.Write(msg, position);
-            BufferUtils.Write(msg, velocity);
-            BufferUtils.Write(msg, viewAngles);
+            msg.Write(position);
+            msg.Write(velocity);
+            msg.Write(viewAngles);
             msg.Write(teleported);
             msg.Write(alive);
         }
