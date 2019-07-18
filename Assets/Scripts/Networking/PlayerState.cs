@@ -12,7 +12,7 @@ namespace Networking
 
         public Vector3 position;
         public Vector3 velocity;
-        public Quaternion rotation;
+        public Vector2 viewAngles;
 
         public bool teleported;
         public bool alive;
@@ -27,7 +27,7 @@ namespace Networking
                 playerId = s0.playerId,
                 position = Vector3.Lerp(s0.position, s1.position, ratio),
                 velocity = Vector3.Lerp(s0.velocity, s1.velocity, ratio),
-                rotation = Quaternion.Lerp(s0.rotation, s1.rotation, ratio),
+                viewAngles = Vector2.Lerp(s0.viewAngles, s1.viewAngles, ratio),
                 alive = s0.alive && s1.alive
             };
         }
@@ -39,7 +39,7 @@ namespace Networking
                 playerId = msg.ReadByte(),
                 position = BufferUtils.ReadVector3(msg),
                 velocity = BufferUtils.ReadVector3(msg),
-                rotation = BufferUtils.ReadQuaternion(msg),
+                viewAngles = BufferUtils.ReadVector2(msg),
                 teleported = msg.ReadBoolean(),
                 alive = msg.ReadBoolean()
             };
@@ -50,7 +50,7 @@ namespace Networking
             msg.Write(playerId);
             BufferUtils.Write(msg, position);
             BufferUtils.Write(msg, velocity);
-            BufferUtils.Write(msg, rotation);
+            BufferUtils.Write(msg, viewAngles);
             msg.Write(teleported);
             msg.Write(alive);
         }

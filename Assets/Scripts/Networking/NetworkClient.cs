@@ -197,7 +197,7 @@ namespace Networking
             {
                 var ply = Players[PlayerId.Value];
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Pos: {ply.Position}");
-                GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.Rotation.eulerAngles}");
+                GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.ViewAngles}");
             }
         }
 

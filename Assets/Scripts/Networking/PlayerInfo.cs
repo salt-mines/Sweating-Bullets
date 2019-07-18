@@ -2,6 +2,7 @@
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
+using NetworkPlayer = Game.NetworkPlayer;
 
 namespace Networking
 {
@@ -24,7 +25,7 @@ namespace Networking
 
         public Vector3 Position { get; set; } = Vector3.zero;
         public Vector3 Velocity { get; set; } = Vector3.zero;
-        public Quaternion Rotation { get; set; } = Quaternion.identity;
+        public Vector2 ViewAngles { get; set; } = Vector2.zero;
 
         public bool Alive { get; set; } = true;
 
@@ -40,7 +41,7 @@ namespace Networking
                 playerId = Id,
                 position = Position,
                 velocity = Velocity,
-                rotation = Rotation,
+                viewAngles = ViewAngles,
                 alive = Alive
             };
         }
@@ -49,7 +50,7 @@ namespace Networking
         {
             Position = state.position;
             Velocity = state.velocity;
-            Rotation = state.rotation;
+            ViewAngles = state.viewAngles;
             Alive = state.alive;
         }
     }
