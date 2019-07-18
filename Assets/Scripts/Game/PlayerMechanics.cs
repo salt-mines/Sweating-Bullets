@@ -5,7 +5,7 @@ namespace Game
     [RequireComponent(typeof(CharacterController), typeof(PlayerMovement))]
     public class PlayerMechanics : MonoBehaviour
     {
-        private GameObject spawnPoints;
+        private Transform spawnPoints;
 
         public float spawnTime = 10f;
         public float timeSpentDead;
@@ -29,12 +29,17 @@ namespace Game
             playerCamera = GetComponentInChildren<FirstPersonCamera>();
 
             if (!spawnPoints)
-                spawnPoints = FindObjectOfType<LevelInfo>().spawnPointParent;
+                spawnPoints = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
 
-            spawnPointList = new GameObject[spawnPoints.transform.childCount];
+            spawnPointList = new GameObject[spawnPoints.childCount];
 
-            for (var i = 0; i < spawnPoints.transform.childCount; i++)
-                spawnPointList[i] = spawnPoints.transform.GetChild(i).gameObject;
+            for (var i = 0; i < spawnPoints.childCount; i++)
+            {
+                var spawn = spawnPoints.GetChild(i).gameObject;
+                if (!spawn.CompareTag("Respawn")) continue;
+
+                spawnPointList[i] = spawn;
+            }
 
             RespawnPlayer();
         }

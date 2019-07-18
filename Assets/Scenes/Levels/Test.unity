@@ -292,7 +292,7 @@ PrefabInstance:
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
@@ -361,7 +361,7 @@ PrefabInstance:
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
@@ -521,7 +521,7 @@ PrefabInstance:
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
@@ -708,11 +708,6 @@ PrefabInstance:
       propertyPath: spectatorCamera
       value: 
       objectReference: {fileID: 1891818771}
-    - target: {fileID: 5912618148743326997, guid: 3f38822dcc26c3c469ab5311af10be31,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 259669040983421779, guid: 3f38822dcc26c3c469ab5311af10be31,
         type: 3}
       propertyPath: m_Enabled
@@ -728,11 +723,16 @@ PrefabInstance:
       propertyPath: isGlobal
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5912618148743326997, guid: 3f38822dcc26c3c469ab5311af10be31,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f38822dcc26c3c469ab5311af10be31, type: 3}
 --- !u!4 &1320030157 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4335431541874025848, guid: 3f38822dcc26c3c469ab5311af10be31,
+  m_CorrespondingSourceObject: {fileID: 996768337202125180, guid: 3f38822dcc26c3c469ab5311af10be31,
     type: 3}
   m_PrefabInstance: {fileID: 1320030156}
   m_PrefabAsset: {fileID: 0}
@@ -969,7 +969,7 @@ PrefabInstance:
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7447938484682416201, guid: 6424c3e9f939808458571cd40bc16723,
         type: 3}
