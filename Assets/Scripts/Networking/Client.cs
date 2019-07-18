@@ -32,6 +32,9 @@ namespace Networking
         public event EventHandler<PlayerInfo> PlayerLeft;
         public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
+        public event EventHandler<PlayerInfo> OwnKill;
+        public event EventHandler<PlayerDeath> PlayerDeath;
+
         protected Preferences Preferences => NetworkManager.Loader.Preferences;
 
         public void Update()
@@ -129,8 +132,26 @@ namespace Networking
             Players[id] = null;
         }
 
+        public virtual void OnPlayerDeath(PlayerDeath packet)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            if (packet.playerId == PlayerId.Value)
+            {
+                Players[PlayerId.Value].PlayerObject.Kill();
+                UnityEngine.Debug.Log("Death!");
+            }
+
+            UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
+            
+            PlayerDeath?.Invoke(this, packet);
+        }
+
         public abstract void PlayerShoot(Vector3 from, Vector3 to);
-        public abstract void PlayerKill(byte targetId);
+
+        public virtual void PlayerKill(byte targetId)
+        {
+            OwnKill?.Invoke(this, Players[targetId]);
+        }
 
         internal virtual void OnGUI(float x, float y)
         {

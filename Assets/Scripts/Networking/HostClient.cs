@@ -37,10 +37,7 @@ namespace Networking
 
         private void OnPlayerDeath(object sender, PlayerDeath death)
         {
-            if (!PlayerId.HasValue || death.playerId != PlayerId) return;
-
-            Players[death.playerId].PlayerObject.Kill();
-            Debug.Log("Death!");
+            OnPlayerDeath(death);
         }
 
         private void OnPlayerShoot(object sender, PlayerShoot shot)
@@ -67,7 +64,7 @@ namespace Networking
             var ply = base.CreatePlayer(id, local);
             ply.PlayerObject = Server.Players[id].PlayerObject;
             ply.PlayerObject.PlayerInfo = ply;
-            ply.PlayerObject.NetworkClient = this;
+            ply.PlayerObject.Client = this;
             return ply;
         }
 
@@ -99,6 +96,8 @@ namespace Networking
 
         public override void PlayerKill(byte targetId)
         {
+            base.PlayerKill(targetId);
+            
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Debug.LogFormat("Shooting Player {0}", targetId);
 

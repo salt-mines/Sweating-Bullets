@@ -24,7 +24,7 @@ namespace Game
 
         public PlayerInfo PlayerInfo { get; internal set; }
 
-        public Client NetworkClient { get; set; }
+        public Client Client { get; set; }
 
         public bool IsLocalPlayer
         {
@@ -90,12 +90,12 @@ namespace Game
 
         public void Shoot(Vector3 from, Vector3 to)
         {
-            NetworkClient.PlayerShoot(from, to);
+            Client.PlayerShoot(from, to);
         }
 
         public void Kill(NetworkPlayer target)
         {
-            NetworkClient.PlayerKill(target.Id);
+            Client.PlayerKill(target.Id);
         }
     }
 }

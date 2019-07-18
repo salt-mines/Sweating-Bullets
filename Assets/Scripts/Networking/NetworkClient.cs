@@ -137,6 +137,8 @@ namespace Networking
 
         public override void PlayerKill(byte targetId)
         {
+            base.PlayerKill(targetId);
+            
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
 
@@ -181,7 +183,7 @@ namespace Networking
                     AddWorldState(WorldState.Read(msg).worldState);
                     break;
                 case PacketType.PlayerDeath:
-                    ReceivedPlayerDeath(PlayerDeath.Read(msg));
+                    ReceivedPlayerDeath(Packets.PlayerDeath.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
                     ReceivedPlayerShoot(Packets.PlayerShoot.Read(msg));
@@ -209,14 +211,7 @@ namespace Networking
 
         private void ReceivedPlayerDeath(PlayerDeath packet)
         {
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            if (packet.playerId == PlayerId.Value)
-            {
-                Players[PlayerId.Value].PlayerObject.Kill();
-                UnityEngine.Debug.Log("Death!");
-            }
-
-            UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
+            OnPlayerDeath(packet);
         }
 
         private void ReceivedPlayerShoot(PlayerShoot packet)

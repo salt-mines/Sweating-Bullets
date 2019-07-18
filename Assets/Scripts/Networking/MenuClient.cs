@@ -72,10 +72,6 @@ namespace Networking
         {
         }
 
-        public override void PlayerKill(byte targetId)
-        {
-        }
-
         internal override void OnDrawGizmos()
         {
         }
