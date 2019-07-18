@@ -58,7 +58,7 @@ LightmapSettings:
     m_Resolution: 2
     m_BakeResolution: 40
     m_AtlasSize: 1024
-    m_AO: 0
+    m_AO: 1
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
     m_CompAOExponentDirect: 0
@@ -96,7 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 112000000, guid: 27100c98b034f254fa52b4cf182dfbea,
+  m_LightingDataAsset: {fileID: 112000000, guid: 695bc4b5f34bead419a932786583ab54,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -1054,7 +1054,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh33916
+  m_Name: pb_Mesh123382
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2771,7 +2771,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh33988
+  m_Name: pb_Mesh123452
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7754,7 +7754,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh34084
+  m_Name: pb_Mesh123548
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12170,7 +12170,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh34042
+  m_Name: pb_Mesh123506
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -16641,7 +16641,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh34028
+  m_Name: pb_Mesh123492
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

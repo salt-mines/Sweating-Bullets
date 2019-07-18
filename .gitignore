@@ -12,6 +12,8 @@ LightmapSnapshot.asset
 LightmapSnapshot.asset.meta
 Lightmap-*.exr
 Lightmap-*.exr.meta
+ReflectionProbe-*.exr
+ReflectionProbe-*.exr.meta
 Lightmap-*.png
 Lightmap-*.png.meta
 
