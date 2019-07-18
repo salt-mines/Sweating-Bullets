@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -123,7 +124,18 @@ namespace Networking
             Send(ply.GetState(), NetDeliveryMethod.UnreliableSequenced);
         }
 
-        public override void PlayerShoot(byte targetId)
+        public override void PlayerShoot(Vector3 from, Vector3 to)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            Send(new PlayerShoot
+            {
+                playerId = PlayerId.Value,
+                from = from,
+                to = to
+            }, NetDeliveryMethod.ReliableUnordered);
+        }
+
+        public override void PlayerKill(byte targetId)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
@@ -171,6 +183,9 @@ namespace Networking
                 case PacketType.PlayerDeath:
                     ReceivedPlayerDeath(PlayerDeath.Read(msg));
                     break;
+                case PacketType.PlayerShoot:
+                    ReceivedPlayerShoot(Packets.PlayerShoot.Read(msg));
+                    break;
             }
         }
         
@@ -202,6 +217,13 @@ namespace Networking
             }
 
             UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
+        }
+
+        private void ReceivedPlayerShoot(PlayerShoot packet)
+        {
+            if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
+
+            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().SpawnLine(packet.from, packet.to);
         }
 
         internal override void OnGUI(float x, float y)

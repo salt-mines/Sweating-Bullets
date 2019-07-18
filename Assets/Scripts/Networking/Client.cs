@@ -129,7 +129,8 @@ namespace Networking
             Players[id] = null;
         }
 
-        public abstract void PlayerShoot(byte targetId);
+        public abstract void PlayerShoot(Vector3 from, Vector3 to);
+        public abstract void PlayerKill(byte targetId);
 
         internal virtual void OnGUI(float x, float y)
         {

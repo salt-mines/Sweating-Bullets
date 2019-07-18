@@ -88,9 +88,14 @@ namespace Game
             GetComponent<PlayerMechanics>()?.Kill();
         }
 
-        public void Shoot(NetworkPlayer target)
+        public void Shoot(Vector3 from, Vector3 to)
         {
-            NetworkClient.PlayerShoot(target.Id);
+            NetworkClient.PlayerShoot(from, to);
+        }
+
+        public void Kill(NetworkPlayer target)
+        {
+            NetworkClient.PlayerKill(target.Id);
         }
     }
 }

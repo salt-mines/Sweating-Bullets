@@ -13,6 +13,7 @@ namespace Networking.Packets
         PlayerMove = 12,
         PlayerKill = 13,
         PlayerDeath = 14,
+        PlayerShoot = 15,
         WorldState = 20
     }
 
@@ -185,6 +186,32 @@ namespace Networking.Packets
         {
             msg.Write(playerId);
             msg.Write(killerId);
+        }
+    }
+    
+    public struct PlayerShoot : IPacket
+    {
+        public PacketType Type => PacketType.PlayerShoot;
+
+        public byte playerId;
+        public Vector3 from;
+        public Vector3 to;
+
+        public static PlayerShoot Read(NetIncomingMessage msg)
+        {
+            return new PlayerShoot
+            {
+                playerId = msg.ReadByte(),
+                from = msg.ReadVector3(),
+                to = msg.ReadVector3()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write(playerId);
+            msg.Write(from);
+            msg.Write(to);
         }
     }
 

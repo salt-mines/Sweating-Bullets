@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using Lidgren.Network;
 using Networking.Packets;
+using UnityEngine;
 
 namespace Networking
 {
@@ -67,7 +68,11 @@ namespace Networking
         {
         }
 
-        public override void PlayerShoot(byte targetId)
+        public override void PlayerShoot(Vector3 @from, Vector3 to)
+        {
+        }
+
+        public override void PlayerKill(byte targetId)
         {
         }
 

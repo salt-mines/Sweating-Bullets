@@ -282,7 +282,7 @@ MonoBehaviour:
   linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
     type: 3}
   weapon: {fileID: 3834848118573618154}
-  lineLifetime: 1.2
+  lineLifetime: 1
 --- !u!95 &6988845162436518067
 Animator:
   serializedVersion: 3
@@ -523,6 +523,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -111590980385802690, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7419355716805590760, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1667740906679987919, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6614004187992654117, guid: 30832af2397a5044eb7e497903f6e257,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8349005981450364212, guid: 30832af2397a5044eb7e497903f6e257,
         type: 3}
       propertyPath: m_CastShadows
@@ -561,26 +581,6 @@ PrefabInstance:
     - target: {fileID: 6411404458229897551, guid: 30832af2397a5044eb7e497903f6e257,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -111590980385802690, guid: 30832af2397a5044eb7e497903f6e257,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7419355716805590760, guid: 30832af2397a5044eb7e497903f6e257,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1667740906679987919, guid: 30832af2397a5044eb7e497903f6e257,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6614004187992654117, guid: 30832af2397a5044eb7e497903f6e257,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -671,15 +671,35 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 449045867664619635, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6266983614615430691, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 449045867664619635, guid: f4de7a044160e33438afa67c5c3cdbbd,
+    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
-      propertyPath: m_Layer
-      value: 8
+      propertyPath: m_TranslationAtRest.x
+      value: 0.14381568
+      objectReference: {fileID: 0}
+    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_TranslationAtRest.y
+      value: -0.20800006
+      objectReference: {fileID: 0}
+    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_TranslationAtRest.z
+      value: 0.39304668
+      objectReference: {fileID: 0}
+    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
+        type: 3}
+      propertyPath: m_RotationAtRest.y
+      value: -1.8990029
       objectReference: {fileID: 0}
     - target: {fileID: 7762193966499872273, guid: f4de7a044160e33438afa67c5c3cdbbd,
         type: 3}
@@ -720,26 +740,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_TranslationAtRest.x
-      value: 0.14381568
-      objectReference: {fileID: 0}
-    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_TranslationAtRest.y
-      value: -0.20800006
-      objectReference: {fileID: 0}
-    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_TranslationAtRest.z
-      value: 0.39304668
-      objectReference: {fileID: 0}
-    - target: {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd,
-        type: 3}
-      propertyPath: m_RotationAtRest.y
-      value: -1.8990029
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4528500791454038485, guid: f4de7a044160e33438afa67c5c3cdbbd, type: 3}

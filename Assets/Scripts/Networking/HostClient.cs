@@ -1,4 +1,5 @@
-﻿using Networking.Packets;
+﻿using Game;
+using Networking.Packets;
 using UnityEngine;
 
 namespace Networking
@@ -13,6 +14,7 @@ namespace Networking
             Server.PlayerLeft += OnPlayerLeft;
             Server.PlayerSentInfo += OnPlayerSentInfo;
             Server.PlayerDied += OnPlayerDeath;
+            Server.PlayerShot += OnPlayerShoot;
         }
 
         private Server Server { get; }
@@ -39,6 +41,13 @@ namespace Networking
 
             Players[death.playerId].PlayerObject.Kill();
             Debug.Log("Death!");
+        }
+
+        private void OnPlayerShoot(object sender, PlayerShoot shot)
+        {
+            if (Players == null || LocalPlayer == null || shot.playerId == PlayerId) return;
+            
+            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().SpawnLine(shot.from, shot.to);
         }
 
         private void LevelLoaded(string level)
@@ -77,7 +86,18 @@ namespace Networking
             Server.OnPlayerMove(ply.Id, ply.GetState());
         }
 
-        public override void PlayerShoot(byte targetId)
+        public override void PlayerShoot(Vector3 from, Vector3 to)
+        {
+            System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            Server.OnPlayerShoot(PlayerId.Value, new PlayerShoot
+            {
+                playerId = PlayerId.Value,
+                from = from,
+                to = to
+            });
+        }
+
+        public override void PlayerKill(byte targetId)
         {
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Debug.LogFormat("Shooting Player {0}", targetId);

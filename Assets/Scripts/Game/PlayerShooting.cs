@@ -55,19 +55,21 @@ namespace Game
                 hittableMask))
             {
                 SpawnLine(weapon.barrelPoint.position, to * range);
+                player.Shoot(weapon.barrelPoint.position, to * range);
                 return;
             }
 
             SpawnLine(weapon.barrelPoint.position, hit.point);
+            player.Shoot(weapon.barrelPoint.position, hit.point);
 
             if (hit.transform.gameObject.layer != 9) return;
 
             var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
             if (targetNetPlayer)
-                player.Shoot(targetNetPlayer);
+                player.Kill(targetNetPlayer);
         }
 
-        private void SpawnLine(Vector3 from, Vector3 to)
+        internal void SpawnLine(Vector3 from, Vector3 to)
         {
             var line = Instantiate(linePrefab);
 

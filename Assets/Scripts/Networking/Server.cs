@@ -80,6 +80,8 @@ namespace Networking
         public event EventHandler<PlayerDeath> PlayerDied;
         public event EventHandler<PlayerInfo> PlayerRespawned;
 
+        public event EventHandler<PlayerShoot> PlayerShot;
+
         public void Update()
         {
             var time = Time.time;
@@ -314,6 +316,9 @@ namespace Networking
                 case PacketType.PlayerKill:
                     OnPlayerKill(sender, PlayerKill.Read(msg));
                     break;
+                case PacketType.PlayerShoot:
+                    OnPlayerShoot(sender, PlayerShoot.Read(msg));
+                    break;
             }
         }
 
@@ -343,6 +348,22 @@ namespace Networking
         internal void OnPlayerMove(byte sender, PlayerState packet)
         {
             Players[sender]?.SetFromState(packet);
+        }
+
+        internal void OnPlayerShoot(byte sender, PlayerShoot packet)
+        {
+            if (Players[sender] == null)
+                return;
+
+            var shot = new PlayerShoot
+            {
+                playerId = sender,
+                from = packet.from,
+                to = packet.to
+            };
+            SendToAll(shot, NetDeliveryMethod.ReliableUnordered);
+
+            PlayerShot?.Invoke(this, shot);
         }
 
         public void OnPlayerKill(byte sender, PlayerKill packet)
