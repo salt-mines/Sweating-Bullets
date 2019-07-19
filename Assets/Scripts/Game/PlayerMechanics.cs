@@ -1,4 +1,6 @@
-﻿using UI;
+﻿using System.Collections.Generic;
+using NaughtyAttributes;
+using UI;
 using UnityEngine;
 
 namespace Game
@@ -11,6 +13,9 @@ namespace Game
         public float spawnTime = 10f;
         public float timeSpentDead;
 
+        [ReorderableList]
+        public List<GameObject> disableOnDeath;
+
         public bool isAlive = true;
 
         private CharacterController characterController;
@@ -20,7 +25,6 @@ namespace Game
 
         private DeadOverlay uiDeadOverlay;
 
-        // Start is called before the first frame update
         private void Start()
         {
             characterController = GetComponent<CharacterController>();
@@ -45,7 +49,6 @@ namespace Game
             RespawnPlayer();
         }
 
-        // Update is called once per frame
         private void Update()
         {
             if (!isAlive) timeSpentDead += Time.deltaTime;
@@ -64,12 +67,9 @@ namespace Game
 
             characterController.enabled = false;
             playerMovement.enabled = false;
-            foreach (Transform child in transform)
-                if (child.gameObject.CompareTag("MainCamera"))
-                    foreach (Transform cameraChild in child.transform)
-                        cameraChild.gameObject.SetActive(false);
-                else
-                    child.gameObject.SetActive(false);
+
+            foreach (var go in disableOnDeath)
+                go.SetActive(false);
 
             if (uiDeadOverlay)
                 uiDeadOverlay.gameObject.SetActive(true);
@@ -84,12 +84,8 @@ namespace Game
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             playerCamera.SetAngles(new Vector2(spawnPoint.transform.rotation.eulerAngles.y, 0));
 
-            foreach (Transform child in transform)
-            {
-                foreach (Transform cameraChild in child.transform) cameraChild.gameObject.SetActive(true);
-
-                child.gameObject.SetActive(true);
-            }
+            foreach (var go in disableOnDeath)
+                go.SetActive(true);
 
             characterController.enabled = true;
 
