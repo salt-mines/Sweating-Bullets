@@ -4,7 +4,7 @@ namespace Game
 {
     public class GameInput : MonoBehaviour
     {
-        public float mouseSensitivity = 0.1f;
+        public float mouseSensitivity = 6f;
 
         public float Forward { get; private set; }
         public float Strafe { get; private set; }

@@ -10,7 +10,7 @@ public class PreferencesSetter : MonoBehaviour
     public string masterVolumeParameter;
     public string musicVolumeParameter;
     public string effectsVolumeParameter;
-    
+
     internal Preferences Preferences { get; set; }
 
     private void Start()
@@ -25,6 +25,8 @@ public class PreferencesSetter : MonoBehaviour
         SetMasterVolume(Preferences.MasterVolume);
         SetMusicVolume(Preferences.MusicVolume);
         SetEffectsVolume(Preferences.EffectsVolume);
+
+        SetSensitivity(Preferences.Sensitivity);
     }
 
     public void SetSensitivity(float value)

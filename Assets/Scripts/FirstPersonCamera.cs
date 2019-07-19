@@ -22,8 +22,8 @@ public class FirstPersonCamera : MonoBehaviour
 
     private void Update()
     {
-        viewAngles.x += input.MouseX;
-        viewAngles.y = Mathf.Clamp(viewAngles.y - input.MouseY, -89.99f, 89.99f);
+        viewAngles.x += input.MouseX * Time.deltaTime;
+        viewAngles.y = Mathf.Clamp(viewAngles.y - input.MouseY * Time.deltaTime, -89.99f, 89.99f);
 
         player.localRotation = Quaternion.AngleAxis(viewAngles.x, Vector3.up);
         transform.localRotation = Quaternion.AngleAxis(viewAngles.y, Vector3.right);

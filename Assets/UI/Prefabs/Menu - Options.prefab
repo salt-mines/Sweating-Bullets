@@ -2316,7 +2316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ff181136b2ad64fbf4237728e08d80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioPreferencesSetter: {fileID: 0}
+  preferencesSetter: {fileID: 0}
   nameField: {fileID: 6509091870025873075}
   sensitivitySlider: {fileID: 6625409015797927046}
   masterVolumeSlider: {fileID: 2970221941497889972}
@@ -3607,12 +3607,12 @@ PrefabInstance:
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_MinValue
-      value: 0.01
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_MaxValue
-      value: 2
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
@@ -3627,7 +3627,7 @@ PrefabInstance:
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
