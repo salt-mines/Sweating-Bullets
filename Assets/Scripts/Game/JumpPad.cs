@@ -10,7 +10,7 @@ namespace Game
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.gameObject.CompareTag("Player")) return;
+            if (!other.gameObject.CompareTag(Tags.Player)) return;
 
             var pm = other.gameObject.GetComponent<PlayerMovement>();
             if (!pm) return;

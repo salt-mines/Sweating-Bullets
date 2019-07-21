@@ -917,7 +917,7 @@ GameObject:
   - component: {fileID: 1054361872}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Canvas
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1034,6 +1034,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406293147012526567, guid: a0cc5fb567380414ea7e766d0e92c227,
+        type: 3}
+      propertyPath: respawnTime
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2835313139644790553, guid: a0cc5fb567380414ea7e766d0e92c227,
         type: 3}
@@ -1159,11 +1164,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.pageCount
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4406293147012526567, guid: a0cc5fb567380414ea7e766d0e92c227,
-        type: 3}
-      propertyPath: respawnTime
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0cc5fb567380414ea7e766d0e92c227, type: 3}

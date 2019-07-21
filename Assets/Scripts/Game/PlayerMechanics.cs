@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UI;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -18,11 +20,12 @@ namespace Game
         private NetworkPlayer networkPlayer;
         private CharacterController characterController;
         private PlayerMovement playerMovement;
-        private FirstPersonCamera playerCamera;
-        private GameObject[] spawnPointList;
+        
+        private readonly List<SpawnPoint> spawnPointList = new List<SpawnPoint>(8);
+        private readonly List<SpawnPoint> freeSpawnPoints = new List<SpawnPoint>(8);
 
         private DeadOverlay uiDeadOverlay;
-        private Transform spawnPoints;
+        private Transform spawnPointsParent;
 
         private float timeSpentDead;
 
@@ -31,21 +34,20 @@ namespace Game
             networkPlayer = GetComponent<NetworkPlayer>();
             characterController = GetComponent<CharacterController>();
             playerMovement = GetComponent<PlayerMovement>();
-            playerCamera = GetComponentInChildren<FirstPersonCamera>();
 
             uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
 
-            if (!spawnPoints)
-                spawnPoints = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
+            if (!spawnPointsParent)
+                spawnPointsParent = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
 
-            spawnPointList = new GameObject[spawnPoints.childCount];
-
-            for (var i = 0; i < spawnPoints.childCount; i++)
+            freeSpawnPoints.Capacity = spawnPointList.Capacity = spawnPointsParent.childCount;
+            
+            for (var i = 0; i < spawnPointsParent.childCount; i++)
             {
-                var spawn = spawnPoints.GetChild(i).gameObject;
-                if (!spawn.CompareTag("Respawn")) continue;
+                var spawn = spawnPointsParent.GetChild(i).gameObject.GetComponent<SpawnPoint>();
+                if (!spawn) continue;
 
-                spawnPointList[i] = spawn;
+                spawnPointList.Add(spawn);
             }
 
             RespawnPlayer();
@@ -59,7 +61,6 @@ namespace Game
             {
                 timeSpentDead = 0;
                 RespawnPlayer();
-                isAlive = true;
             }
         }
 
@@ -83,10 +84,22 @@ namespace Game
 
         public void RespawnPlayer()
         {
-            var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)].transform;
+            isAlive = true;
+            
+            freeSpawnPoints.Clear();
+            foreach (var spawn in spawnPointList)
+            {
+                if (spawn.PlayersInSpawnZone == 0)
+                {
+                    freeSpawnPoints.Add(spawn);
+                }
+            }
+
+            var list = freeSpawnPoints.Count != 0 ? freeSpawnPoints : spawnPointList;
+            var spawnTransform = list[Random.Range(0, list.Count)].playerSpawnPosition;
             
             playerMovement.ResetMovement();
-            networkPlayer.Teleport(spawnPoint.position, spawnPoint.rotation);
+            networkPlayer.Teleport(spawnTransform.position, spawnTransform.rotation);
 
             foreach (var go in disableOnDeath)
                 go.SetActive(true);

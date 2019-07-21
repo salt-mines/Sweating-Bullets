@@ -62,7 +62,7 @@ namespace Game
             SpawnLine(weapon.barrelPoint.position, hit.point);
             player.Shoot(weapon.barrelPoint.position, hit.point);
 
-            if (hit.transform.gameObject.layer != 9) return;
+            if (hit.transform.gameObject.layer != (int)Layer.Players) return;
 
             var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
             if (targetNetPlayer)
