@@ -52,10 +52,7 @@ namespace Game
             else
             {
                 if (PlayerInfo.Teleported)
-                {
                     PlayerInfo.Teleported = false;
-                    Debug.Log($"Player {Id} teleported to {PlayerInfo.Position}");
-                }
                     
                 tr.position = PlayerInfo.Position;                    
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);

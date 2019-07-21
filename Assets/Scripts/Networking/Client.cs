@@ -96,7 +96,7 @@ namespace Networking
             {
                 var p = CreatePlayer(pl.playerId);
                 OnPlayerSentInfo(pl);
-                UnityEngine.Debug.Log($"Id: {p.Id}; Name: {p.Name}");
+                UnityEngine.Debug.Log($"Player on server: {p}");
             }
         }
 

@@ -31,7 +31,6 @@ public class ScoreManager : MonoBehaviour
 
     public void AddPlayer(PlayerInfo player)
     {
-        Debug.Log($"AddPlayer {player}");
         var row = Instantiate(scoreRowPrefab.gameObject, playerList.transform);
         row.GetComponent<ScoreRow>().PlayerInfo = player;
     }

@@ -177,7 +177,7 @@ public class Loader : MonoBehaviour
 
     private void OnNetworkStatus(object sender, NetworkClient.StatusChangeEvent statusChangeEvent)
     {
-        Debug.Log(statusChangeEvent.Status);
+        Debug.Log($"Connection status changed: {statusChangeEvent.Status}");
 
         loadingScreen.ConnectingStatus = statusChangeEvent.Status.ToString();
 

@@ -83,11 +83,7 @@ namespace Networking
             Server.OnPlayerMove(ply.Id, ply.GetState());
 
             if (ply.Teleported)
-            {
                 ply.Teleported = false;
-                
-                Debug.Log($"Teleported to {ply.Position}");
-            }
         }
 
         public override void PlayerShoot(Vector3 from, Vector3 to)
