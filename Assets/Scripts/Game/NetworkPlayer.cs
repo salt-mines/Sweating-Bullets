@@ -1,5 +1,4 @@
-﻿using System;
-using Networking;
+﻿using Networking;
 using UnityEngine;
 
 namespace Game
@@ -13,12 +12,13 @@ namespace Game
         [SerializeField]
         private bool isLocalPlayer;
 
-        public Transform rootBone;
-        public Transform upperBodyBone;
+        public Transform eyePosition;
 
         public Animator animator;
         public PlayerMovement playerMovement;
         public FirstPersonCamera firstPersonCamera;
+
+        private CharacterController characterController;
 
         public byte Id => PlayerInfo.Id;
 
@@ -31,8 +31,6 @@ namespace Game
             get => isLocalPlayer;
             set => isLocalPlayer = value;
         }
-
-        private CharacterController characterController;
 
         private void Awake()
         {
@@ -53,11 +51,12 @@ namespace Game
             {
                 if (PlayerInfo.Teleported)
                     PlayerInfo.Teleported = false;
-                    
-                tr.position = PlayerInfo.Position;                    
+
+                tr.position = PlayerInfo.Position;
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);
-                tr.GetChild(0).gameObject.SetActive(PlayerInfo.Alive);
-                tr.GetChild(1).gameObject.SetActive(PlayerInfo.Alive);
+                eyePosition.localRotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.y, Vector3.right);
+
+                for (var i = 0; i < tr.childCount; i++) tr.GetChild(i).gameObject.SetActive(PlayerInfo.Alive);
             }
 
             var groundVel = tr.InverseTransformVector(PlayerInfo.Velocity);
@@ -65,32 +64,6 @@ namespace Game
             animator.SetFloat(ParamSpeed, groundVel.magnitude);
             animator.SetFloat(ParamForward, groundVel.z);
             animator.SetFloat(ParamRight, groundVel.x);
-        }
-
-        private void LateUpdate()
-        {
-            var lowerBodyDirection = transform.InverseTransformVector(PlayerInfo.Velocity);
-            lowerBodyDirection.y = 0;
-
-            if (lowerBodyDirection.z < -1f)
-            {
-                lowerBodyDirection.z = -lowerBodyDirection.z;
-                lowerBodyDirection.x = -lowerBodyDirection.x;
-            }
-
-            var localRot = upperBodyBone.localRotation;
-            var upDown = Quaternion.Inverse(localRot) * Quaternion.AngleAxis(PlayerInfo.ViewAngles.y, Vector3.right);
-            var upperBodyRotation = upperBodyBone.rotation * upDown * localRot;
-
-            if (lowerBodyDirection.magnitude > 0f)
-            {
-                var rot = new Quaternion();
-                rot.SetLookRotation(lowerBodyDirection);
-
-                rootBone.rotation *= rot;
-            }
-
-            upperBodyBone.rotation = upperBodyRotation;
         }
 
         public void Teleport(Vector3 position)
@@ -119,11 +92,11 @@ namespace Game
                 firstPersonCamera.SetAngles(viewAngles);
             PlayerInfo.ViewAngles = viewAngles;
         }
-        
+
         public void Teleport(Vector3 position, Quaternion rotation)
         {
             Teleport(position);
-            
+
             transform.rotation = rotation;
             if (firstPersonCamera)
                 firstPersonCamera.SetAngles(new Vector2(rotation.eulerAngles.y, 0));
