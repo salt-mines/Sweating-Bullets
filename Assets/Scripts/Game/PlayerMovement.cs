@@ -7,14 +7,23 @@ namespace Game
     {
         #region Unity properties
 
-        [Range(0, 100)]
-        public float movementSpeed = 6.0f;
+        [Range(0, 50)]
+        public float walkSpeed = 4.0f;
 
-        [Range(0, 100)]
+        [Range(0, 50)]
+        public float runSpeed = 8.0f;
+
+        [Range(0, 50)]
         public float jumpSpeed = 8.0f;
 
-        [Range(0, 100)]
-        public float gravity = 20.0f;
+        [Range(0, 20)]
+        public float gravityMultiplier = 2f;
+
+        [Range(0, 20)]
+        public float keepOnGroundForce = 2f;
+
+        [Range(0, 1f)]
+        public float groundDistanceTolerance = 0.1f;
 
         #endregion
 
@@ -28,9 +37,13 @@ namespace Game
             set => velocity = value;
         }
 
-        private Vector3 targetMovement = Vector3.zero;
+        private Vector2 input = Vector2.zero;
 
         private bool hitCeiling;
+        private CollisionFlags collisionFlags;
+        private bool isWalking;
+
+        private Vector3 rayPositionOffset = Vector3.zero;
 
         #endregion
 
@@ -51,43 +64,81 @@ namespace Game
 
         private void Update()
         {
-            targetMovement.x = gameInput.Strafe;
-            targetMovement.z = gameInput.Forward;
-            targetMovement.Normalize();
-            targetMovement = transform.TransformDirection(targetMovement * movementSpeed);
+            var speed = GetInput();
 
-            if (characterController.isGrounded && velocity.y <= 0)
+            var tr = transform;
+            var targetMovement = tr.forward * input.y + tr.right * input.x;
+
+            rayPositionOffset.y = characterController.height / 2f;
+
+            // Check if there's something solid close below us
+            var didHit = Physics.SphereCast(tr.position + rayPositionOffset,
+                characterController.radius * 0.8f, Vector3.down, out var hit,
+                rayPositionOffset.y + groundDistanceTolerance, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+            var hitAngle = Vector3.Angle(Vector3.up, hit.normal);
+
+            // Adjust direction based on ground slope, but only if the slope isn't too steep
+            if (hitAngle < characterController.slopeLimit)
+                targetMovement = Vector3.ProjectOnPlane(targetMovement, hit.normal).normalized;
+            else
+                targetMovement.Normalize();
+
+            // Apply movement only when on (or near) ground and player isn't moving upwards
+            if ((characterController.isGrounded || didHit) && velocity.y <= 0f)
             {
-                hitCeiling = false;
+                velocity.x = targetMovement.x * speed;
+                velocity.z = targetMovement.z * speed;
 
-                velocity.x = targetMovement.x;
-                velocity.z = targetMovement.z;
-                velocity.y = 0;
+                // Apply a bit of force to help keep us grounded
+                if (characterController.isGrounded) velocity.y = -keepOnGroundForce;
 
                 if (gameInput.Jump)
                     velocity.y = jumpSpeed;
             }
 
-            var isColliding = (characterController.collisionFlags & CollisionFlags.Above) == CollisionFlags.Above;
-            if (!hitCeiling && isColliding)
+            // Apply constant gravity to also help keep us grounded
+            velocity += gravityMultiplier * Time.deltaTime * Physics.gravity;
+
+            collisionFlags = characterController.Move(velocity * Time.deltaTime);
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if ((collisionFlags & CollisionFlags.Below) == CollisionFlags.Below)
             {
-                hitCeiling = true;
-                velocity.y = 0;
+                hitCeiling = false;
+                return;
             }
 
-            if (!characterController.isGrounded) velocity.y -= gravity * Time.deltaTime;
+            // Stop upwards velocity if we hit something above, and reset when we return to ground
+            if ((collisionFlags & CollisionFlags.Above) != CollisionFlags.Above || hitCeiling ||
+                velocity.y <= 0) return;
 
-            characterController.Move(velocity * Time.deltaTime);
+            hitCeiling = true;
+            velocity.y = 0;
         }
 
         #endregion
 
         #region Movement
 
+        private float GetInput()
+        {
+            input.x = gameInput.Strafe;
+            input.y = gameInput.Forward;
+
+            if (input.sqrMagnitude > 1)
+                input.Normalize();
+
+            isWalking = gameInput.Walk;
+
+            return isWalking ? walkSpeed : runSpeed;
+        }
+
         public void ResetMovement()
         {
             velocity = Vector3.zero;
-            targetMovement = Vector3.zero;
+            input = Vector2.zero;
         }
 
         #endregion
