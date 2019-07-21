@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NaughtyAttributes;
 using UI;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Game
 {
     [RequireComponent(typeof(CharacterController), typeof(PlayerMovement), typeof(NetworkPlayer))]
     public class PlayerMechanics : MonoBehaviour
     {
+        private readonly List<SpawnPoint> spawnPointList = new List<SpawnPoint>(8);
+        private readonly List<SpawnPoint> freeSpawnPoints = new List<SpawnPoint>(8);
+
         public float spawnTime = 6f;
 
         [ReorderableList]
         public List<GameObject> disableOnDeath;
 
-        public bool isAlive = true;
-
         private NetworkPlayer networkPlayer;
         private CharacterController characterController;
         private PlayerMovement playerMovement;
-        
-        private readonly List<SpawnPoint> spawnPointList = new List<SpawnPoint>(8);
-        private readonly List<SpawnPoint> freeSpawnPoints = new List<SpawnPoint>(8);
 
         private DeadOverlay uiDeadOverlay;
         private Transform spawnPointsParent;
 
         private float timeSpentDead;
+
+        public bool IsAlive { get; set; } = true;
 
         private void Start()
         {
@@ -41,7 +39,7 @@ namespace Game
                 spawnPointsParent = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
 
             freeSpawnPoints.Capacity = spawnPointList.Capacity = spawnPointsParent.childCount;
-            
+
             for (var i = 0; i < spawnPointsParent.childCount; i++)
             {
                 var spawn = spawnPointsParent.GetChild(i).gameObject.GetComponent<SpawnPoint>();
@@ -55,7 +53,7 @@ namespace Game
 
         private void Update()
         {
-            if (!isAlive) timeSpentDead += Time.deltaTime;
+            if (!IsAlive) timeSpentDead += Time.deltaTime;
 
             if (spawnTime < timeSpentDead)
             {
@@ -67,7 +65,7 @@ namespace Game
         [Button]
         public void Kill()
         {
-            isAlive = false;
+            IsAlive = false;
 
             characterController.enabled = false;
             playerMovement.enabled = false;
@@ -84,20 +82,16 @@ namespace Game
 
         public void RespawnPlayer()
         {
-            isAlive = true;
-            
+            IsAlive = true;
+
             freeSpawnPoints.Clear();
             foreach (var spawn in spawnPointList)
-            {
                 if (spawn.PlayersInSpawnZone == 0)
-                {
                     freeSpawnPoints.Add(spawn);
-                }
-            }
 
             var list = freeSpawnPoints.Count != 0 ? freeSpawnPoints : spawnPointList;
             var spawnTransform = list[Random.Range(0, list.Count)].playerSpawnPosition;
-            
+
             playerMovement.ResetMovement();
             networkPlayer.Teleport(spawnTransform.position, spawnTransform.rotation);
 

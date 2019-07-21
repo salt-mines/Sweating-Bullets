@@ -47,7 +47,7 @@ namespace Game
                 PlayerInfo.Position = tr.position;
                 PlayerInfo.Velocity = playerMovement.Velocity;
                 PlayerInfo.ViewAngles = firstPersonCamera.ViewAngles;
-                PlayerInfo.Alive = GetComponent<PlayerMechanics>().isAlive;
+                PlayerInfo.Alive = GetComponent<PlayerMechanics>().IsAlive;
             }
             else
             {
