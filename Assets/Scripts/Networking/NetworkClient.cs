@@ -122,6 +122,13 @@ namespace Networking
             var ply = Players[PlayerId.Value];
 
             Send(ply.GetState(), NetDeliveryMethod.UnreliableSequenced);
+
+            if (ply.Teleported)
+            {
+                ply.Teleported = false;
+
+                UnityEngine.Debug.Log($"Teleported to {ply.Position}");
+            }
         }
 
         public override void PlayerShoot(Vector3 from, Vector3 to)

@@ -5,28 +5,30 @@ using UnityEngine;
 
 namespace Game
 {
-    [RequireComponent(typeof(CharacterController), typeof(PlayerMovement))]
+    [RequireComponent(typeof(CharacterController), typeof(PlayerMovement), typeof(NetworkPlayer))]
     public class PlayerMechanics : MonoBehaviour
     {
-        private Transform spawnPoints;
-
-        public float spawnTime = 10f;
-        public float timeSpentDead;
+        public float spawnTime = 6f;
 
         [ReorderableList]
         public List<GameObject> disableOnDeath;
 
         public bool isAlive = true;
 
+        private NetworkPlayer networkPlayer;
         private CharacterController characterController;
         private PlayerMovement playerMovement;
         private FirstPersonCamera playerCamera;
         private GameObject[] spawnPointList;
 
         private DeadOverlay uiDeadOverlay;
+        private Transform spawnPoints;
+
+        private float timeSpentDead;
 
         private void Start()
         {
+            networkPlayer = GetComponent<NetworkPlayer>();
             characterController = GetComponent<CharacterController>();
             playerMovement = GetComponent<PlayerMovement>();
             playerCamera = GetComponentInChildren<FirstPersonCamera>();
@@ -61,6 +63,7 @@ namespace Game
             }
         }
 
+        [Button]
         public void Kill()
         {
             isAlive = false;
@@ -72,21 +75,23 @@ namespace Game
                 go.SetActive(false);
 
             if (uiDeadOverlay)
+            {
+                uiDeadOverlay.respawnTime = spawnTime;
                 uiDeadOverlay.gameObject.SetActive(true);
+            }
         }
 
         public void RespawnPlayer()
         {
-            playerMovement.enabled = true;
-
             var spawnPoint = spawnPointList[Random.Range(0, spawnPointList.Length)].transform;
+            
             playerMovement.ResetMovement();
-            transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            playerCamera.SetAngles(new Vector2(spawnPoint.transform.rotation.eulerAngles.y, 0));
+            networkPlayer.Teleport(spawnPoint.position, spawnPoint.rotation);
 
             foreach (var go in disableOnDeath)
                 go.SetActive(true);
 
+            playerMovement.enabled = true;
             characterController.enabled = true;
 
             if (uiDeadOverlay)

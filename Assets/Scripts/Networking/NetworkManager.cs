@@ -127,6 +127,7 @@ public class NetworkManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        Client?.LateUpdate();
         Server?.LateUpdate();
     }
 

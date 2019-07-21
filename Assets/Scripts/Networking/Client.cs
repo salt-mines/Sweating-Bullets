@@ -49,12 +49,17 @@ namespace Networking
             if (!Connected || !Loaded) return;
 
             InterpolatePlayers();
+        }
 
-            if (time >= nextSend)
-            {
-                SendState();
-                nextSend = time + 1f / SendRate;
-            }
+        public void LateUpdate()
+        {
+            if (!Connected || !Loaded) return;
+            
+            var time = Time.time;
+            if (time < nextSend) return;
+            
+            SendState();
+            nextSend = time + 1f / SendRate;
         }
 
         public virtual void Connect(string host, int port = Constants.AppPort)

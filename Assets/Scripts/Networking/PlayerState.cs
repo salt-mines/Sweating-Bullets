@@ -20,7 +20,10 @@ namespace Networking
         public static PlayerState Lerp(PlayerState s0, PlayerState s1, float ratio)
         {
             if (s1.teleported)
+            {
+                Debug.Log($"PlayerState teleported from {s0.position} to {s1.position}");
                 return s1;
+            }
 
             return new PlayerState
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace Networking
         public Vector3 Velocity { get; set; } = Vector3.zero;
         public Vector2 ViewAngles { get; set; } = Vector2.zero;
 
+        public bool Teleported { get; set; }
         public bool Alive { get; set; } = true;
 
         public NetworkPlayer PlayerObject { get; set; }
@@ -42,6 +44,7 @@ namespace Networking
                 position = Position,
                 velocity = Velocity,
                 viewAngles = ViewAngles,
+                teleported = Teleported,
                 alive = Alive
             };
         }
@@ -51,6 +54,7 @@ namespace Networking
             Position = state.position;
             Velocity = state.velocity;
             ViewAngles = state.viewAngles;
+            Teleported = state.teleported;
             Alive = state.alive;
         }
 

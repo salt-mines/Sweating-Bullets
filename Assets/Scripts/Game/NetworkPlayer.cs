@@ -32,6 +32,13 @@ namespace Game
             set => isLocalPlayer = value;
         }
 
+        private CharacterController characterController;
+
+        private void Awake()
+        {
+            characterController = GetComponent<CharacterController>();
+        }
+
         private void Update()
         {
             var tr = transform;
@@ -44,7 +51,13 @@ namespace Game
             }
             else
             {
-                tr.position = PlayerInfo.Position;
+                if (PlayerInfo.Teleported)
+                {
+                    PlayerInfo.Teleported = false;
+                    Debug.Log($"Player {Id} teleported to {PlayerInfo.Position}");
+                }
+                    
+                tr.position = PlayerInfo.Position;                    
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);
                 tr.GetChild(0).gameObject.SetActive(PlayerInfo.Alive);
                 tr.GetChild(1).gameObject.SetActive(PlayerInfo.Alive);
@@ -81,6 +94,43 @@ namespace Game
             }
 
             upperBodyBone.rotation = upperBodyRotation;
+        }
+
+        public void Teleport(Vector3 position)
+        {
+            var oldState = true;
+            if (characterController)
+            {
+                oldState = characterController.enabled;
+                characterController.enabled = false;
+            }
+
+            transform.position = position;
+            PlayerInfo.Position = position;
+            PlayerInfo.Teleported = true;
+
+            if (characterController)
+                characterController.enabled = oldState;
+        }
+
+        public void Teleport(Vector3 position, Vector2 viewAngles)
+        {
+            Teleport(position);
+
+            transform.rotation = Quaternion.AngleAxis(viewAngles.x, Vector3.up);
+            if (firstPersonCamera)
+                firstPersonCamera.SetAngles(viewAngles);
+            PlayerInfo.ViewAngles = viewAngles;
+        }
+        
+        public void Teleport(Vector3 position, Quaternion rotation)
+        {
+            Teleport(position);
+            
+            transform.rotation = rotation;
+            if (firstPersonCamera)
+                firstPersonCamera.SetAngles(new Vector2(rotation.eulerAngles.y, 0));
+            PlayerInfo.ViewAngles = firstPersonCamera.ViewAngles;
         }
 
         public void Kill()
