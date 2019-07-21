@@ -371,8 +371,6 @@ namespace Networking
             if (Players[sender] == null || Players[packet.targetId] == null)
                 return;
 
-            Players[packet.targetId].Alive = false;
-
             var death = new PlayerDeath
             {
                 playerId = packet.targetId,
