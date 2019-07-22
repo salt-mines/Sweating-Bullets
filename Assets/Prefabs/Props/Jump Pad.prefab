@@ -67,11 +67,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6748185252642383910}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 2e04e574e6d59f54da9a3b717281348d,
-        type: 3}
-      propertyPath: m_Name
-      value: jumppad
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 2e04e574e6d59f54da9a3b717281348d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -142,16 +137,46 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_Name
+      value: jumppad
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -2058067791732106546, guid: 2e04e574e6d59f54da9a3b717281348d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 612b07f7dba33414b89cb3ec1432a159, type: 2}
+    - target: {fileID: -2058067791732106546, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 8141930970071010223, guid: 2e04e574e6d59f54da9a3b717281348d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c8a7d0ff870f9fa4c93ea024cf4dfa9e, type: 2}
+    - target: {fileID: 8141930970071010223, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: -2318416172300725564, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: -5120110018009941029, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e04e574e6d59f54da9a3b717281348d, type: 3}
 --- !u!4 &2457746175908133849 stripped

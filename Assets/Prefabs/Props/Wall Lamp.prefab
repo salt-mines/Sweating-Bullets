@@ -135,6 +135,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: industrial_wall_lamp
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 95dbbc68acb6ea543a5a3281719fc74d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 9062980534989335051, guid: 95dbbc68acb6ea543a5a3281719fc74d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577716980174230585, guid: 95dbbc68acb6ea543a5a3281719fc74d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 95dbbc68acb6ea543a5a3281719fc74d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -200,6 +215,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 58eebfa9176e9654cab0f79ff71da158, type: 2}
+    - target: {fileID: 768930108993004390, guid: 95dbbc68acb6ea543a5a3281719fc74d,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 6471287165280503746, guid: 95dbbc68acb6ea543a5a3281719fc74d,
         type: 3}
       propertyPath: m_CastShadows
@@ -210,6 +230,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 612b07f7dba33414b89cb3ec1432a159, type: 2}
+    - target: {fileID: 6471287165280503746, guid: 95dbbc68acb6ea543a5a3281719fc74d,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95dbbc68acb6ea543a5a3281719fc74d, type: 3}
 --- !u!4 &5757653242887494096 stripped

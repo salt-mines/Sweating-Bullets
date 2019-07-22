@@ -302,10 +302,20 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4063835366044962077, guid: f96b89f18a2b1f347abd6b35a4e54627,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: -113181020801827196, guid: f96b89f18a2b1f347abd6b35a4e54627,
         type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -113181020801827196, guid: f96b89f18a2b1f347abd6b35a4e54627,
+        type: 3}
+      propertyPath: m_ScaleInLightmap
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: -1504981713932161579, guid: f96b89f18a2b1f347abd6b35a4e54627,
         type: 3}
