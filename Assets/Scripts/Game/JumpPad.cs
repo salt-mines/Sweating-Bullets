@@ -4,9 +4,18 @@ namespace Game
 {
     public class JumpPad : MonoBehaviour
     {
+        private static readonly int Spring = Animator.StringToHash("Spring");
+        
         public float jumpStrength = 20f;
-
         public bool keepPlayerVelocity;
+
+        public Animator animator;
+
+        private void Awake()
+        {
+            if (!animator)
+                animator = GetComponent<Animator>();
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -22,8 +31,11 @@ namespace Game
                 vel.x += pm.Velocity.x;
                 vel.z += pm.Velocity.z;
             }
-        
+
             pm.Velocity = vel;
+
+            if (animator)
+                animator.SetTrigger(Spring);
         }
     }
 }
