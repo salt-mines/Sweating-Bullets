@@ -54,10 +54,10 @@ namespace Networking
         public void LateUpdate()
         {
             if (!Connected || !Loaded) return;
-            
+
             var time = Time.time;
             if (time < nextSend) return;
-            
+
             SendState();
             nextSend = time + 1f / SendRate;
         }
@@ -83,7 +83,8 @@ namespace Networking
             InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers);
         }
 
-        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level, List<PlayerExtraInfo> currentPlayers)
+        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level,
+            List<PlayerExtraInfo> currentPlayers)
         {
             UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
@@ -104,7 +105,7 @@ namespace Networking
         {
             PlayerJoined?.Invoke(this, player);
         }
-        
+
         protected virtual void OnPlayerLeft(PlayerInfo player)
         {
             PlayerLeft?.Invoke(this, player);
@@ -115,7 +116,7 @@ namespace Networking
             var pl = Players[info.playerId];
             if (pl == null) return;
             pl.Name = info.name;
-            
+
             PlayerSentInfo?.Invoke(this, info);
         }
 
@@ -147,7 +148,7 @@ namespace Networking
             }
 
             UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
-            
+
             PlayerDeath?.Invoke(this, packet);
         }
 
@@ -165,7 +166,7 @@ namespace Networking
         internal virtual void OnDrawGizmos()
         {
             if (!Loaded) return;
-            
+
             Gizmos.color = Color.green;
             foreach (var ply in Players)
             {

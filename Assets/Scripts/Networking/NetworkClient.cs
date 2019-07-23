@@ -141,7 +141,7 @@ namespace Networking
         public override void PlayerKill(byte targetId)
         {
             base.PlayerKill(targetId);
-            
+
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
 
@@ -193,11 +193,11 @@ namespace Networking
                     break;
             }
         }
-        
+
         private void ReceivedPlayerConnected(PlayerConnected packet)
         {
             if (PlayerId == packet.playerId) return;
-            
+
             var p = CreatePlayer(packet.playerId);
             UnityEngine.Debug.Log($"Id: {p.Id} joined");
         }

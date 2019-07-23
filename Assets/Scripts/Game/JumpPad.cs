@@ -5,7 +5,7 @@ namespace Game
     public class JumpPad : MonoBehaviour
     {
         private static readonly int Spring = Animator.StringToHash("Spring");
-        
+
         public float jumpStrength = 20f;
         public bool keepPlayerVelocity;
 

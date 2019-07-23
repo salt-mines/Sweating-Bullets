@@ -24,12 +24,12 @@ namespace Networking
             var p = CreatePlayer(player.Id);
             Debug.Log($"Id: {p.Id} joined");
         }
-        
+
         private void OnPlayerLeft(object sender, PlayerInfo player)
         {
             RemovePlayer(player.Id);
         }
-        
+
         private void OnPlayerSentInfo(object sender, PlayerExtraInfo info)
         {
             OnPlayerSentInfo(info);
@@ -43,14 +43,14 @@ namespace Networking
         private void OnPlayerShoot(object sender, PlayerShoot shot)
         {
             if (Players == null || LocalPlayer == null || shot.playerId == PlayerId) return;
-            
+
             LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().SpawnLine(shot.from, shot.to);
         }
 
         private void LevelLoaded(string level)
         {
             var ply = Server.CreatePlayer(true);
-            
+
             InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
             var info = new PlayerExtraInfo {name = Preferences.Name};
@@ -100,7 +100,7 @@ namespace Networking
         public override void PlayerKill(byte targetId)
         {
             base.PlayerKill(targetId);
-            
+
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Debug.LogFormat("Shooting Player {0}", targetId);
 

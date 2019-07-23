@@ -51,7 +51,7 @@ public class NetworkManager : MonoBehaviour
     internal Loader Loader { get; set; }
     public Client Client { get; private set; }
     public Server Server { get; private set; }
-    
+
     public ServerConfig ServerConfig { get; set; }
 
     public NetworkMode Mode

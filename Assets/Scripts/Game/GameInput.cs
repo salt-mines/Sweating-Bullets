@@ -16,7 +16,7 @@ namespace Game
 
         public bool Jump { get; private set; }
         public bool Walk { get; private set; }
-        
+
         public bool Cancel { get; private set; }
 
         public bool BlockInput { get; set; }
