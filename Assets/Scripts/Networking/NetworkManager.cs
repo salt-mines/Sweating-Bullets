@@ -89,9 +89,9 @@ public class NetworkManager : MonoBehaviour
                 SimulatedLag = simulatedLag
             };
 
-        if (Mode == NetworkMode.ListenServer) Client = new HostClient(Server);
+        if (Mode == NetworkMode.ListenServer) Client = new NetworkClient(true, Loader);
 
-        if (Mode == NetworkMode.Client) Client = new NetworkClient(Loader);
+        if (Mode == NetworkMode.Client) Client = new NetworkClient(false, Loader);
 
         if (Mode == NetworkMode.MenuClient) Client = new MenuClient();
 
@@ -106,6 +106,9 @@ public class NetworkManager : MonoBehaviour
 
         if (Mode == NetworkMode.Client && host != null)
             Client?.Connect(host.Address.ToString(), host.Port);
+
+        if (Mode == NetworkMode.ListenServer)
+            Client?.Connect("127.0.0.1");
     }
 
     private void OnValidate()

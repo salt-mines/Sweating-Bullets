@@ -142,8 +142,8 @@ namespace Networking
             Players[ply.Id] = ply;
             PlayerCount++;
 
-            if (NetworkManager)
-                ply.PlayerObject = NetworkManager.CreatePlayer(ply, local);
+//            if (NetworkManager)
+//                ply.PlayerObject = NetworkManager.CreatePlayer(ply, local);
 
             return ply;
         }
@@ -157,8 +157,8 @@ namespace Networking
         {
             if (Players[id] == null) return;
 
-            if (NetworkManager)
-                NetworkManager.RemovePlayer(Players[id].PlayerObject);
+//            if (NetworkManager)
+//                NetworkManager.RemovePlayer(Players[id].PlayerObject);
 
             Players[id] = null;
             PlayerCount--;

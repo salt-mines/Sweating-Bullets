@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -12,8 +11,10 @@ namespace Networking
     {
         private readonly NetClient client;
 
-        internal NetworkClient(Loader loader)
+        internal NetworkClient(bool listenServer, Loader loader)
         {
+            ListenServer = listenServer;
+
             Loader = loader;
             LevelManager = Loader.LevelManager;
 
@@ -28,6 +29,8 @@ namespace Networking
 
             client.Start();
         }
+
+        private bool ListenServer { get; }
 
         private Loader Loader { get; }
         private LevelManager LevelManager { get; }
@@ -51,7 +54,8 @@ namespace Networking
         {
             base.InitializeFromServer(playerId, maxPlayers, level, currentPlayers, currentPlayersInfo);
 
-            LevelManager.ChangeLevel(level);
+            if (!ListenServer)
+                LevelManager.ChangeLevel(level);
         }
 
         private void LevelLoaded(string level)
@@ -233,8 +237,7 @@ namespace Networking
             if (client.ServerConnection != null)
                 rtt = Mathf.RoundToInt(client.ServerConnection.AverageRoundtripTime * 1000);
 
-            GUI.Label(new Rect(x + 5, y += 20, 140, 20),
-                $"Lag: {rtt} ms");
+            GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Lag: {rtt} ms");
             GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Interp: {Interpolation * 1000} ms");
             if (PlayerId.HasValue && Players[PlayerId.Value] != null)
             {
