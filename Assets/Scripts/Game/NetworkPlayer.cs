@@ -39,6 +39,8 @@ namespace Game
 
         private void Update()
         {
+            if (PlayerInfo == null) return;
+
             var tr = transform;
             if (IsLocalPlayer)
             {

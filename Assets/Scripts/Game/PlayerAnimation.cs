@@ -38,7 +38,9 @@ namespace Game
         {
             if (!ikEnabled) return;
 
-            var lowerBodyDirection = networkPlayer.transform.InverseTransformVector(networkPlayer.PlayerInfo.Velocity);
+            var vel = networkPlayer.PlayerInfo?.Velocity ?? Vector3.zero;
+
+            var lowerBodyDirection = networkPlayer.transform.InverseTransformVector(vel);
             lowerBodyDirection.y = 0;
 
             if (lowerBodyDirection.z < -1f)
@@ -61,7 +63,8 @@ namespace Game
             {
                 var rot = new Quaternion();
                 rot.SetLookRotation(lowerBodyDirection);
-                animator.SetBoneLocalRotation(HumanBodyBones.Spine, Quaternion.Inverse(rot));
+                var q = animator.GetBoneTransform(HumanBodyBones.Spine).localRotation * Quaternion.Inverse(rot);
+                animator.SetBoneLocalRotation(HumanBodyBones.Spine, q);
             }
 
             var from = eyePosition.position;
