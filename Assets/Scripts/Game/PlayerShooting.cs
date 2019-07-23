@@ -11,7 +11,7 @@ namespace Game
         public float rateOfFire = 1f;
 
         public LineRenderer linePrefab;
-        public Weapon weapon;
+        public Viewmodel viewmodel;
 
         public float lineLifetime = 1f;
 
@@ -50,17 +50,20 @@ namespace Game
             var cameraTransform = fpsCamera.transform;
             var from = cameraTransform.position;
             var to = cameraTransform.forward;
+            var barrel = viewmodel.barrelPoint.position;
 
             if (!Physics.Raycast(from, to, out var hit, range,
                 hittableMask))
             {
-                SpawnLine(weapon.barrelPoint.position, to * range);
-                player.Shoot(weapon.barrelPoint.position, to * range);
+                SpawnLine(barrel, to * range);
+                player.Shoot(barrel, to * range);
                 return;
             }
 
-            SpawnLine(weapon.barrelPoint.position, hit.point);
-            player.Shoot(weapon.barrelPoint.position, hit.point);
+            SpawnLine(barrel, hit.point);
+            player.Shoot(barrel, hit.point);
+
+            viewmodel.Shoot();
 
             if (hit.transform.gameObject.layer != (int)Layer.Players) return;
 
