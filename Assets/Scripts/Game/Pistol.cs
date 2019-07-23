@@ -52,7 +52,7 @@ namespace Game
 
             var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
             if (targetNetPlayer)
-                player.Kill(targetNetPlayer);
+                player.KillPlayer(targetNetPlayer);
         }
 
         protected override void SpawnLine(Vector3 from, Vector3 to)
