@@ -12,7 +12,7 @@ namespace Networking
             Server.Loader.LevelLoaded += (o, s) => LevelLoaded(s);
             Server.PlayerJoined += OnPlayerJoined;
             Server.PlayerLeft += OnPlayerLeft;
-            Server.PlayerSentInfo += OnPlayerSentInfo;
+            Server.PlayerSentPreferences += OnPlayerSentPreferences;
             Server.PlayerDied += OnPlayerDeath;
             Server.PlayerShot += OnPlayerShoot;
         }
@@ -30,9 +30,9 @@ namespace Networking
             RemovePlayer(player.Id);
         }
 
-        private void OnPlayerSentInfo(object sender, PlayerExtraInfo info)
+        private void OnPlayerSentPreferences(object sender, PlayerPreferences info)
         {
-            OnPlayerSentInfo(info);
+            OnPlayerSentPreferences(info);
         }
 
         private void OnPlayerDeath(object sender, PlayerDeath death)
@@ -53,9 +53,9 @@ namespace Networking
 
             InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
-            var info = new PlayerExtraInfo {name = Preferences.Name};
+            var info = new PlayerPreferences {name = Preferences.Name};
             Server.ReceivePlayerInfo(ply.Id, info);
-            OnPlayerSentInfo(info);
+            OnPlayerSentPreferences(info);
             Loaded = true;
         }
 
@@ -97,9 +97,9 @@ namespace Networking
             });
         }
 
-        public override void PlayerKill(byte targetId)
+        public override void KillPlayer(byte targetId)
         {
-            base.PlayerKill(targetId);
+            base.KillPlayer(targetId);
 
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Debug.LogFormat("Shooting Player {0}", targetId);

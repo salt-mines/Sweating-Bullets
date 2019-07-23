@@ -30,7 +30,7 @@ namespace Networking
 
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
-        public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
+        public event EventHandler<PlayerPreferences> PlayerSentPreferences;
 
         public event EventHandler<PlayerInfo> OwnKill;
         public event EventHandler<PlayerDeath> PlayerDeath;
@@ -84,7 +84,7 @@ namespace Networking
         }
 
         protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level,
-            List<PlayerExtraInfo> currentPlayers)
+            List<PlayerPreferences> currentPlayers)
         {
             UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
@@ -96,7 +96,7 @@ namespace Networking
             foreach (var pl in currentPlayers)
             {
                 var p = CreatePlayer(pl.playerId);
-                OnPlayerSentInfo(pl);
+                OnPlayerSentPreferences(pl);
                 UnityEngine.Debug.Log($"Player on server: {p}");
             }
         }
@@ -111,13 +111,13 @@ namespace Networking
             PlayerLeft?.Invoke(this, player);
         }
 
-        protected virtual void OnPlayerSentInfo(PlayerExtraInfo info)
+        protected virtual void OnPlayerSentPreferences(PlayerPreferences info)
         {
             var pl = Players[info.playerId];
             if (pl == null) return;
             pl.Name = info.name;
 
-            PlayerSentInfo?.Invoke(this, info);
+            PlayerSentPreferences?.Invoke(this, info);
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -154,7 +154,7 @@ namespace Networking
 
         public abstract void PlayerShoot(Vector3 from, Vector3 to);
 
-        public virtual void PlayerKill(byte targetId)
+        public virtual void KillPlayer(byte targetId)
         {
             OwnKill?.Invoke(this, Players[targetId]);
         }

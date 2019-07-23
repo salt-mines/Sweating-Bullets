@@ -75,7 +75,7 @@ namespace Networking
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
 
-        public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
+        public event EventHandler<PlayerPreferences> PlayerSentPreferences;
 
         public event EventHandler<PlayerDeath> PlayerDied;
         public event EventHandler<PlayerInfo> PlayerRespawned;
@@ -250,14 +250,14 @@ namespace Networking
             }
         }
 
-        internal List<PlayerExtraInfo> BuildPlayerList(byte? excludeId = null)
+        internal List<PlayerPreferences> BuildPlayerList(byte? excludeId = null)
         {
-            var list = new List<PlayerExtraInfo>(Players.Length);
+            var list = new List<PlayerPreferences>(Players.Length);
             foreach (var pl in Players)
             {
                 if (pl == null || excludeId == pl.Id) continue;
 
-                list.Add(new PlayerExtraInfo
+                list.Add(new PlayerPreferences
                 {
                     playerId = pl.Id,
                     name = pl.Name
@@ -307,8 +307,8 @@ namespace Networking
 
             switch (type)
             {
-                case PacketType.PlayerExtraInfo:
-                    ReceivePlayerInfo(sender, PlayerExtraInfo.Read(msg));
+                case PacketType.PlayerPreferences:
+                    ReceivePlayerInfo(sender, PlayerPreferences.Read(msg));
                     break;
                 case PacketType.PlayerMove:
                     OnPlayerMove(sender, PlayerState.Read(msg));
@@ -322,7 +322,7 @@ namespace Networking
             }
         }
 
-        internal void ReceivePlayerInfo(byte sender, PlayerExtraInfo packet)
+        internal void ReceivePlayerInfo(byte sender, PlayerPreferences packet)
         {
             var ply = Players[sender];
             if (ply == null)
@@ -334,15 +334,15 @@ namespace Networking
             Debug.Log($"Setting player {sender}'s name to '{packet.name}'");
             ply.Name = packet.name;
 
-            var newPacket = new PlayerExtraInfo
+            var newPacket = new PlayerPreferences
             {
                 playerId = ply.Id,
                 name = ply.Name
             };
-            
+
             SendToAll(newPacket, NetDeliveryMethod.ReliableUnordered);
 
-            PlayerSentInfo?.Invoke(this, newPacket);
+            PlayerSentPreferences?.Invoke(this, newPacket);
         }
 
         internal void OnPlayerMove(byte sender, PlayerState packet)

@@ -47,7 +47,7 @@ namespace Networking
         }
 
         protected override void InitializeFromServer(byte playerId, byte maxPlayers, string level,
-            List<PlayerExtraInfo> currentPlayers)
+            List<PlayerPreferences> currentPlayers)
         {
             base.InitializeFromServer(playerId, maxPlayers, level, currentPlayers);
 
@@ -62,13 +62,13 @@ namespace Networking
             CreatePlayer(PlayerId.Value, true);
 
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            var info = new PlayerExtraInfo
+            var info = new PlayerPreferences
             {
                 playerId = PlayerId.Value,
                 name = Preferences.Name
             };
             Send(info, NetDeliveryMethod.ReliableUnordered);
-            OnPlayerSentInfo(info);
+            OnPlayerSentPreferences(info);
         }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -138,9 +138,9 @@ namespace Networking
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
-        public override void PlayerKill(byte targetId)
+        public override void KillPlayer(byte targetId)
         {
-            base.PlayerKill(targetId);
+            base.KillPlayer(targetId);
 
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
@@ -173,28 +173,28 @@ namespace Networking
                 case PacketType.Connected:
                     InitializeFromServer(Packets.Connected.Read(msg));
                     break;
-                case PacketType.PlayerExtraInfo:
-                    ReceivedPlayerSentInfo(PlayerExtraInfo.Read(msg));
+                case PacketType.PlayerPreferences:
+                    ReceivedPacket(PlayerPreferences.Read(msg));
                     break;
                 case PacketType.PlayerConnected:
-                    ReceivedPlayerConnected(PlayerConnected.Read(msg));
+                    ReceivedPacket(PlayerConnected.Read(msg));
                     break;
                 case PacketType.PlayerDisconnected:
-                    ReceivedPlayerDisconnected(PlayerDisconnected.Read(msg));
+                    ReceivedPacket(PlayerDisconnected.Read(msg));
                     break;
                 case PacketType.WorldState:
                     AddWorldState(WorldState.Read(msg).worldState);
                     break;
                 case PacketType.PlayerDeath:
-                    ReceivedPlayerDeath(Packets.PlayerDeath.Read(msg));
+                    ReceivedPacket(Packets.PlayerDeath.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
-                    ReceivedPlayerShoot(Packets.PlayerShoot.Read(msg));
+                    ReceivedPacket(Packets.PlayerShoot.Read(msg));
                     break;
             }
         }
 
-        private void ReceivedPlayerConnected(PlayerConnected packet)
+        private void ReceivedPacket(PlayerConnected packet)
         {
             if (PlayerId == packet.playerId) return;
 
@@ -202,22 +202,22 @@ namespace Networking
             UnityEngine.Debug.Log($"Id: {p.Id} joined");
         }
 
-        private void ReceivedPlayerDisconnected(PlayerDisconnected packet)
+        private void ReceivedPacket(PlayerDisconnected packet)
         {
             RemovePlayer(packet.playerId);
         }
 
-        private void ReceivedPlayerSentInfo(PlayerExtraInfo info)
+        private void ReceivedPacket(PlayerPreferences info)
         {
-            OnPlayerSentInfo(info);
+            OnPlayerSentPreferences(info);
         }
 
-        private void ReceivedPlayerDeath(PlayerDeath packet)
+        private void ReceivedPacket(PlayerDeath packet)
         {
             OnPlayerDeath(packet);
         }
 
-        private void ReceivedPlayerShoot(PlayerShoot packet)
+        private void ReceivedPacket(PlayerShoot packet)
         {
             if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 

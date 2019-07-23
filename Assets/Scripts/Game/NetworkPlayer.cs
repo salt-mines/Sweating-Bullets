@@ -113,9 +113,9 @@ namespace Game
             Client.PlayerShoot(from, to);
         }
 
-        public void Kill(NetworkPlayer target)
+        public void KillPlayer(NetworkPlayer target)
         {
-            Client.PlayerKill(target.Id);
+            Client.KillPlayer(target.Id);
         }
     }
 }

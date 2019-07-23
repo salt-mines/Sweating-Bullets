@@ -7,7 +7,7 @@ namespace Networking.Packets
     public enum PacketType : byte
     {
         Connected = 0,
-        PlayerExtraInfo = 5,
+        PlayerPreferences = 5,
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerMove = 12,
@@ -44,7 +44,7 @@ namespace Networking.Packets
 
         public string levelName;
 
-        public List<PlayerExtraInfo> currentPlayers;
+        public List<PlayerPreferences> currentPlayers;
 
         public static Connected Read(NetIncomingMessage msg)
         {
@@ -57,12 +57,12 @@ namespace Networking.Packets
             };
         }
 
-        private static List<PlayerExtraInfo> ReadPlayerList(NetIncomingMessage msg)
+        private static List<PlayerPreferences> ReadPlayerList(NetIncomingMessage msg)
         {
             var length = msg.ReadByte();
-            var list = new List<PlayerExtraInfo>(length);
+            var list = new List<PlayerPreferences>(length);
             for (var i = 0; i < length; i++)
-                list.Add(PlayerExtraInfo.Read(msg));
+                list.Add(PlayerPreferences.Read(msg));
             return list;
         }
 
@@ -79,17 +79,17 @@ namespace Networking.Packets
             }
         }
     }
-    
-    public struct PlayerExtraInfo : IPacket
+
+    public struct PlayerPreferences : IPacket
     {
-        public PacketType Type => PacketType.PlayerExtraInfo;
+        public PacketType Type => PacketType.PlayerPreferences;
 
         public byte playerId;
         public string name;
 
-        public static PlayerExtraInfo Read(NetIncomingMessage msg)
+        public static PlayerPreferences Read(NetIncomingMessage msg)
         {
-            return new PlayerExtraInfo
+            return new PlayerPreferences
             {
                 playerId = msg.ReadByte(),
                 name = msg.ReadString()
@@ -188,7 +188,7 @@ namespace Networking.Packets
             msg.Write(killerId);
         }
     }
-    
+
     public struct PlayerShoot : IPacket
     {
         public PacketType Type => PacketType.PlayerShoot;

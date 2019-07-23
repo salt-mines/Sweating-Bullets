@@ -24,7 +24,7 @@ public class ScoreManager : MonoBehaviour
 
         cl.PlayerJoined += (sender, info) => { AddPlayer(info); };
         cl.PlayerLeft += (sender, info) => { RemovePlayer(info.Id); };
-        cl.PlayerSentInfo += (sender, info) => { UpdatePlayer(info); };
+        cl.PlayerSentPreferences += (sender, info) => { UpdatePlayer(info); };
 
         if (cl.LocalPlayer != null) AddPlayer(cl.LocalPlayer);
     }
@@ -42,7 +42,7 @@ public class ScoreManager : MonoBehaviour
                 Destroy(tr.gameObject);
     }
 
-    public void UpdatePlayer(PlayerExtraInfo info)
+    public void UpdatePlayer(PlayerPreferences info)
     {
         foreach (RectTransform tr in playerList.transform)
         {
