@@ -323,14 +323,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a76194ffd5ed644b97171b023bc35ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rateOfFire: 1
+  hittableMask:
+    serializedVersion: 2
+    m_Bits: 513
   barrelPoint: {fileID: 4302999062951135073}
   rightHandIKTarget: {fileID: 1717459247136135397}
   leftHandIKTarget: {fileID: 267144377629373318}
+  linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
+    type: 3}
+  lineLifetime: 1
   numPellets: 10
   horizontalSpread: 0.9
   verticalSpread: 0.5
   range: 20
-  rateOfFire: 1
-  linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
-    type: 3}
-  lineLifetime: 1

@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5349462875122007656}
-  - component: {fileID: 4528500791454038485}
   - component: {fileID: 8813512276880922557}
   m_Layer: 0
   m_Name: Weapon - Pistol
@@ -33,32 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.24, y: 0, z: 0}
---- !u!1773428102 &4528500791454038485
-ParentConstraint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 391039380526803595}
-  m_Enabled: 1
-  m_Weight: 1
-  m_TranslationAtRest: {x: 0, y: 0, z: 0}
-  m_RotationAtRest: {x: 0, y: 0, z: 0}
-  m_TranslationOffsets:
-  - {x: -0.17, y: 0, z: 0}
-  m_RotationOffsets:
-  - {x: 0, y: 0, z: 0}
-  m_AffectTranslationX: 1
-  m_AffectTranslationY: 1
-  m_AffectTranslationZ: 1
-  m_AffectRotationX: 1
-  m_AffectRotationY: 1
-  m_AffectRotationZ: 1
-  m_IsContraintActive: 1
-  m_IsLocked: 0
-  m_Sources:
-  - sourceTransform: {fileID: 0}
-    weight: 1
 --- !u!114 &8813512276880922557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,14 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9a583715763134b8ee5e7b0177ca8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rateOfFire: 1
+  hittableMask:
+    serializedVersion: 2
+    m_Bits: 513
   barrelPoint: {fileID: 5515538458555030996}
   rightHandIKTarget: {fileID: 7392322244997594882}
   leftHandIKTarget: {fileID: 7750077050890363246}
-  range: 100
-  rateOfFire: 1
   linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
     type: 3}
   lineLifetime: 1
+  range: 100
 --- !u!1 &449045867664619635
 GameObject:
   m_ObjectHideFlags: 0

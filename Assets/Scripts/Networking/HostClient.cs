@@ -44,7 +44,7 @@ namespace Networking
         {
             if (Players == null || LocalPlayer == null || shot.playerId == PlayerId) return;
 
-            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().SpawnLine(shot.from, shot.to);
+            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().weapon.SpawnLine(shot.from, shot.to);
         }
 
         private void LevelLoaded(string level)
