@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5349462875122007656}
-  - component: {fileID: 7271967943272648417}
   - component: {fileID: 4528500791454038485}
+  - component: {fileID: 8813512276880922557}
   m_Layer: 0
   m_Name: Weapon - Pistol
   m_TagString: Untagged
@@ -25,29 +25,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 391039380526803595}
-  m_LocalRotation: {x: -0.06061191, y: 0.3369754, z: -0.00087323436, w: 0.93956006}
-  m_LocalPosition: {x: -0.15727481, y: 1.1726474, z: 0.108689845}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8996951624793986670}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.24, y: 0, z: 0}
---- !u!114 &7271967943272648417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 391039380526803595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a0a068ddc56f0442be580c750b27410, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrelPoint: {fileID: 7100060008217229465}
-  rightHandIKTarget: {fileID: 7392322244997594882}
-  leftHandIKTarget: {fileID: 7750077050890363246}
 --- !u!1773428102 &4528500791454038485
 ParentConstraint:
   m_ObjectHideFlags: 0
@@ -57,7 +42,7 @@ ParentConstraint:
   m_GameObject: {fileID: 391039380526803595}
   m_Enabled: 1
   m_Weight: 1
-  m_TranslationAtRest: {x: 0.41, y: 1.434, z: 0.388}
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
   m_RotationAtRest: {x: 0, y: 0, z: 0}
   m_TranslationOffsets:
   - {x: -0.17, y: 0, z: 0}
@@ -74,6 +59,26 @@ ParentConstraint:
   m_Sources:
   - sourceTransform: {fileID: 0}
     weight: 1
+--- !u!114 &8813512276880922557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391039380526803595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a9a583715763134b8ee5e7b0177ca8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barrelPoint: {fileID: 5515538458555030996}
+  rightHandIKTarget: {fileID: 7392322244997594882}
+  leftHandIKTarget: {fileID: 7750077050890363246}
+  range: 100
+  rateOfFire: 1
+  linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
+    type: 3}
+  lineLifetime: 1
 --- !u!1 &449045867664619635
 GameObject:
   m_ObjectHideFlags: 0

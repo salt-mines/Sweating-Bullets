@@ -84,7 +84,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3371446856227975841}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.28726926, y: 0.05723671, z: -0.4217894}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6468968036402967682}
@@ -103,7 +103,6 @@ GameObject:
   - component: {fileID: 5212563404210167839}
   - component: {fileID: 2168359517111275842}
   - component: {fileID: 8618814401558547964}
-  - component: {fileID: 550857801697464503}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -170,19 +169,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &550857801697464503
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3700289235303597937}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3803356559508917988
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +210,6 @@ GameObject:
   - component: {fileID: 6468968036402967682}
   - component: {fileID: 6468968036402967681}
   - component: {fileID: 6468968036402967680}
-  - component: {fileID: 6468968036402967683}
   m_Layer: 0
   m_Name: Barrel
   m_TagString: Untagged
@@ -291,19 +276,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6468968036402967683
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6468968036402968445}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6468968036587008443
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +285,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6468968036587008440}
-  - component: {fileID: 7611698992101394532}
   - component: {fileID: 3467094737048521855}
   m_Layer: 0
   m_Name: Weapon - Shotgun
@@ -340,21 +311,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7611698992101394532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6468968036587008443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a0a068ddc56f0442be580c750b27410, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrelPoint: {fileID: 4302999062951135073}
-  rightHandIKTarget: {fileID: 1717459247136135397}
-  leftHandIKTarget: {fileID: 267144377629373318}
 --- !u!114 &3467094737048521855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,14 +323,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a76194ffd5ed644b97171b023bc35ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numPellets: 0
-  horizontalSpread: 10
-  verticalSpread: 10
-  range: 0
+  barrelPoint: {fileID: 4302999062951135073}
+  rightHandIKTarget: {fileID: 1717459247136135397}
+  leftHandIKTarget: {fileID: 267144377629373318}
+  numPellets: 10
+  horizontalSpread: 0.9
+  verticalSpread: 0.5
+  range: 20
   rateOfFire: 1
-  weapon: {fileID: 0}
-  hittableMask:
-    serializedVersion: 2
-    m_Bits: 0
-  linePrefab: {fileID: 0}
+  linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
+    type: 3}
   lineLifetime: 1

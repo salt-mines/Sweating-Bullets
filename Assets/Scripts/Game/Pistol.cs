@@ -1,56 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 
 namespace Game
 {
-    [RequireComponent(typeof(NetworkPlayer))]
-    public class PlayerShooting : MonoBehaviour
+    public class Pistol : Weapon
     {
-        public Weapon weapon;
+
+        [Range(0.0f, 50.0f)]
         public float range = 100f;
+        [Range(0.0f, 5.0f)]
         public float rateOfFire = 1f;
 
         public LineRenderer linePrefab;
-        public Viewmodel viewmodel;
-
         public float lineLifetime = 1f;
 
-        private GameInput input;
-        private NetworkPlayer player;
-        private Camera fpsCamera;
-
-        private float timeToFire;
-
         private readonly Vector3[] linePoints = new Vector3[2];
-
         // Start is called before the first frame update
-        private void Start()
+        void Start()
         {
-            input = FindObjectOfType<GameInput>();
-            player = GetComponent<NetworkPlayer>();
-            fpsCamera = GetComponentInChildren<Camera>();
-
-            timeToFire = rateOfFire;
-            weapon = GetComponentInChildren<Weapon>();
         }
 
         // Update is called once per frame
-        private void Update()
+        void Update()
         {
-            if (player.PlayerInfo.Alive && input.Fire && rateOfFire <= timeToFire)
-            {
-                timeToFire = 0;
-                weapon.Shoot(fpsCamera.transform, player);
-            }
 
-            timeToFire += Time.deltaTime;
         }
 
-        private void Shoot()
+        public override void Shoot(Transform camera, NetworkPlayer player)
         {
-            var cameraTransform = fpsCamera.transform;
+            var cameraTransform = camera;
             var from = cameraTransform.position;
             var to = cameraTransform.forward;
-            var barrel = viewmodel.barrelPoint.position;
+            var barrel = barrelPoint.position;
 
             if (!Physics.Raycast(from, to, out var hit, range,
                 Physics.AllLayers))
@@ -63,7 +46,7 @@ namespace Game
             SpawnLine(barrel, hit.point);
             player.Shoot(barrel, hit.point);
 
-            viewmodel.Shoot();
+            //viewmodel.Shoot();
 
             if (hit.transform.gameObject.layer != (int)Layer.Players) return;
 
@@ -72,7 +55,7 @@ namespace Game
                 player.Kill(targetNetPlayer);
         }
 
-        internal void SpawnLine(Vector3 from, Vector3 to)
+        protected override void SpawnLine(Vector3 from, Vector3 to)
         {
             var line = Instantiate(linePrefab);
 
