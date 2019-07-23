@@ -30,6 +30,8 @@ namespace Networking
             client.Start();
         }
 
+        private bool preloadedLevel;
+
         private bool ListenServer { get; }
 
         private Loader Loader { get; }
@@ -54,13 +56,20 @@ namespace Networking
         {
             base.InitializeFromServer(playerId, maxPlayers, level, currentPlayers, currentPlayersInfo);
 
+            if (preloadedLevel)
+                LevelLoaded(level);
+
             if (!ListenServer)
                 LevelManager.ChangeLevel(level);
         }
 
         private void LevelLoaded(string level)
         {
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            if (!PlayerId.HasValue)
+            {
+                preloadedLevel = true;
+                return;
+            }
 
             Loaded = true;
             CreatePlayer(PlayerId.Value, true);
