@@ -2317,7 +2317,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preferencesSetter: {fileID: 0}
+  gameInput: {fileID: 0}
   nameField: {fileID: 6509091870025873075}
+  sensValueText: {fileID: 0}
   sensitivitySlider: {fileID: 6625409015797927046}
   masterVolumeSlider: {fileID: 2970221941497889972}
   musicVolumeSlider: {fileID: 6989273989757697876}
@@ -3367,6 +3369,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
       objectReference: {fileID: 6509091870025873075}
+    - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1658861178898429331, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3608,11 +3615,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_MinValue
       value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
-        type: 3}
-      propertyPath: m_MaxValue
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
@@ -3926,6 +3928,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
       objectReference: {fileID: 6509091870025873075}
+    - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1658861178898429331, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4173,6 +4180,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
       objectReference: {fileID: 6625409015797927046}
+    - target: {fileID: 2272041253496161973, guid: a1d284043aef0bf4385ad6b9a3f101b6,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1658861178898429331, guid: a1d284043aef0bf4385ad6b9a3f101b6,
         type: 3}
       propertyPath: m_StaticEditorFlags

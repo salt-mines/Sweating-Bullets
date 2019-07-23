@@ -3,14 +3,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game;
 
 namespace UI
 {
     public class OptionsMenu : MonoBehaviour
     {
         public PreferencesSetter preferencesSetter;
+        public GameInput gameInput;
 
         public TMP_InputField nameField;
+        public TextMeshProUGUI sensValueText;
         public Slider sensitivitySlider;
 
         public Slider masterVolumeSlider;
@@ -21,11 +24,16 @@ namespace UI
 
         internal Preferences Preferences { get; set; }
 
+
         private void Start()
         {
             if (preferencesSetter == null)
-                throw new ArgumentException("OptionsMenu requires AudioPreferencesSetter");
+                preferencesSetter = FindObjectOfType<PreferencesSetter>();
 
+            if (Preferences == null)
+                Preferences = preferencesSetter.Preferences;
+
+            gameInput = FindObjectOfType<GameInput>();
             masterVolumeSlider.value = Preferences.MasterVolume;
             masterVolumeSlider.onValueChanged.AddListener(preferencesSetter.SetMasterVolume);
 
@@ -40,6 +48,16 @@ namespace UI
 
             sensitivitySlider.value = Preferences.Sensitivity;
             sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
+
+            sensValueText.text = sensitivitySlider.value.ToString("F1");
+        }
+
+        private void Update()
+        {
+            if (gameInput.Cancel)
+            {
+                OnClickOk();
+            }   
         }
 
         private void OnEnable()
@@ -58,6 +76,7 @@ namespace UI
         private void OnSensitivityChanged(float _)
         {
             preferencesSetter.SetSensitivity(sensitivitySlider.value);
+            sensValueText.text = sensitivitySlider.value.ToString("F1");
         }
 
         public void OnClickOk()
