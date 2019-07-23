@@ -31,6 +31,7 @@ namespace Networking
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
         public event EventHandler<PlayerPreferences> PlayerSentPreferences;
+        public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
         public event EventHandler<PlayerInfo> OwnKill;
         public event EventHandler<PlayerDeath> PlayerDeath;
@@ -80,11 +81,11 @@ namespace Networking
 
         protected void InitializeFromServer(Connected packet)
         {
-            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers);
+            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers, packet.currentPlayersInfo);
         }
 
         protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level,
-            List<PlayerPreferences> currentPlayers)
+            List<PlayerPreferences> currentPlayers, List<PlayerExtraInfo> currentPlayersInfo)
         {
             UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
@@ -92,12 +93,18 @@ namespace Networking
             Players = new PlayerInfo[maxPlayers];
             PlayerId = playerId;
 
+            // TODO: Do this when level is active scene so player objects go there
             UnityEngine.Debug.Log("Received player list");
             foreach (var pl in currentPlayers)
             {
                 var p = CreatePlayer(pl.playerId);
                 OnPlayerSentPreferences(pl);
                 UnityEngine.Debug.Log($"Player on server: {p}");
+            }
+
+            foreach (var pl in currentPlayersInfo)
+            {
+                OnPlayerSentInfo(pl);
             }
         }
 
@@ -111,13 +118,24 @@ namespace Networking
             PlayerLeft?.Invoke(this, player);
         }
 
-        protected virtual void OnPlayerSentPreferences(PlayerPreferences info)
+        protected virtual void OnPlayerSentPreferences(PlayerPreferences packet)
         {
-            var pl = Players[info.playerId];
+            var pl = Players[packet.playerId];
             if (pl == null) return;
-            pl.Name = info.name;
+            pl.Name = packet.name;
 
-            PlayerSentPreferences?.Invoke(this, info);
+            PlayerSentPreferences?.Invoke(this, packet);
+        }
+
+        protected virtual void OnPlayerSentInfo(PlayerExtraInfo packet)
+        {
+            var pl = Players[packet.playerId];
+            if (pl == null) return;
+
+            pl.Kills = packet.kills;
+            pl.Deaths = packet.deaths;
+
+            PlayerSentInfo?.Invoke(this, packet);
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -146,6 +164,9 @@ namespace Networking
                 Players[PlayerId.Value].PlayerObject.Kill();
                 UnityEngine.Debug.Log("Death!");
             }
+
+            Players[packet.playerId].Deaths = packet.playerDeaths;
+            Players[packet.killerId].Kills = packet.killerKills;
 
             UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
 

@@ -28,6 +28,9 @@ namespace Networking
         public Vector3 Velocity { get; set; } = Vector3.zero;
         public Vector2 ViewAngles { get; set; } = Vector2.zero;
 
+        public short Kills { get; set; }
+        public short Deaths { get; set; }
+
         public bool Teleported { get; set; }
         public bool Alive { get; set; } = true;
 

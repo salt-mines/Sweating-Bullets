@@ -21,5 +21,10 @@ namespace UI
         {
             nameText.text = plName;
         }
+
+        public void UpdateKills(short kills)
+        {
+            scoreText.text = kills.ToString();
+        }
     }
 }

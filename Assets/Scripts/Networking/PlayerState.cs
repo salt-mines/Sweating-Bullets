@@ -7,6 +7,7 @@ namespace Networking
     public struct PlayerState : IPacket
     {
         public PacketType Type => PacketType.PlayerMove;
+        public int SequenceChannel => 2;
 
         public byte playerId;
 

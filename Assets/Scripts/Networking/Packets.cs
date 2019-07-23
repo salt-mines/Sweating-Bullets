@@ -8,6 +8,7 @@ namespace Networking.Packets
     {
         Connected = 0,
         PlayerPreferences = 5,
+        PlayerExtraInfo = 6,
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerMove = 12,
@@ -20,6 +21,8 @@ namespace Networking.Packets
     public interface IPacket
     {
         PacketType Type { get; }
+
+        int SequenceChannel { get; }
 
         void Write(NetOutgoingMessage msg);
     }
@@ -38,6 +41,7 @@ namespace Networking.Packets
     public struct Connected : IPacket
     {
         public PacketType Type => PacketType.Connected;
+        public int SequenceChannel => 0;
 
         public byte playerId;
         public byte maxPlayers;
@@ -46,6 +50,8 @@ namespace Networking.Packets
 
         public List<PlayerPreferences> currentPlayers;
 
+        public List<PlayerExtraInfo> currentPlayersInfo;
+
         public static Connected Read(NetIncomingMessage msg)
         {
             return new Connected
@@ -53,7 +59,8 @@ namespace Networking.Packets
                 playerId = msg.ReadByte(),
                 maxPlayers = msg.ReadByte(),
                 levelName = msg.ReadString(),
-                currentPlayers = ReadPlayerList(msg)
+                currentPlayers = ReadPlayerList(msg),
+                currentPlayersInfo = ReadPlayerInfo(msg)
             };
         }
 
@@ -63,6 +70,15 @@ namespace Networking.Packets
             var list = new List<PlayerPreferences>(length);
             for (var i = 0; i < length; i++)
                 list.Add(PlayerPreferences.Read(msg));
+            return list;
+        }
+
+        private static List<PlayerExtraInfo> ReadPlayerInfo(NetIncomingMessage msg)
+        {
+            var length = msg.ReadByte();
+            var list = new List<PlayerExtraInfo>(length);
+            for (var i = 0; i < length; i++)
+                list.Add(PlayerExtraInfo.Read(msg));
             return list;
         }
 
@@ -77,12 +93,19 @@ namespace Networking.Packets
             {
                 pl.Write(msg);
             }
+
+            msg.Write((byte) currentPlayersInfo.Count);
+            foreach (var pl in currentPlayersInfo)
+            {
+                pl.Write(msg);
+            }
         }
     }
 
     public struct PlayerPreferences : IPacket
     {
         public PacketType Type => PacketType.PlayerPreferences;
+        public int SequenceChannel => 0;
 
         public byte playerId;
         public string name;
@@ -103,9 +126,38 @@ namespace Networking.Packets
         }
     }
 
+    public struct PlayerExtraInfo : IPacket
+    {
+        public PacketType Type => PacketType.PlayerExtraInfo;
+        public int SequenceChannel => 10;
+
+        public byte playerId;
+
+        public short kills;
+        public short deaths;
+
+        public static PlayerExtraInfo Read(NetIncomingMessage msg)
+        {
+            return new PlayerExtraInfo
+            {
+                playerId = msg.ReadByte(),
+                kills = msg.ReadInt16(),
+                deaths = msg.ReadInt16()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write(playerId);
+            msg.Write(kills);
+            msg.Write(deaths);
+        }
+    }
+
     public struct PlayerConnected : IPacket
     {
         public PacketType Type => PacketType.PlayerConnected;
+        public int SequenceChannel => 0;
 
         public byte playerId;
 
@@ -126,6 +178,7 @@ namespace Networking.Packets
     public struct PlayerDisconnected : IPacket
     {
         public PacketType Type => PacketType.PlayerDisconnected;
+        public int SequenceChannel => 0;
 
         public byte playerId;
 
@@ -146,6 +199,7 @@ namespace Networking.Packets
     public struct PlayerKill : IPacket
     {
         public PacketType Type => PacketType.PlayerKill;
+        public int SequenceChannel => 0;
 
         public byte killerId;
         public byte targetId;
@@ -169,16 +223,22 @@ namespace Networking.Packets
     public struct PlayerDeath : IPacket
     {
         public PacketType Type => PacketType.PlayerDeath;
+        public int SequenceChannel => 0;
 
         public byte playerId;
         public byte killerId;
+
+        public short playerDeaths;
+        public short killerKills;
 
         public static PlayerDeath Read(NetIncomingMessage msg)
         {
             return new PlayerDeath
             {
                 playerId = msg.ReadByte(),
-                killerId = msg.ReadByte()
+                killerId = msg.ReadByte(),
+                playerDeaths = msg.ReadInt16(),
+                killerKills = msg.ReadInt16()
             };
         }
 
@@ -186,12 +246,15 @@ namespace Networking.Packets
         {
             msg.Write(playerId);
             msg.Write(killerId);
+            msg.Write(playerDeaths);
+            msg.Write(killerKills);
         }
     }
 
     public struct PlayerShoot : IPacket
     {
         public PacketType Type => PacketType.PlayerShoot;
+        public int SequenceChannel => 0;
 
         public byte playerId;
         public Vector3 from;
@@ -218,6 +281,7 @@ namespace Networking.Packets
     public struct WorldState : IPacket
     {
         public PacketType Type => PacketType.WorldState;
+        public int SequenceChannel => 1;
 
         public PlayerState?[] worldState;
 

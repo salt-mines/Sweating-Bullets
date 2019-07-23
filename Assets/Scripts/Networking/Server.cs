@@ -267,6 +267,24 @@ namespace Networking
             return list;
         }
 
+        internal List<PlayerExtraInfo> BuildPlayerInfoList(byte? excludeId = null)
+        {
+            var list = new List<PlayerExtraInfo>(Players.Length);
+            foreach (var pl in Players)
+            {
+                if (pl == null || excludeId == pl.Id) continue;
+
+                list.Add(new PlayerExtraInfo
+                {
+                    playerId = pl.Id,
+                    kills = pl.Kills,
+                    deaths = pl.Deaths
+                });
+            }
+
+            return list;
+        }
+
         private void OnPlayerConnected(NetConnection connection)
         {
             var player = CreatePlayer(false, null, connection);
@@ -280,7 +298,8 @@ namespace Networking
                 playerId = player.Id,
                 maxPlayers = MaxPlayerCount,
                 levelName = Level,
-                currentPlayers = BuildPlayerList(player.Id)
+                currentPlayers = BuildPlayerList(player.Id),
+                currentPlayersInfo = BuildPlayerInfoList(player.Id)
             }, player.Connection, NetDeliveryMethod.ReliableUnordered);
 
             SendToAll(new PlayerConnected
@@ -308,26 +327,26 @@ namespace Networking
             switch (type)
             {
                 case PacketType.PlayerPreferences:
-                    ReceivePlayerInfo(sender, PlayerPreferences.Read(msg));
+                    PacketReceived(sender, PlayerPreferences.Read(msg));
                     break;
                 case PacketType.PlayerMove:
-                    OnPlayerMove(sender, PlayerState.Read(msg));
+                    PacketReceived(sender, PlayerState.Read(msg));
                     break;
                 case PacketType.PlayerKill:
-                    OnPlayerKill(sender, PlayerKill.Read(msg));
+                    PacketReceived(sender, PlayerKill.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
-                    OnPlayerShoot(sender, PlayerShoot.Read(msg));
+                    PacketReceived(sender, PlayerShoot.Read(msg));
                     break;
             }
         }
 
-        internal void ReceivePlayerInfo(byte sender, PlayerPreferences packet)
+        internal void PacketReceived(byte sender, PlayerPreferences packet)
         {
             var ply = Players[sender];
             if (ply == null)
             {
-                Debug.LogWarning("Received SendPlayerInfo without player existing");
+                Debug.LogWarning("Received PlayerPreferences without player existing");
                 return;
             }
 
@@ -345,12 +364,12 @@ namespace Networking
             PlayerSentPreferences?.Invoke(this, newPacket);
         }
 
-        internal void OnPlayerMove(byte sender, PlayerState packet)
+        internal void PacketReceived(byte sender, PlayerState packet)
         {
             Players[sender]?.SetFromState(packet);
         }
 
-        internal void OnPlayerShoot(byte sender, PlayerShoot packet)
+        internal void PacketReceived(byte sender, PlayerShoot packet)
         {
             if (Players[sender] == null)
                 return;
@@ -366,7 +385,7 @@ namespace Networking
             PlayerShot?.Invoke(this, shot);
         }
 
-        public void OnPlayerKill(byte sender, PlayerKill packet)
+        public void PacketReceived(byte sender, PlayerKill packet)
         {
             if (Players[sender] == null || Players[packet.targetId] == null)
                 return;
@@ -374,7 +393,9 @@ namespace Networking
             var death = new PlayerDeath
             {
                 playerId = packet.targetId,
-                killerId = sender
+                killerId = sender,
+                playerDeaths = ++Players[packet.targetId].Deaths,
+                killerKills = ++Players[sender].Kills
             };
             SendToAll(death, NetDeliveryMethod.ReliableUnordered);
 

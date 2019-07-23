@@ -51,10 +51,10 @@ namespace Networking
         {
             var ply = Server.CreatePlayer(true);
 
-            InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id));
+            InitializeFromServer(ply.Id, Server.MaxPlayerCount, Server.Level, Server.BuildPlayerList(ply.Id), Server.BuildPlayerInfoList(ply.Id));
             ply.PlayerObject.PlayerInfo = CreatePlayer(ply.Id, true);
             var info = new PlayerPreferences {name = Preferences.Name};
-            Server.ReceivePlayerInfo(ply.Id, info);
+            Server.PacketReceived(ply.Id, info);
             OnPlayerSentPreferences(info);
             Loaded = true;
         }
@@ -80,7 +80,7 @@ namespace Networking
 
             if (ply == null) return;
 
-            Server.OnPlayerMove(ply.Id, ply.GetState());
+            Server.PacketReceived(ply.Id, ply.GetState());
 
             if (ply.Teleported)
                 ply.Teleported = false;
@@ -89,7 +89,7 @@ namespace Networking
         public override void PlayerShoot(Vector3 from, Vector3 to)
         {
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            Server.OnPlayerShoot(PlayerId.Value, new PlayerShoot
+            Server.PacketReceived(PlayerId.Value, new PlayerShoot
             {
                 playerId = PlayerId.Value,
                 from = from,
@@ -104,7 +104,7 @@ namespace Networking
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Debug.LogFormat("Shooting Player {0}", targetId);
 
-            Server.OnPlayerKill(PlayerId.Value, new PlayerKill
+            Server.PacketReceived(PlayerId.Value, new PlayerKill
             {
                 killerId = PlayerId.Value,
                 targetId = targetId
