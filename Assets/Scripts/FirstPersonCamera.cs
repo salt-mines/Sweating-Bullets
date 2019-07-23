@@ -23,6 +23,7 @@ public class FirstPersonCamera : MonoBehaviour
     private void Update()
     {
         viewAngles.x += input.MouseX * Time.deltaTime;
+        viewAngles.x %= 360;
         viewAngles.y = Mathf.Clamp(viewAngles.y - input.MouseY * Time.deltaTime, -89.99f, 89.99f);
 
         player.localRotation = Quaternion.AngleAxis(viewAngles.x, Vector3.up);
