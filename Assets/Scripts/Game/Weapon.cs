@@ -36,7 +36,9 @@ namespace Game
 
         public abstract void Shoot(Transform startPoint, NetworkPlayer player);
 
-        public void SpawnLine(Vector3 from, Vector3 to)
+        public abstract void ShootVisual(Vector3 from, Vector3 to);
+
+        protected void SpawnLine(Vector3 from, Vector3 to)
         {
             var line = Instantiate(linePrefab);
 

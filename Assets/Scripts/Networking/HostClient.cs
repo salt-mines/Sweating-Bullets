@@ -30,21 +30,23 @@ namespace Networking
             RemovePlayer(player.Id);
         }
 
-        private void OnPlayerSentPreferences(object sender, PlayerPreferences info)
+        private void OnPlayerSentPreferences(object sender, PlayerPreferences packet)
         {
-            OnPlayerSentPreferences(info);
+            OnPlayerSentPreferences(packet);
         }
 
-        private void OnPlayerDeath(object sender, PlayerDeath death)
+        private void OnPlayerDeath(object sender, PlayerDeath packet)
         {
-            OnPlayerDeath(death);
+            OnPlayerDeath(packet);
         }
 
-        private void OnPlayerShoot(object sender, PlayerShoot shot)
+        private void OnPlayerShoot(object sender, PlayerShoot packet)
         {
-            if (Players == null || LocalPlayer == null || shot.playerId == PlayerId) return;
+            if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 
-            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().weapon.SpawnLine(shot.from, shot.to);
+            var ply = Players[packet.playerId];
+            if (ply.PlayerObject.currentWeapon)
+                ply.PlayerObject.currentWeapon.ShootVisual(packet.from, packet.to);
         }
 
         private void LevelLoaded(string level)

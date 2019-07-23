@@ -12,6 +12,8 @@ namespace Game
         [SerializeField]
         private bool isLocalPlayer;
 
+        public Weapon currentWeapon;
+
         public Transform eyePosition;
 
         public Animator animator;

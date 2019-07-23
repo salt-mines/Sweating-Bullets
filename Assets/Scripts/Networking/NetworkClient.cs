@@ -221,7 +221,9 @@ namespace Networking
         {
             if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 
-            LocalPlayer.PlayerObject.GetComponent<PlayerShooting>().weapon.SpawnLine(packet.from, packet.to);
+            var ply = Players[packet.playerId];
+            if (ply.PlayerObject.currentWeapon)
+                ply.PlayerObject.currentWeapon.ShootVisual(packet.from, packet.to);
         }
 
         internal override void OnGUI(float x, float y)

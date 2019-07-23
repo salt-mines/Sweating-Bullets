@@ -35,15 +35,19 @@ namespace Game
                 var direction = new Vector3(spreadX, spreadY, 0.0f) + startPoint.forward;
                 var endPoint = startPoint.position + direction * range;
 
-                var didHit = Physics.Raycast(from, direction, out var hit, range,
-                    Physics.AllLayers);
+                var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);
 
                 if (didHit)
                     endPoint = hit.point;
 
-                SpawnLine(barrelPoint.position, endPoint);
+                ShootVisual(barrelPoint.position, endPoint);
                 //player.Shoot(weapon.barrelPoint.position, to * range);
             }
+        }
+
+        public override void ShootVisual(Vector3 from, Vector3 to)
+        {
+            SpawnLine(from, to);
         }
     }
 }

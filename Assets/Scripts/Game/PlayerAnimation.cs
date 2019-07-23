@@ -68,17 +68,18 @@ namespace Game
             }
 
             var from = eyePosition.position;
-            var to = eyePosition.forward;
+            var dir = eyePosition.forward;
 
             var mask = LayerMask.GetMask("Default");
-            Physics.Raycast(from, to, out var hit, float.PositiveInfinity, mask);
+            var didHit = Physics.Raycast(from, dir, out var hit, float.PositiveInfinity, mask);
+            var to = didHit ? hit.point : from + dir * 100;
 
-            animator.SetLookAtPosition(hit.point);
+            animator.SetLookAtPosition(to);
             animator.SetLookAtWeight(1);
 
             if (weaponPivot)
             {
-                weaponPivot.LookAt(hit.point);
+                weaponPivot.LookAt(to);
 
                 var angles = weaponPivot.localRotation.eulerAngles;
                 if (angles.x > 180 && angles.x < 272)
