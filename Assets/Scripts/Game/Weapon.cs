@@ -26,7 +26,7 @@ namespace Game
         public Transform bulletParent;
 
         public TrailRenderer bulletEffect;
-        public float bulletEffectTime = 0.1f;
+        public float bulletEffectSpeed = 500f;
 
         protected float lastShot;
         protected abstract int BulletReserve { get; }
@@ -87,28 +87,26 @@ namespace Game
             var didHit = hit.HasValue && hit.Value.collider;
             var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
 
+            // Set the emit rotation based on hit direction and normal
             if (didHit)
             {
-                var fromDir = (to - from);
+                var fromDir = to - from;
                 bullet.transform.rotation = Quaternion.LookRotation(Vector3.Reflect(fromDir, hit.Value.normal));
             }
 
-            var seq = DOTween.Sequence();
-            seq.Append(bullet.transform.DOMove(to, bulletEffectTime));
-
-            if (didHitPlayer)
-                seq.AppendCallback(() =>
+            bullet.transform.DOMove(to, bulletEffectSpeed).SetSpeedBased()
+                .OnComplete(() =>
                 {
-                    bullet.bloodSplatter.Play(false);
-                });
-            else if (didHit)
-                seq.AppendCallback(() =>
-                {
-                    bullet.wallSplatter.Play(false);
-                });
+                    if (didHitPlayer)
+                        bullet.bloodSplatter.Play(false);
+                    else if (didHit)
+                        bullet.wallSplatter.Play(false);
 
-            seq.AppendInterval(bulletTrail.time)
-                .AppendCallback(() => bullet.gameObject.SetActive(false));
+                    DOTween.Sequence().PrependInterval(bulletTrail.time).AppendCallback(() =>
+                    {
+                        bullet.gameObject.SetActive(false);
+                    });
+                });
         }
     }
 }
