@@ -122,7 +122,9 @@ namespace Networking
         {
             var pl = Players[packet.playerId];
             if (pl == null) return;
+
             pl.Name = packet.name;
+            pl.Color = packet.color;
 
             PlayerSentPreferences?.Invoke(this, packet);
         }

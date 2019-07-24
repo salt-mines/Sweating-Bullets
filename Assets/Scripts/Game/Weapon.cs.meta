@@ -3,7 +3,13 @@ guid: 4a0a068ddc56f0442be580c750b27410
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - barrelPoint: {instanceID: 0}
+  - rightHandIKTarget: {instanceID: 0}
+  - leftHandIKTarget: {instanceID: 0}
+  - bulletParent: {instanceID: 0}
+  - bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

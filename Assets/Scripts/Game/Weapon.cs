@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 namespace Game
 {
     public abstract class Weapon : MonoBehaviour
     {
-        private readonly Vector3[] linePoints = new Vector3[2];
+        protected static ObjectPool bulletPool = new ObjectPool();
 
         [Header("Weapon")]
         [Tooltip("Rate of fire in rounds per second")]
@@ -16,36 +17,68 @@ namespace Game
 
         [Header("Positions")]
         public Transform barrelPoint;
+
         public Transform rightHandIKTarget;
         public Transform leftHandIKTarget;
 
-        [Header("Trail")]
-        public LineRenderer linePrefab;
-        [Range(0f, 10f)]
-        public float lineLifetime = 1f;
+        [Header("Visuals")]
+        public Transform bulletParent;
+
+        public TrailRenderer bulletEffect;
+        public float bulletEffectTime = 0.1f;
 
         protected float lastShot;
+        protected abstract int BulletReserve { get; }
+
+        private void Start()
+        {
+            if (!bulletParent)
+            {
+                var li = FindObjectOfType<LevelInfo>();
+                if (li && li.dynamicObjectParent)
+                    bulletParent = li.dynamicObjectParent.transform;
+            }
+
+            bulletPool.Prefab = bulletEffect.gameObject;
+            bulletPool.Parent = bulletParent;
+
+            bulletPool.Capacity += BulletReserve;
+
+            bulletPool.Fill();
+        }
 
         public virtual bool CanShoot()
         {
             if (rateOfFire == 0f)
                 return false;
 
-            return Time.time > lastShot + 1f/rateOfFire;
+            return Time.time > lastShot + 1f / rateOfFire;
         }
 
-        public abstract void Shoot(Transform startPoint, NetworkPlayer player);
+        public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public abstract void ShootVisual(Vector3 from, Vector3 to);
-
-        protected void SpawnLine(Vector3 from, Vector3 to)
+        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to)
         {
-            var line = Instantiate(linePrefab);
+            var bullet = bulletPool.GetOne().GetComponent<TrailRenderer>();
+            bullet.transform.position = from;
 
-            linePoints[0] = from;
-            linePoints[1] = to;
-            line.SetPositions(linePoints);
-            Destroy(line.gameObject, lineLifetime);
+            var cg = bullet.colorGradient;
+            var cks = cg.colorKeys;
+
+            for (var i = 0; i < cks.Length; i++)
+            {
+                cks[i].color = player.PlayerInfo.Color;
+            }
+
+            cg.SetKeys(cks, cg.alphaKeys);
+            bullet.colorGradient = cg;
+
+            bullet.gameObject.SetActive(true);
+
+            var seq = DOTween.Sequence();
+            seq.Append(bullet.transform.DOMove(to, bulletEffectTime))
+                .AppendInterval(bullet.time)
+                .AppendCallback(() => bullet.gameObject.SetActive(false));
         }
     }
 }
