@@ -24,6 +24,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Arena Factory.unity
     guid: eeb9f19b011bbc549b87d2cf5726a9b8
   - enabled: 1
-    path: Assets/Scenes/Levels/New Map.unity
+    path: Assets/Scenes/Levels/dmsert.unity
     guid: 1c31036727ae12441b5a8a913afd8cbc
   m_configObjects: {}
