@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Effects;
 using UnityEngine;
 
 namespace Game
@@ -59,29 +60,62 @@ namespace Game
 
         public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to)
+        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit = null)
         {
             if (!bulletEffect) return;
 
-            var bullet = bulletPool.GetOne().GetComponent<TrailRenderer>();
-            bullet.transform.position = from;
+            var bulletTrail = bulletPool.GetOne().GetComponent<TrailRenderer>();
+            bulletTrail.enabled = false;
+            bulletTrail.Clear();
+            bulletTrail.transform.position = from;
 
-            var cg = bullet.colorGradient;
+            // Set up player colored trail
+            var cg = bulletTrail.colorGradient;
             var cks = cg.colorKeys;
 
-            for (var i = 0; i < cks.Length; i++)
-            {
-                cks[i].color = player.PlayerInfo.Color;
-            }
+            for (var i = 0; i < cks.Length; i++) cks[i].color = player.PlayerInfo.Color;
 
             cg.SetKeys(cks, cg.alphaKeys);
-            bullet.colorGradient = cg;
+            bulletTrail.colorGradient = cg;
 
-            bullet.gameObject.SetActive(true);
+            bulletTrail.gameObject.SetActive(true);
+            bulletTrail.enabled = true;
+
+            var bullet = bulletTrail.GetComponent<Bullet>();
+
+            // Hit effects
+            var didHit = hit.HasValue && hit.Value.collider;
+            var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
+            //if (didHitPlayer) bullet.transform.rotation = Quaternion.LookRotation(hit.Value.normal);
+            if (didHit)
+            {
+                var fromDir = (to - from);
+                bullet.transform.rotation = Quaternion.LookRotation(Vector3.Reflect(fromDir, hit.Value.normal));
+            }
 
             var seq = DOTween.Sequence();
-            seq.Append(bullet.transform.DOMove(to, bulletEffectTime))
-                .AppendInterval(bullet.time)
+            seq.Append(bullet.transform.DOMove(to, bulletEffectTime));
+
+            if (didHitPlayer)
+                seq.AppendCallback(() =>
+                {
+                    var em = bullet.wallSplatter.emission;
+                    em.enabled = false;
+                    em = bullet.bloodSplatter.emission;
+                    em.enabled = true;
+                    bullet.bloodSplatter.Play();
+                });
+            else if (didHit)
+                seq.AppendCallback(() =>
+                {
+                    var em = bullet.wallSplatter.emission;
+                    em.enabled = true;
+                    em = bullet.bloodSplatter.emission;
+                    em.enabled = false;
+                    bullet.wallSplatter.Play();
+                });
+
+            seq.AppendInterval(bulletTrail.time)
                 .AppendCallback(() => bullet.gameObject.SetActive(false));
         }
     }
