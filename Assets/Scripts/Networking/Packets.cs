@@ -109,13 +109,15 @@ namespace Networking.Packets
 
         public byte playerId;
         public string name;
+        public Color color;
 
         public static PlayerPreferences Read(NetIncomingMessage msg)
         {
             return new PlayerPreferences
             {
                 playerId = msg.ReadByte(),
-                name = msg.ReadString()
+                name = msg.ReadString(),
+                color = msg.ReadColor(false)
             };
         }
 
@@ -123,6 +125,7 @@ namespace Networking.Packets
         {
             msg.Write(playerId);
             msg.Write(name);
+            msg.Write(color, false);
         }
     }
 

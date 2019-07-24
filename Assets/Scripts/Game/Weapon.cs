@@ -56,12 +56,24 @@ namespace Game
             return Time.time > lastShot + 1f / rateOfFire;
         }
 
-        public abstract void Shoot(Transform startPoint, NetworkPlayer player);
+        public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public virtual void ShootVisual(Vector3 from, Vector3 to)
+        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to)
         {
             var bullet = bulletPool.GetOne().GetComponent<TrailRenderer>();
             bullet.transform.position = from;
+
+            var cg = bullet.colorGradient;
+            var cks = cg.colorKeys;
+
+            for (var i = 0; i < cks.Length; i++)
+            {
+                cks[i].color = player.PlayerInfo.Color;
+            }
+
+            cg.SetKeys(cks, cg.alphaKeys);
+            bullet.colorGradient = cg;
+
             bullet.gameObject.SetActive(true);
 
             var seq = DOTween.Sequence();

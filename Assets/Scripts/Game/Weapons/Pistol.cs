@@ -10,7 +10,7 @@ namespace Game.Weapons
 
         protected override int BulletReserve => Mathf.CeilToInt(1 / rateOfFire) + 1;
 
-        public override void Shoot(Transform startPoint, NetworkPlayer player)
+        public override void Shoot(NetworkPlayer player, Transform startPoint)
         {
             lastShot = Time.time;
 
@@ -22,7 +22,7 @@ namespace Game.Weapons
             var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);
             var to = didHit ? hit.point : from + direction * range;
 
-            ShootVisual(barrel, to);
+            ShootVisual(player, barrel, to);
             player.Shoot(barrel, to);
 
             if (!didHit)

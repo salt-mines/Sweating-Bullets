@@ -23,6 +23,7 @@ namespace Networking
         public byte Id { get; }
 
         public string Name { get; set; } = "Player";
+        public Color Color { get; set; } = Color.white;
 
         public Vector3 Position { get; set; } = Vector3.zero;
         public Vector3 Velocity { get; set; } = Vector3.zero;

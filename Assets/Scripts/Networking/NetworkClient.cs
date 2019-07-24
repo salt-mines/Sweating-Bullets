@@ -4,12 +4,15 @@ using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
+using Random = UnityEngine.Random;
 
 namespace Networking
 {
     internal sealed class NetworkClient : Client
     {
         private readonly NetClient client;
+
+        private bool preloadedLevel;
 
         internal NetworkClient(bool listenServer, Loader loader)
         {
@@ -29,8 +32,6 @@ namespace Networking
 
             client.Start();
         }
-
-        private bool preloadedLevel;
 
         private bool ListenServer { get; }
 
@@ -78,8 +79,10 @@ namespace Networking
             var info = new PlayerPreferences
             {
                 playerId = PlayerId.Value,
-                name = Preferences.Name
+                name = Preferences.Name,
+                color = Random.ColorHSV(0, 1f, 0.3f, 1f, 0.5f, 1f)
             };
+
             Send(info, NetDeliveryMethod.ReliableUnordered);
             OnPlayerSentPreferences(info);
         }
@@ -236,7 +239,7 @@ namespace Networking
 
             var ply = Players[packet.playerId];
             if (ply.PlayerObject.currentWeapon)
-                ply.PlayerObject.currentWeapon.ShootVisual(packet.from, packet.to);
+                ply.PlayerObject.currentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
         }
 
         internal override void OnGUI(float x, float y)

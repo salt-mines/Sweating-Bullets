@@ -19,7 +19,7 @@ namespace Game.Weapons
 
         protected override int BulletReserve => Mathf.CeilToInt(numPellets * 1 / rateOfFire) + 1;
 
-        public override void Shoot(Transform startPoint, NetworkPlayer player)
+        public override void Shoot(NetworkPlayer player, Transform startPoint)
         {
             lastShot = Time.time;
 
@@ -42,7 +42,7 @@ namespace Game.Weapons
                 if (didHit)
                     endPoint = hit.point;
 
-                ShootVisual(barrelPoint.position, endPoint);
+                ShootVisual(player, barrelPoint.position, endPoint);
                 //player.Shoot(weapon.barrelPoint.position, to * range);
             }
         }

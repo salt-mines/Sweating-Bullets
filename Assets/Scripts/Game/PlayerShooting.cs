@@ -33,7 +33,7 @@ namespace Game
         {
             if (!input.Fire || !player.PlayerInfo.Alive || !weapon.CanShoot()) return;
 
-            weapon.Shoot(fpsCamera.transform, player);
+            weapon.Shoot(player, fpsCamera.transform);
 
             if (viewmodel)
                 viewmodel.Shoot();
