@@ -39,6 +39,8 @@ namespace Game
                     bulletParent = li.dynamicObjectParent.transform;
             }
 
+            if (!bulletEffect) return;
+
             bulletPool.Prefab = bulletEffect.gameObject;
             bulletPool.Parent = bulletParent;
 
@@ -59,6 +61,8 @@ namespace Game
 
         public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to)
         {
+            if (!bulletEffect) return;
+
             var bullet = bulletPool.GetOne().GetComponent<TrailRenderer>();
             bullet.transform.position = from;
 
