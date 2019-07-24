@@ -86,7 +86,7 @@ namespace Game
             // Hit effects
             var didHit = hit.HasValue && hit.Value.collider;
             var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
-            //if (didHitPlayer) bullet.transform.rotation = Quaternion.LookRotation(hit.Value.normal);
+
             if (didHit)
             {
                 var fromDir = (to - from);
