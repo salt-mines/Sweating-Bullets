@@ -20,6 +20,8 @@ namespace Game
         public PlayerMovement playerMovement;
         public FirstPersonCamera firstPersonCamera;
 
+        public ParticleSystem deathEffect;
+
         private CharacterController characterController;
 
         public byte Id => PlayerInfo.Id;
@@ -27,6 +29,8 @@ namespace Game
         public PlayerInfo PlayerInfo { get; internal set; }
 
         public Client Client { get; set; }
+
+        private bool alive = true;
 
         public bool IsLocalPlayer
         {
@@ -60,7 +64,13 @@ namespace Game
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);
                 eyePosition.localRotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.y, Vector3.right);
 
-                for (var i = 0; i < tr.childCount; i++) tr.GetChild(i).gameObject.SetActive(PlayerInfo.Alive);
+                if (alive && !PlayerInfo.Alive)
+                    Kill();
+
+                if (!alive && PlayerInfo.Alive)
+                    Respawn();
+
+                alive = PlayerInfo.Alive;
             }
 
             var groundVel = tr.InverseTransformVector(PlayerInfo.Velocity);
@@ -109,7 +119,32 @@ namespace Game
 
         public void Kill()
         {
-            GetComponent<PlayerMechanics>()?.Kill();
+            if (deathEffect)
+                deathEffect.Play();
+
+            if (IsLocalPlayer)
+            {
+                GetComponent<PlayerMechanics>()?.Kill();
+                return;
+            }
+
+            var tr = transform;
+            for (var i = 0; i < tr.childCount; i++)
+            {
+                var ch = tr.GetChild(i).gameObject;
+                if (ch == deathEffect.gameObject) continue;
+
+                ch.SetActive(false);
+            }
+        }
+
+        public void Respawn()
+        {
+            var tr = transform;
+            for (var i = 0; i < tr.childCount; i++)
+            {
+                tr.GetChild(i).gameObject.SetActive(true);
+            }
         }
 
         public void Shoot(Vector3 from, Vector3 to)

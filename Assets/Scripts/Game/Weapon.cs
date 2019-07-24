@@ -99,20 +99,12 @@ namespace Game
             if (didHitPlayer)
                 seq.AppendCallback(() =>
                 {
-                    var em = bullet.wallSplatter.emission;
-                    em.enabled = false;
-                    em = bullet.bloodSplatter.emission;
-                    em.enabled = true;
-                    bullet.bloodSplatter.Play();
+                    bullet.bloodSplatter.Play(false);
                 });
             else if (didHit)
                 seq.AppendCallback(() =>
                 {
-                    var em = bullet.wallSplatter.emission;
-                    em.enabled = true;
-                    em = bullet.bloodSplatter.emission;
-                    em.enabled = false;
-                    bullet.wallSplatter.Play();
+                    bullet.wallSplatter.Play(false);
                 });
 
             seq.AppendInterval(bulletTrail.time)
