@@ -8,11 +8,17 @@ public class LevelInfo : MonoBehaviour
     public string levelAuthor;
     public string levelVersion;
 
+    [Tooltip("Spectator camera of the level. Optional.")]
+    public Camera spectatorCamera;
+
     [Tooltip("Parent object of spawnpoint objects.")]
     public GameObject spawnPointParent;
 
-    [Tooltip("Spectator camera of the level. Optional.")]
-    public Camera spectatorCamera;
+    [Tooltip("Parent object of player objects.")]
+    public GameObject playerParent;
+
+    [Tooltip("Parent object of dynamic objects, like bullets.")]
+    public GameObject dynamicObjectParent;
 
     private void Awake()
     {

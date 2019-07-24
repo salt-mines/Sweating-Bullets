@@ -56,6 +56,9 @@ MonoBehaviour:
   lineLifetime: 1
   range: 100
   bulletParticleSystem: {fileID: 3982683606865573201}
+  bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
+    type: 3}
+  bulletEffectTime: 0.1
 --- !u!1 &449045867664619635
 GameObject:
   m_ObjectHideFlags: 0

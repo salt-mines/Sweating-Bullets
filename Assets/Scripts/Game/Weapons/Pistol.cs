@@ -8,8 +8,7 @@ namespace Game.Weapons
         [Range(0.0f, 100.0f)]
         public float range = 100f;
 
-        [Header("Particles")]
-        public ParticleSystem bulletParticleSystem;
+        protected override int BulletReserve => Mathf.CeilToInt(1 / rateOfFire) + 1;
 
         public override void Shoot(Transform startPoint, NetworkPlayer player)
         {
@@ -34,18 +33,6 @@ namespace Game.Weapons
             var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
             if (targetNetPlayer)
                 player.KillPlayer(targetNetPlayer);
-        }
-
-        public override void ShootVisual(Vector3 from, Vector3 to)
-        {
-            var ps = bulletParticleSystem;
-
-            ps.transform.position = from;
-            ps.transform.LookAt(to);
-            var main = ps.main;
-            main.startLifetime = Mathf.Clamp(Vector3.Distance(from, to) / main.startSpeed.constant, 0.05f, 3f);
-
-            ps.Emit(1);
         }
     }
 }

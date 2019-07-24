@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game
+namespace Game.Weapons
 {
     public class Shotgun : Weapon
     {
@@ -16,6 +16,8 @@ namespace Game
 
         [Range(0.0f, 20.0f)]
         public float range = 8f;
+
+        protected override int BulletReserve => Mathf.CeilToInt(numPellets * 1 / rateOfFire) + 1;
 
         public override void Shoot(Transform startPoint, NetworkPlayer player)
         {
@@ -43,11 +45,6 @@ namespace Game
                 ShootVisual(barrelPoint.position, endPoint);
                 //player.Shoot(weapon.barrelPoint.position, to * range);
             }
-        }
-
-        public override void ShootVisual(Vector3 from, Vector3 to)
-        {
-            SpawnLine(from, to);
         }
     }
 }

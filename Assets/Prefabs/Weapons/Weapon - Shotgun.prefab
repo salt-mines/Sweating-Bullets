@@ -330,9 +330,10 @@ MonoBehaviour:
   barrelPoint: {fileID: 4302999062951135073}
   rightHandIKTarget: {fileID: 1717459247136135397}
   leftHandIKTarget: {fileID: 267144377629373318}
-  linePrefab: {fileID: 4150037132844808201, guid: 24bafe6f7b752d7478e730f5584f2f35,
+  bulletParent: {fileID: 0}
+  bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
     type: 3}
-  lineLifetime: 1
+  bulletEffectTime: 0.1
   numPellets: 10
   horizontalSpread: 0.9
   verticalSpread: 0.5
