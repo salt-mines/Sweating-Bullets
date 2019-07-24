@@ -42,8 +42,7 @@ namespace Game
             bulletPool.Prefab = bulletEffect.gameObject;
             bulletPool.Parent = bulletParent;
 
-            if (BulletReserve > bulletPool.Count)
-                bulletPool.Capacity = BulletReserve;
+            bulletPool.Capacity += BulletReserve;
 
             bulletPool.Fill();
         }
