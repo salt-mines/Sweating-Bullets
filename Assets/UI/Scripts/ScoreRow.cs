@@ -1,13 +1,16 @@
 using Networking;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class ScoreRow : MonoBehaviour
     {
         public TextMeshProUGUI nameText;
-        public TextMeshProUGUI scoreText;
+        [FormerlySerializedAs("scoreText")]
+        public TextMeshProUGUI killsText;
+        public TextMeshProUGUI deathsText;
 
         private PlayerInfo playerInfo;
 
@@ -24,7 +27,12 @@ namespace UI
 
         public void UpdateKills(short kills)
         {
-            scoreText.text = kills.ToString();
+            killsText.text = kills.ToString();
+        }
+
+        public void UpdateDeaths(short deaths)
+        {
+            deathsText.text = deaths.ToString();
         }
     }
 }

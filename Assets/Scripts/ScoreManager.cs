@@ -68,8 +68,10 @@ public class ScoreManager : MonoBehaviour
         foreach (RectTransform tr in playerList.transform)
         {
             var player = tr.GetComponent<ScoreRow>();
-            if (player && player.PlayerInfo.Id == info.playerId)
-                player.UpdateKills(info.kills);
+            if (!player || player.PlayerInfo.Id != info.playerId) continue;
+
+            player.UpdateKills(info.kills);
+            player.UpdateDeaths(info.deaths);
         }
 
         dirty = true;
@@ -82,6 +84,8 @@ public class ScoreManager : MonoBehaviour
             var player = tr.GetComponent<ScoreRow>();
             if (player && player.PlayerInfo.Id == info.killerId)
                 player.UpdateKills(info.killerKills);
+            if (player && player.PlayerInfo.Id == info.playerId)
+                player.UpdateDeaths(info.playerDeaths);
         }
 
         dirty = true;
