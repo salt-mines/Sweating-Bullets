@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -36,5 +37,10 @@ public class LevelInfo : MonoBehaviour
 
         if (levelSnapshot)
             levelSnapshot.TransitionTo(0);
+    }
+
+    private void OnDestroy()
+    {
+        DOTween.KillAll();
     }
 }

@@ -56,6 +56,11 @@ namespace Game
             bulletPool.Fill();
         }
 
+        private void OnDestroy()
+        {
+            bulletPool.Clear();
+        }
+
         public virtual bool CanShoot()
         {
             if (rateOfFire == 0f)
