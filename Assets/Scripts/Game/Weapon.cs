@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Effects;
 using UnityEngine;
 
 namespace Game
@@ -25,19 +26,27 @@ namespace Game
         public Transform bulletParent;
 
         public TrailRenderer bulletEffect;
-        public float bulletEffectTime = 0.1f;
+        public float bulletEffectSpeed = 500f;
+
+        [Header("Audio")]
+        public AudioSource audioSource;
 
         protected float lastShot;
         protected abstract int BulletReserve { get; }
 
         private void Start()
         {
+            if (!audioSource)
+                audioSource = GetComponent<AudioSource>();
+
             if (!bulletParent)
             {
                 var li = FindObjectOfType<LevelInfo>();
                 if (li && li.dynamicObjectParent)
                     bulletParent = li.dynamicObjectParent.transform;
             }
+
+            if (!bulletEffect) return;
 
             bulletPool.Prefab = bulletEffect.gameObject;
             bulletPool.Parent = bulletParent;
@@ -57,28 +66,53 @@ namespace Game
 
         public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to)
+        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit = null)
         {
-            var bullet = bulletPool.GetOne().GetComponent<TrailRenderer>();
-            bullet.transform.position = from;
+            if (!bulletEffect) return;
 
-            var cg = bullet.colorGradient;
+            var bulletTrail = bulletPool.GetOne().GetComponent<TrailRenderer>();
+            bulletTrail.enabled = false;
+            bulletTrail.Clear();
+            bulletTrail.transform.position = from;
+
+            // Set up player colored trail
+            var cg = bulletTrail.colorGradient;
             var cks = cg.colorKeys;
 
-            for (var i = 0; i < cks.Length; i++)
-            {
-                cks[i].color = player.PlayerInfo.Color;
-            }
+            for (var i = 0; i < cks.Length; i++) cks[i].color = player.PlayerInfo.Color;
 
             cg.SetKeys(cks, cg.alphaKeys);
-            bullet.colorGradient = cg;
+            bulletTrail.colorGradient = cg;
 
-            bullet.gameObject.SetActive(true);
+            bulletTrail.gameObject.SetActive(true);
+            bulletTrail.enabled = true;
 
-            var seq = DOTween.Sequence();
-            seq.Append(bullet.transform.DOMove(to, bulletEffectTime))
-                .AppendInterval(bullet.time)
-                .AppendCallback(() => bullet.gameObject.SetActive(false));
+            var bullet = bulletTrail.GetComponent<Bullet>();
+
+            // Hit effects
+            var didHit = hit.HasValue && hit.Value.collider;
+            var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
+
+            // Set the emit rotation based on hit direction and normal
+            if (didHit)
+            {
+                var fromDir = to - from;
+                bullet.transform.rotation = Quaternion.LookRotation(Vector3.Reflect(fromDir, hit.Value.normal));
+            }
+
+            bullet.transform.DOMove(to, bulletEffectSpeed).SetSpeedBased()
+                .OnComplete(() =>
+                {
+                    if (didHitPlayer)
+                        bullet.bloodSplatter.Play(false);
+                    else if (didHit)
+                        bullet.wallSplatter.Play(false);
+
+                    DOTween.Sequence().PrependInterval(bulletTrail.time).AppendCallback(() =>
+                    {
+                        bullet.gameObject.SetActive(false);
+                    });
+                });
         }
     }
 }

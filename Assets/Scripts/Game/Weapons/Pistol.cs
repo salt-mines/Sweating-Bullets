@@ -22,7 +22,10 @@ namespace Game.Weapons
             var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);
             var to = didHit ? hit.point : from + direction * range;
 
-            ShootVisual(player, barrel, to);
+            if (audioSource)
+                audioSource.Play();
+
+            ShootVisual(player, barrel, to, hit);
             player.Shoot(barrel, to);
 
             if (!didHit)

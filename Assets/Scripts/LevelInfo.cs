@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class LevelInfo : MonoBehaviour
@@ -20,6 +21,8 @@ public class LevelInfo : MonoBehaviour
     [Tooltip("Parent object of dynamic objects, like bullets.")]
     public GameObject dynamicObjectParent;
 
+    public AudioMixerSnapshot levelSnapshot;
+
     private void Awake()
     {
         if (string.IsNullOrWhiteSpace(levelName))
@@ -30,5 +33,8 @@ public class LevelInfo : MonoBehaviour
     {
         if (SceneManager.sceneCount > 1 && spectatorCamera)
             spectatorCamera.gameObject.SetActive(false);
+
+        if (levelSnapshot)
+            levelSnapshot.TransitionTo(0);
     }
 }
