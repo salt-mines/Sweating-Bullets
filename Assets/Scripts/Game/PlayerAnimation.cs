@@ -34,6 +34,16 @@ namespace Game
                 leftHandTarget = weapon.leftHandIKTarget;
         }
 
+        public void SetWeapon(Weapon wep)
+        {
+            weapon = wep;
+
+            if (!weapon) return;
+
+            rightHandTarget = weapon.rightHandIKTarget;
+            leftHandTarget = weapon.leftHandIKTarget;
+        }
+
         private void OnAnimatorIK(int layerIndex)
         {
             if (!ikEnabled) return;

@@ -29,6 +29,9 @@ namespace Networking
         public Vector3 Velocity { get; set; } = Vector3.zero;
         public Vector2 ViewAngles { get; set; } = Vector2.zero;
 
+        public byte Health { get; set; } = 100;
+        public byte Weapon { get; set; } = 0;
+
         public short Kills { get; set; }
         public short Deaths { get; set; }
 
@@ -48,6 +51,8 @@ namespace Networking
                 position = Position,
                 velocity = Velocity,
                 viewAngles = ViewAngles,
+                health = Health,
+                weapon = Weapon,
                 teleported = Teleported,
                 alive = Alive
             };
@@ -58,6 +63,8 @@ namespace Networking
             Position = state.position;
             Velocity = state.velocity;
             ViewAngles = state.viewAngles;
+            Health = state.health;
+            Weapon = state.weapon;
             Teleported = state.teleported;
             Alive = state.alive;
         }

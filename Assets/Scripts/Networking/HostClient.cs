@@ -45,8 +45,8 @@ namespace Networking
             if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 
             var ply = Players[packet.playerId];
-            if (ply.PlayerObject.currentWeapon)
-                ply.PlayerObject.currentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
+            if (ply.PlayerObject.playerMechanics.CurrentWeapon)
+                ply.PlayerObject.playerMechanics.CurrentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
         }
 
         private void LevelLoaded(string level)

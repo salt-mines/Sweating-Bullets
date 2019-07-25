@@ -85,6 +85,8 @@ namespace Networking
 
             Send(info, NetDeliveryMethod.ReliableUnordered);
             OnPlayerSentPreferences(info);
+
+            CreateServerPlayers();
         }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -238,8 +240,8 @@ namespace Networking
             if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 
             var ply = Players[packet.playerId];
-            if (ply.PlayerObject.currentWeapon)
-                ply.PlayerObject.currentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
+            if (ply.PlayerObject.playerMechanics.CurrentWeapon)
+                ply.PlayerObject.playerMechanics.CurrentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
         }
 
         internal override void OnGUI(float x, float y)

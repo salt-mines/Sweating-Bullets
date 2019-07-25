@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c772df5ae464e45913fc2c6a4f14502, type: 3}
+  m_Name: Default Game Settings
+  m_EditorClassIdentifier: 
+  weapons:
+  - {fileID: 8813512276880922557, guid: f4de7a044160e33438afa67c5c3cdbbd, type: 3}
+  - {fileID: 7160301323098420746, guid: 8ffec3414a2ed344181638bf7cfe38cb, type: 3}
+  - {fileID: 1858484937160739010, guid: d4a10c1ff36fe8342b7ba83ecb3ad0aa, type: 3}
+  spawnTime: 6

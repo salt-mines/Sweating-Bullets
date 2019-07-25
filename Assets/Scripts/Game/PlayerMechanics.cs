@@ -1,20 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UI;
 using UnityEngine;
+using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
-    [RequireComponent(typeof(CharacterController), typeof(PlayerMovement), typeof(NetworkPlayer))]
+    [RequireComponent(typeof(NetworkPlayer))]
     public class PlayerMechanics : MonoBehaviour
     {
         private readonly List<SpawnPoint> spawnPointList = new List<SpawnPoint>(8);
         private readonly List<SpawnPoint> freeSpawnPoints = new List<SpawnPoint>(8);
 
-        public float spawnTime = 6f;
+        public GameSettings gameSettings;
 
         [ReorderableList]
         public List<GameObject> disableOnDeath;
+
+        public Transform gunParent;
+        public ParticleSystem deathEffect;
 
         private NetworkPlayer networkPlayer;
         private CharacterController characterController;
@@ -25,15 +31,35 @@ namespace Game
 
         private float timeSpentDead;
 
+        public byte CurrentWeaponId { get; private set; }
+        public Weapon CurrentWeapon { get; private set; }
+
+        public bool IsLocal => networkPlayer.IsLocalPlayer;
         public bool IsAlive { get; set; } = true;
 
         private void Start()
         {
+            if (!gameSettings)
+                throw new ArgumentException("gameSettings is required");
+
             networkPlayer = GetComponent<NetworkPlayer>();
             characterController = GetComponent<CharacterController>();
             playerMovement = GetComponent<PlayerMovement>();
 
             uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
+
+            foreach (var wep in gameSettings.weapons)
+            {
+                var w = Instantiate(wep, gunParent);
+                w.gameObject.SetActive(false);
+
+                if (!IsLocal) continue;
+
+                foreach (var mr in w.GetComponentsInChildren<MeshRenderer>())
+                    mr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+            }
+
+            SetWeapon(0);
 
             if (!spawnPointsParent)
                 spawnPointsParent = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
@@ -48,18 +74,37 @@ namespace Game
                 spawnPointList.Add(spawn);
             }
 
-            RespawnPlayer();
+            Respawn();
         }
 
         private void Update()
         {
+            if (!IsLocal) return;
+
             if (!IsAlive) timeSpentDead += Time.deltaTime;
 
-            if (spawnTime < timeSpentDead)
+            if (gameSettings.spawnTime < timeSpentDead)
             {
                 timeSpentDead = 0;
-                RespawnPlayer();
+                Respawn();
             }
+        }
+
+        public void SetWeapon(byte weaponId)
+        {
+            var wep = gunParent.GetChild(weaponId)?.GetComponent<Weapon>();
+
+            if (wep != null)
+                wep.gameObject.SetActive(true);
+
+            if (CurrentWeapon != null)
+                CurrentWeapon.gameObject.SetActive(false);
+
+            CurrentWeapon = wep;
+            CurrentWeaponId = weaponId;
+
+            GetComponent<PlayerShooting>()?.SetWeapon(wep);
+            GetComponent<PlayerAnimation>()?.SetWeapon(wep);
         }
 
         [Button]
@@ -67,36 +112,46 @@ namespace Game
         {
             IsAlive = false;
 
-            characterController.enabled = false;
-            playerMovement.enabled = false;
+            if (deathEffect)
+                deathEffect.Play();
 
             foreach (var go in disableOnDeath)
                 go.SetActive(false);
 
+            if (!IsLocal) return;
+
+            characterController.enabled = false;
+            playerMovement.enabled = false;
+
             if (uiDeadOverlay)
             {
-                uiDeadOverlay.respawnTime = spawnTime;
+                uiDeadOverlay.respawnTime = gameSettings.spawnTime;
                 uiDeadOverlay.gameObject.SetActive(true);
             }
         }
 
-        public void RespawnPlayer()
+        public void Respawn()
         {
             IsAlive = true;
 
-            freeSpawnPoints.Clear();
-            foreach (var spawn in spawnPointList)
-                if (spawn.PlayersInSpawnZone == 0)
-                    freeSpawnPoints.Add(spawn);
+            if (IsLocal)
+            {
+                freeSpawnPoints.Clear();
+                foreach (var spawn in spawnPointList)
+                    if (spawn.PlayersInSpawnZone == 0)
+                        freeSpawnPoints.Add(spawn);
 
-            var list = freeSpawnPoints.Count != 0 ? freeSpawnPoints : spawnPointList;
-            var spawnTransform = list[Random.Range(0, list.Count)].playerSpawnPosition;
+                var list = freeSpawnPoints.Count != 0 ? freeSpawnPoints : spawnPointList;
+                var spawnTransform = list[Random.Range(0, list.Count)].playerSpawnPosition;
 
-            playerMovement.ResetMovement();
-            networkPlayer.Teleport(spawnTransform.position, spawnTransform.rotation);
+                playerMovement.ResetMovement();
+                networkPlayer.Teleport(spawnTransform.position, spawnTransform.rotation);
+            }
 
             foreach (var go in disableOnDeath)
                 go.SetActive(true);
+
+            if (!IsLocal) return;
 
             playerMovement.enabled = true;
             characterController.enabled = true;

@@ -28,6 +28,14 @@ namespace Game
                 weapon.barrelPoint = viewmodel.barrelPoint;
         }
 
+        public void SetWeapon(Weapon wep)
+        {
+            weapon = wep;
+
+            if (viewmodel && weapon && viewmodel.barrelPoint)
+                weapon.barrelPoint = viewmodel.barrelPoint;
+        }
+
         // Update is called once per frame
         private void Update()
         {

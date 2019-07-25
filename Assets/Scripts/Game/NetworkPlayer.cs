@@ -12,15 +12,12 @@ namespace Game
         [SerializeField]
         private bool isLocalPlayer;
 
-        public Weapon currentWeapon;
-
         public Transform eyePosition;
 
         public Animator animator;
+        public PlayerMechanics playerMechanics;
         public PlayerMovement playerMovement;
         public FirstPersonCamera firstPersonCamera;
-
-        public ParticleSystem deathEffect;
 
         private CharacterController characterController;
 
@@ -30,8 +27,6 @@ namespace Game
 
         public Client Client { get; set; }
 
-        private bool alive = true;
-
         public bool IsLocalPlayer
         {
             get => isLocalPlayer;
@@ -40,6 +35,7 @@ namespace Game
 
         private void Awake()
         {
+            playerMechanics = GetComponent<PlayerMechanics>();
             characterController = GetComponent<CharacterController>();
         }
 
@@ -53,7 +49,8 @@ namespace Game
                 PlayerInfo.Position = tr.position;
                 PlayerInfo.Velocity = playerMovement.Velocity;
                 PlayerInfo.ViewAngles = firstPersonCamera.ViewAngles;
-                PlayerInfo.Alive = GetComponent<PlayerMechanics>().IsAlive;
+                PlayerInfo.Alive = playerMechanics.IsAlive;
+                PlayerInfo.Weapon = playerMechanics.CurrentWeaponId;
             }
             else
             {
@@ -64,13 +61,13 @@ namespace Game
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);
                 eyePosition.localRotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.y, Vector3.right);
 
-                if (alive && !PlayerInfo.Alive)
+                if (playerMechanics.IsAlive && !PlayerInfo.Alive)
                     Kill();
+                else if (!playerMechanics.IsAlive && PlayerInfo.Alive)
+                    playerMechanics.Respawn();
 
-                if (!alive && PlayerInfo.Alive)
-                    Respawn();
-
-                alive = PlayerInfo.Alive;
+                if (playerMechanics.CurrentWeaponId != PlayerInfo.Weapon)
+                    playerMechanics.SetWeapon(PlayerInfo.Weapon);
             }
 
             var groundVel = tr.InverseTransformVector(PlayerInfo.Velocity);
@@ -119,32 +116,7 @@ namespace Game
 
         public void Kill()
         {
-            if (deathEffect)
-                deathEffect.Play();
-
-            if (IsLocalPlayer)
-            {
-                GetComponent<PlayerMechanics>()?.Kill();
-                return;
-            }
-
-            var tr = transform;
-            for (var i = 0; i < tr.childCount; i++)
-            {
-                var ch = tr.GetChild(i).gameObject;
-                if (ch == deathEffect.gameObject) continue;
-
-                ch.SetActive(false);
-            }
-        }
-
-        public void Respawn()
-        {
-            var tr = transform;
-            for (var i = 0; i < tr.childCount; i++)
-            {
-                tr.GetChild(i).gameObject.SetActive(true);
-            }
+            playerMechanics.Kill();
         }
 
         public void Shoot(Vector3 from, Vector3 to)

@@ -28,6 +28,9 @@ namespace Networking
         public bool Connected => PlayerId.HasValue;
         public bool Loaded { get; protected set; }
 
+        private List<PlayerPreferences> serverPlayers;
+        private List<PlayerExtraInfo> serverPlayerInfos;
+
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
         public event EventHandler<PlayerPreferences> PlayerSentPreferences;
@@ -93,16 +96,22 @@ namespace Networking
             Players = new PlayerInfo[maxPlayers];
             PlayerId = playerId;
 
+            serverPlayers = currentPlayers;
+            serverPlayerInfos = currentPlayersInfo;
+        }
+
+        protected void CreateServerPlayers()
+        {
             // TODO: Do this when level is active scene so player objects go there
             UnityEngine.Debug.Log("Received player list");
-            foreach (var pl in currentPlayers)
+            foreach (var pl in serverPlayers)
             {
                 var p = CreatePlayer(pl.playerId);
                 OnPlayerSentPreferences(pl);
                 UnityEngine.Debug.Log($"Player on server: {p}");
             }
 
-            foreach (var pl in currentPlayersInfo)
+            foreach (var pl in serverPlayerInfos)
             {
                 OnPlayerSentInfo(pl);
             }
