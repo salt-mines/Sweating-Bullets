@@ -121,9 +121,19 @@ namespace Game
                 .OnComplete(() =>
                 {
                     if (didHitPlayer)
-                        bullet.bloodSplatter.Play(false);
+                    {
+                        if (bullet.bloodSplatter)
+                            bullet.bloodSplatter.Play(false);
+                        if (bullet.audioSource && bullet.playerHitSound)
+                            bullet.audioSource.PlayOneShot(bullet.playerHitSound);
+                    }
                     else if (didHit)
-                        bullet.wallSplatter.Play(false);
+                    {
+                        if (bullet.wallSplatter)
+                            bullet.wallSplatter.Play(false);
+                        if (bullet.audioSource && bullet.wallHitSound)
+                            bullet.audioSource.PlayOneShot(bullet.wallHitSound);
+                    }
 
                     DOTween.Sequence().PrependInterval(bulletTrail.time).AppendCallback(() =>
                     {

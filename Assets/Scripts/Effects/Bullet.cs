@@ -6,5 +6,10 @@ namespace Effects
     {
         public ParticleSystem bloodSplatter;
         public ParticleSystem wallSplatter;
+
+        public AudioSource audioSource;
+
+        public AudioClip playerHitSound;
+        public AudioClip wallHitSound;
     }
 }
