@@ -96,7 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 112000006, guid: d71e590e3b35ab64dae4c0a841e96e69,
+  m_LightingDataAsset: {fileID: 112000006, guid: 6b872fe0ef1dfe246b2a1e7463dee636,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -511,7 +511,7 @@ MonoBehaviour:
   - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     scenePath: Assets/Scenes/Levels/Test.unity
   - sceneAsset: {fileID: 102900000, guid: 1c31036727ae12441b5a8a913afd8cbc, type: 3}
-    scenePath: Assets/Scenes/Levels/New Map.unity
+    scenePath: Assets/Scenes/Levels/dmsert.unity
 --- !u!114 &1425483753
 MonoBehaviour:
   m_ObjectHideFlags: 0
