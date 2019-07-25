@@ -74,10 +74,29 @@ public class Loader : MonoBehaviour
         // If started in batch mode, load straight into game
         if (Application.isBatchMode)
         {
+            if (Utils.GetArgument("-listlevels") != null)
+            {
+                Debug.Log("Available levels:\n");
+                foreach (var lvl in LevelManager.AvailableLevels)
+                    Debug.Log($"Level name: {lvl}");
+
+                Application.Quit();
+            }
+
+            var maxPl = Constants.MaxPlayers;
+            var maxPlStr = Utils.GetArgument("-maxplayers");
+            if (maxPlStr != null)
+                byte.TryParse(maxPlStr, out maxPl);
+
+            var clLevel = Utils.GetArgument("-level") ?? LevelManager.StartingLevel;
+
+            if (!LevelManager.IsValidLevel(clLevel))
+                throw new ArgumentException("level is invalid");
+
             StartGame(new ServerConfig
             {
-                MaxPlayerCount = Constants.MaxPlayers,
-                StartingLevel = LevelManager.StartingLevel
+                MaxPlayerCount = maxPl,
+                StartingLevel = clLevel
             });
             return;
         }

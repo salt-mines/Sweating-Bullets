@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,5 +49,19 @@ public static class Utils
             return -120f;
 
         return Mathf.Log10(linear) * 20f;
+    }
+
+    /// <summary>
+    ///     Get command line argument by name (hyphen included).
+    /// </summary>
+    /// <param name="name">name of argument to find, with hyphen</param>
+    /// <returns>value passed with given name</returns>
+    public static string GetArgument(string name)
+    {
+        var args = Environment.GetCommandLineArgs();
+        for (var i = 0; i < args.Length; i++)
+            if (args[i] == name)
+                return args.Length > i + 1 ? args[i + 1] : args[i];
+        return null;
     }
 }

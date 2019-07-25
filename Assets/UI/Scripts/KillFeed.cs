@@ -18,6 +18,8 @@ namespace UI
         {
             client = FindObjectOfType<NetworkManager>().Client;
 
+            if (client == null) return;
+
             client.OwnKill += OnOwnKill;
             client.PlayerDeath += OnDeath;
         }
