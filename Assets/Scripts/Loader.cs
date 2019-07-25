@@ -71,6 +71,17 @@ public class Loader : MonoBehaviour
 
     private void Start()
     {
+        // If started in batch mode, load straight into game
+        if (Application.isBatchMode)
+        {
+            StartGame(new ServerConfig
+            {
+                MaxPlayerCount = Constants.MaxPlayers,
+                StartingLevel = LevelManager.StartingLevel
+            });
+            return;
+        }
+
         // If this is the only loaded scene, load main menu
         if (SceneManager.sceneCount == 1) StartCoroutine(LoadSceneAsync(mainMenuScene));
 
@@ -95,12 +106,12 @@ public class Loader : MonoBehaviour
     /// <summary>
     ///     Load common game scene, optionally with the given starting level.
     /// </summary>
-    /// <param name="startingLevel">optional starting level</param>
-    public void StartGame(ServerConfig serverConfig = null)
+    /// <param name="config">server configuration</param>
+    public void StartGame(ServerConfig config = null)
     {
         if (isCommonLoaded) return;
 
-        this.serverConfig = serverConfig;
+        serverConfig = config;
 
         StartCoroutine(UnloadAndLoadAsync(mainMenuScene, gameScene));
         isCommonLoaded = true;
