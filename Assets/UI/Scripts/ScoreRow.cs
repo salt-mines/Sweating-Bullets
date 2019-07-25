@@ -2,11 +2,13 @@ using Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace UI
 {
     public class ScoreRow : MonoBehaviour
     {
+        public Graphic colorIndicator;
         public TextMeshProUGUI nameText;
         [FormerlySerializedAs("scoreText")]
         public TextMeshProUGUI killsText;
@@ -18,6 +20,11 @@ namespace UI
         {
             get => playerInfo;
             set => UpdateName((playerInfo = value).Name);
+        }
+
+        public void UpdateColor(Color color)
+        {
+            colorIndicator.color = color;
         }
 
         public void UpdateName(string plName)

@@ -27,7 +27,7 @@ public class ScoreManager : MonoBehaviour
 
         cl.PlayerJoined += (sender, info) => { AddPlayer(info); };
         cl.PlayerLeft += (sender, info) => { RemovePlayer(info.Id); };
-        cl.PlayerSentPreferences += (sender, info) => { UpdatePlayerName(info); };
+        cl.PlayerSentPreferences += (sender, info) => { UpdatePlayerPref(info); };
         cl.PlayerSentInfo += (sender, info) => { UpdatePlayerInfo(info); };
         cl.PlayerDeath += (sender, info) => { UpdatePlayerDeath(info); };
 
@@ -53,13 +53,15 @@ public class ScoreManager : MonoBehaviour
                 Destroy(tr.gameObject);
     }
 
-    private void UpdatePlayerName(PlayerPreferences info)
+    private void UpdatePlayerPref(PlayerPreferences info)
     {
         foreach (RectTransform tr in playerList.transform)
         {
             var player = tr.GetComponent<ScoreRow>();
-            if (player && player.PlayerInfo.Id == info.playerId)
-                player.UpdateName(info.name);
+            if (!player || player.PlayerInfo.Id != info.playerId) continue;
+
+            player.UpdateColor(info.color);
+            player.UpdateName(info.name);
         }
     }
 
