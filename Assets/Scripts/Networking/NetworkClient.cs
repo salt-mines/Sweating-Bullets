@@ -68,6 +68,9 @@ namespace Networking
         {
             if (!PlayerId.HasValue)
             {
+                // If the scene was open in editor, this method gets called before we have actually joined the local
+                // server. If this bool is set to true, LevelLoaded is called again once server has sent its
+                // welcome packet.
                 preloadedLevel = true;
                 return;
             }
@@ -76,6 +79,8 @@ namespace Networking
             CreatePlayer(PlayerId.Value, true);
 
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+
+            // Send our chosen player name and a random color to identify us.
             var info = new PlayerPreferences
             {
                 playerId = PlayerId.Value,

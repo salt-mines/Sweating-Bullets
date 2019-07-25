@@ -11,16 +11,17 @@ using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
-    [SerializeField]
+    [Tooltip("Loading screen prefab.")]
     public LoadingScreen loadingScreen;
 
+    [Tooltip("Main menu scene, loaded first if other scenes aren't open.")]
     public SceneReference mainMenuScene;
 
     [Tooltip("Scene containing common gameplay objects.")]
     public SceneReference gameScene;
 
+    [Tooltip("List of available levels in the game. Displayed in given order.")]
     [ReorderableList]
-    [SerializeField]
     public List<SceneReference> availableLevels = new List<SceneReference>();
 
     private bool isCommonLoaded;
@@ -40,7 +41,7 @@ public class Loader : MonoBehaviour
         Preferences.Load();
 
         GetComponent<PreferencesSetter>().Preferences = Preferences;
-        
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         LevelManager = new LevelManager(availableLevels);
@@ -48,6 +49,7 @@ public class Loader : MonoBehaviour
 
         preloadedScene = SceneManager.GetActiveScene();
 
+        // Check open scenes for any levels, so we can correctly load them.
         for (var i = 0; i < SceneManager.sceneCount; i++)
         {
             var sc = SceneManager.GetSceneAt(i);
@@ -82,6 +84,9 @@ public class Loader : MonoBehaviour
         StartCoroutine(UnloadAndLoadAsync(LevelManager.CurrentLevel, newLevel));
     }
 
+    /// <summary>
+    ///     Load main menu by unloading everything and starting from boot.
+    /// </summary>
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(gameObject.scene.buildIndex);
@@ -152,6 +157,7 @@ public class Loader : MonoBehaviour
         if (!isCommon)
             loadingScreen.Show(false, true);
 
+        // Start network things when game scene is loaded.
         if (isCommon)
         {
             var nm = FindObjectOfType<NetworkManager>();
@@ -164,6 +170,7 @@ public class Loader : MonoBehaviour
             return;
         }
 
+        // Set last loaded level as active scene.
         SceneManager.SetActiveScene(scene);
 
         if (isMainMenu)

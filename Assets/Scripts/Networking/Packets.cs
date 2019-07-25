@@ -11,7 +11,7 @@ namespace Networking.Packets
         PlayerExtraInfo = 6,
         PlayerConnected = 10,
         PlayerDisconnected = 11,
-        PlayerMove = 12,
+        PlayerState = 12,
         PlayerKill = 13,
         PlayerDeath = 14,
         PlayerShoot = 15,
@@ -38,6 +38,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent to a player when they first connect. Contains some general server info and its current players.
+    /// </summary>
     public struct Connected : IPacket
     {
         public PacketType Type => PacketType.Connected;
@@ -89,19 +92,17 @@ namespace Networking.Packets
             msg.Write(levelName);
 
             msg.Write((byte) currentPlayers.Count);
-            foreach (var pl in currentPlayers)
-            {
-                pl.Write(msg);
-            }
+            foreach (var pl in currentPlayers) pl.Write(msg);
 
             msg.Write((byte) currentPlayersInfo.Count);
-            foreach (var pl in currentPlayersInfo)
-            {
-                pl.Write(msg);
-            }
+            foreach (var pl in currentPlayersInfo) pl.Write(msg);
         }
     }
 
+    /// <summary>
+    ///     Sent by connecting player to server, and to other clients by the server. Contains player name and
+    ///     other possible personal preferences like player model.
+    /// </summary>
     public struct PlayerPreferences : IPacket
     {
         public PacketType Type => PacketType.PlayerPreferences;
@@ -129,6 +130,10 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by server to players. Contains extra information about a player (k/d at the moment).
+    ///     Currently only sent inside Connected packet.
+    /// </summary>
     public struct PlayerExtraInfo : IPacket
     {
         public PacketType Type => PacketType.PlayerExtraInfo;
@@ -157,6 +162,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by server to all clients when a new player connects to server, containing only their id.
+    /// </summary>
     public struct PlayerConnected : IPacket
     {
         public PacketType Type => PacketType.PlayerConnected;
@@ -178,6 +186,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by server to all clients when a player disconnects.
+    /// </summary>
     public struct PlayerDisconnected : IPacket
     {
         public PacketType Type => PacketType.PlayerDisconnected;
@@ -199,6 +210,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by client to server when client kills a player.
+    /// </summary>
     public struct PlayerKill : IPacket
     {
         public PacketType Type => PacketType.PlayerKill;
@@ -223,6 +237,10 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by server to all clients when a player dies, their killer (can be themselves) and updated k/d for
+    ///     respective players.
+    /// </summary>
     public struct PlayerDeath : IPacket
     {
         public PacketType Type => PacketType.PlayerDeath;
@@ -254,6 +272,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by client to server when they fire a shot. Then sent by server to all clients for shot visuals/sounds.
+    /// </summary>
     public struct PlayerShoot : IPacket
     {
         public PacketType Type => PacketType.PlayerShoot;
@@ -281,6 +302,9 @@ namespace Networking.Packets
         }
     }
 
+    /// <summary>
+    ///     Sent by server to all clients. Contains current state of all players.
+    /// </summary>
     public struct WorldState : IPacket
     {
         public PacketType Type => PacketType.WorldState;

@@ -16,7 +16,15 @@ public enum Layer
     Ignore_Raycast = 2,
     Water = 4,
     UI = 5,
+
+    /// <summary>
+    ///     View layer, mostly used for player's local viewmodel objects.
+    /// </summary>
     View = 8,
+
+    /// <summary>
+    ///     Players layer contains all enemy player objects.
+    /// </summary>
     Players = 9,
     Post_Processing = 10
 }

@@ -324,7 +324,7 @@ namespace Networking
                 case PacketType.PlayerPreferences:
                     PacketReceived(sender, PlayerPreferences.Read(msg));
                     break;
-                case PacketType.PlayerMove:
+                case PacketType.PlayerState:
                     PacketReceived(sender, PlayerState.Read(msg));
                     break;
                 case PacketType.PlayerKill:

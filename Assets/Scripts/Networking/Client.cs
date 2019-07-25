@@ -2,34 +2,70 @@
 using System.Collections.Generic;
 using Networking.Packets;
 using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Networking
 {
     public abstract class Client
     {
-        private float nextSend;
-        private float nextTick;
+        private float nextSendTime;
+        private float nextTickTime;
 
-        public NetworkManager NetworkManager { get; internal set; }
-
-        public PlayerInfo[] Players { get; private set; }
-        public byte MaxPlayers { get; protected set; }
-
-        public int TickRate { get; set; } = Constants.TickRate;
-        public int SendRate { get; set; } = Constants.SendRate;
-
-        public bool InterpolationEnabled { get; set; } = true;
-        public float Interpolation { get; set; } = Constants.Interpolation;
-
-        public byte? PlayerId { get; protected set; }
-        public PlayerInfo LocalPlayer => PlayerId.HasValue ? Players[PlayerId.Value] : null;
-
-        public bool Connected => PlayerId.HasValue;
-        public bool Loaded { get; protected set; }
-
+        // List of players and their infos on the joined server. Held here to be
+        // actually created client-side once we have loaded the level.
         private List<PlayerPreferences> serverPlayers;
         private List<PlayerExtraInfo> serverPlayerInfos;
+
+        /// <summary>
+        ///     Network manager object for client.
+        /// </summary>
+        public NetworkManager NetworkManager { get; internal set; }
+
+        /// <summary>
+        ///     List of players on current server.
+        /// </summary>
+        public PlayerInfo[] Players { get; private set; }
+
+        /// <summary>
+        ///     How many times per second client should check for new packets.
+        /// </summary>
+        public int TickRate { get; set; } = Constants.TickRate;
+
+        /// <summary>
+        ///     How many times per second client should send packets to server.
+        /// </summary>
+        public int SendRate { get; set; } = Constants.SendRate;
+
+        /// <summary>
+        ///     Whether client-side interpolation of other players should be enabled.
+        /// </summary>
+        public bool InterpolationEnabled { get; set; } = true;
+
+        /// <summary>
+        ///     How long should interpolation period be.
+        /// </summary>
+        public float Interpolation { get; set; } = Constants.Interpolation;
+
+        /// <summary>
+        ///     Player ID of local player, or null if client isn't connected yet.
+        /// </summary>
+        public byte? PlayerId { get; protected set; }
+
+        /// <summary>
+        ///     Local player object if one exists, or null.
+        /// </summary>
+        public PlayerInfo LocalPlayer => PlayerId.HasValue ? Players[PlayerId.Value] : null;
+
+        /// <summary>
+        ///     True if client is connected to a server and has its player id.
+        /// </summary>
+        public bool Connected => PlayerId.HasValue;
+
+        /// <summary>
+        ///     True if level is loaded.
+        /// </summary>
+        public bool Loaded { get; protected set; }
+
+        protected Preferences Preferences => NetworkManager.Loader.Preferences;
 
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
@@ -39,15 +75,13 @@ namespace Networking
         public event EventHandler<PlayerInfo> OwnKill;
         public event EventHandler<PlayerDeath> PlayerDeath;
 
-        protected Preferences Preferences => NetworkManager.Loader.Preferences;
-
         public void Update()
         {
             var time = Time.time;
-            if (time >= nextTick)
+            if (time >= nextTickTime)
             {
                 ProcessMessages();
-                nextTick = time + 1f / TickRate;
+                nextTickTime = time + 1f / TickRate;
             }
 
             if (!Connected || !Loaded) return;
@@ -60,10 +94,10 @@ namespace Networking
             if (!Connected || !Loaded) return;
 
             var time = Time.time;
-            if (time < nextSend) return;
+            if (time < nextSendTime) return;
 
             SendState();
-            nextSend = time + 1f / SendRate;
+            nextSendTime = time + 1f / SendRate;
         }
 
         public virtual void Connect(string host, int port = Constants.AppPort)
@@ -72,7 +106,7 @@ namespace Networking
 
         public virtual void Shutdown()
         {
-            UnityEngine.Debug.Log($"{this} shutting down.");
+            Debug.Log($"{this} shutting down.");
             PlayerId = null;
             if (Players != null)
                 Array.Clear(Players, 0, Players.Length);
@@ -84,37 +118,47 @@ namespace Networking
 
         protected void InitializeFromServer(Connected packet)
         {
-            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers, packet.currentPlayersInfo);
+            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers,
+                packet.currentPlayersInfo);
         }
 
         protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level,
             List<PlayerPreferences> currentPlayers, List<PlayerExtraInfo> currentPlayersInfo)
         {
-            UnityEngine.Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
+            Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
 
-            MaxPlayers = maxPlayers;
             Players = new PlayerInfo[maxPlayers];
             PlayerId = playerId;
 
+            // Store player info to be used later.
             serverPlayers = currentPlayers;
             serverPlayerInfos = currentPlayersInfo;
         }
 
         protected void CreateServerPlayers()
         {
-            // TODO: Do this when level is active scene so player objects go there
-            UnityEngine.Debug.Log("Received player list");
+            Debug.Log("Received player list");
             foreach (var pl in serverPlayers)
             {
                 var p = CreatePlayer(pl.playerId);
                 OnPlayerSentPreferences(pl);
-                UnityEngine.Debug.Log($"Player on server: {p}");
+                Debug.Log($"Player on server: {p}");
             }
 
-            foreach (var pl in serverPlayerInfos)
-            {
-                OnPlayerSentInfo(pl);
-            }
+            foreach (var pl in serverPlayerInfos) OnPlayerSentInfo(pl);
+        }
+
+        protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
+        {
+            Players[id] = new PlayerInfo(id);
+            OnPlayerJoined(Players[id]);
+            return Players[id];
+        }
+
+        protected virtual void RemovePlayer(byte id)
+        {
+            OnPlayerLeft(Players[id]);
+            Players[id] = null;
         }
 
         protected virtual void OnPlayerJoined(PlayerInfo player)
@@ -149,41 +193,28 @@ namespace Networking
             PlayerSentInfo?.Invoke(this, packet);
         }
 
-        protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
+        protected virtual void OnPlayerDeath(PlayerDeath packet)
         {
-            Players[id] = new PlayerInfo(id);
-            OnPlayerJoined(Players[id]);
-            return Players[id];
-        }
-
-        protected void RemovePlayer(PlayerInfo ply)
-        {
-            RemovePlayer(ply.Id);
-        }
-
-        protected virtual void RemovePlayer(byte id)
-        {
-            OnPlayerLeft(Players[id]);
-            Players[id] = null;
-        }
-
-        public virtual void OnPlayerDeath(PlayerDeath packet)
-        {
-            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+            System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             if (packet.playerId == PlayerId.Value)
             {
                 Players[PlayerId.Value].PlayerObject.Kill();
-                UnityEngine.Debug.Log("Death!");
+                Debug.Log("Death!");
             }
 
             Players[packet.playerId].Deaths = packet.playerDeaths;
             Players[packet.killerId].Kills = packet.killerKills;
 
-            UnityEngine.Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
+            Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
 
             PlayerDeath?.Invoke(this, packet);
         }
 
+        /// <summary>
+        ///     Called when local player has shot.
+        /// </summary>
+        /// <param name="from">Where the shot was shot from</param>
+        /// <param name="to">Where the shot ended</param>
         public abstract void PlayerShoot(Vector3 from, Vector3 to);
 
         public virtual void KillPlayer(byte targetId)
@@ -211,6 +242,10 @@ namespace Networking
 
         #region State updates and interpolation
 
+        /// <summary>
+        ///     Add a world state packet into interpolation queue (or apply immediately if interpolation is disabled).
+        /// </summary>
+        /// <param name="worldState"></param>
         protected void AddWorldState(PlayerState?[] worldState)
         {
             if (Players == null || !Loaded) return;
@@ -240,6 +275,9 @@ namespace Networking
             }
         }
 
+        /// <summary>
+        ///     Interpolate players' locations in between received packets.
+        /// </summary>
         private void InterpolatePlayers()
         {
             if (Players == null || !Loaded) return;

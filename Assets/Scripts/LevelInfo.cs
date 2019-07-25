@@ -22,6 +22,7 @@ public class LevelInfo : MonoBehaviour
     [Tooltip("Parent object of dynamic objects, like bullets.")]
     public GameObject dynamicObjectParent;
 
+    [Tooltip("Audio mixer snapshot to load when level is loaded.")]
     public AudioMixerSnapshot levelSnapshot;
 
     private void Awake()
