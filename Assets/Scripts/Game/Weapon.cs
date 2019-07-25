@@ -76,7 +76,7 @@ namespace Game
             ShootEffect(player, from, to, new HitInfo
             {
                 hit = hit.HasValue && hit.Value.collider,
-                hitPlayer = hit.HasValue && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
                 normal = hit?.normal ?? Vector3.zero
             });
         }

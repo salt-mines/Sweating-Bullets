@@ -160,7 +160,7 @@ namespace Networking
                 from = from,
                 to = to,
                 hit = hit.HasValue && hit.Value.collider,
-                hitPlayer = hit.HasValue && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
                 hitNormal = hit?.normal ?? Vector3.zero
             }, NetDeliveryMethod.ReliableUnordered);
         }
