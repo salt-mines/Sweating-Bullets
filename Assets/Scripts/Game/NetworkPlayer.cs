@@ -119,9 +119,9 @@ namespace Game
             playerMechanics.Kill();
         }
 
-        public void Shoot(Vector3 from, Vector3 to)
+        public void Shoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
         {
-            Client.PlayerShoot(from, to);
+            Client.PlayerShoot(from, to, hit);
         }
 
         public void KillPlayer(NetworkPlayer target)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game;
 using Lidgren.Network;
 using Networking.Packets;
 using UnityEngine;
@@ -150,14 +151,17 @@ namespace Networking
                 ply.Teleported = false;
         }
 
-        public override void PlayerShoot(Vector3 from, Vector3 to)
+        public override void PlayerShoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Send(new PlayerShoot
             {
                 playerId = PlayerId.Value,
                 from = from,
-                to = to
+                to = to,
+                hit = hit.HasValue && hit.Value.collider,
+                hitPlayer = hit.HasValue && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                hitNormal = hit?.normal ?? Vector3.zero
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -245,8 +249,19 @@ namespace Networking
             if (Players == null || LocalPlayer == null || packet.playerId == PlayerId) return;
 
             var ply = Players[packet.playerId];
-            if (ply.PlayerObject.playerMechanics.CurrentWeapon)
-                ply.PlayerObject.playerMechanics.CurrentWeapon.ShootVisual(ply.PlayerObject, packet.from, packet.to);
+
+            if (!ply.PlayerObject.playerMechanics.CurrentWeapon) return;
+
+            Weapon.HitInfo? hit = null;
+            if (packet.hit)
+                hit = new Weapon.HitInfo
+                {
+                    hit = true,
+                    hitPlayer = packet.hitPlayer,
+                    normal = packet.hitNormal
+                };
+
+            ply.PlayerObject.playerMechanics.CurrentWeapon.ShootEffect(ply.PlayerObject, packet.from, packet.to, hit);
         }
 
         internal override void OnGUI(float x, float y)

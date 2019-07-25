@@ -71,10 +71,6 @@ namespace Networking
         {
         }
 
-        public override void PlayerShoot(Vector3 from, Vector3 to)
-        {
-        }
-
         internal override void OnDrawGizmos()
         {
         }

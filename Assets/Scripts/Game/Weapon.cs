@@ -71,8 +71,20 @@ namespace Game
 
         public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit = null)
+        public void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit)
         {
+            ShootEffect(player, from, to, new HitInfo
+            {
+                hit = hit.HasValue && hit.Value.collider,
+                hitPlayer = hit.HasValue && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                normal = hit?.normal ?? Vector3.zero
+            });
+        }
+
+        public virtual void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, HitInfo? hit = null)
+        {
+            if (audioSource) audioSource.Play();
+
             if (!bulletEffect) return;
 
             var bulletTrail = bulletPool.GetOne().GetComponent<TrailRenderer>();
@@ -95,8 +107,8 @@ namespace Game
             var bullet = bulletTrail.GetComponent<Bullet>();
 
             // Hit effects
-            var didHit = hit.HasValue && hit.Value.collider;
-            var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
+            var didHit = hit.HasValue && hit.Value.hit;
+            var didHitPlayer = didHit && hit.Value.hitPlayer;
 
             // Set the emit rotation based on hit direction and normal
             if (didHit)
@@ -118,6 +130,13 @@ namespace Game
                         bullet.gameObject.SetActive(false);
                     });
                 });
+        }
+
+        public struct HitInfo
+        {
+            public bool hit;
+            public bool hitPlayer;
+            public Vector3 normal;
         }
     }
 }

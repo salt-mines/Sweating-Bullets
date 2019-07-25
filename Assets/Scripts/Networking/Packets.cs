@@ -284,13 +284,20 @@ namespace Networking.Packets
         public Vector3 from;
         public Vector3 to;
 
+        public bool hit;
+        public bool hitPlayer;
+        public Vector3 hitNormal;
+
         public static PlayerShoot Read(NetIncomingMessage msg)
         {
             return new PlayerShoot
             {
                 playerId = msg.ReadByte(),
                 from = msg.ReadVector3(),
-                to = msg.ReadVector3()
+                to = msg.ReadVector3(),
+                hit = msg.ReadBoolean(),
+                hitPlayer = msg.ReadBoolean(),
+                hitNormal = msg.ReadVector3()
             };
         }
 
@@ -299,6 +306,9 @@ namespace Networking.Packets
             msg.Write(playerId);
             msg.Write(from);
             msg.Write(to);
+            msg.Write(hit);
+            msg.Write(hitPlayer);
+            msg.Write(hitNormal);
         }
     }
 

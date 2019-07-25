@@ -215,7 +215,10 @@ namespace Networking
         /// </summary>
         /// <param name="from">Where the shot was shot from</param>
         /// <param name="to">Where the shot ended</param>
-        public abstract void PlayerShoot(Vector3 from, Vector3 to);
+        /// <param name="hit">RaycastHit if shot hit something, null otherwise</param>
+        public virtual void PlayerShoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
+        {
+        }
 
         public virtual void KillPlayer(byte targetId)
         {

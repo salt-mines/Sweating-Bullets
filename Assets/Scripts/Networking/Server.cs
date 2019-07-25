@@ -375,7 +375,10 @@ namespace Networking
             {
                 playerId = sender,
                 from = packet.from,
-                to = packet.to
+                to = packet.to,
+                hit = packet.hit,
+                hitPlayer = packet.hitPlayer,
+                hitNormal = packet.hitNormal
             };
             SendToAll(shot, NetDeliveryMethod.ReliableUnordered);
 
