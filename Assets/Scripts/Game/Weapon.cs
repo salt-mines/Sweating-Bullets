@@ -28,11 +28,17 @@ namespace Game
         public TrailRenderer bulletEffect;
         public float bulletEffectSpeed = 500f;
 
+        [Header("Audio")]
+        public AudioSource audioSource;
+
         protected float lastShot;
         protected abstract int BulletReserve { get; }
 
         private void Start()
         {
+            if (!audioSource)
+                audioSource = GetComponent<AudioSource>();
+
             if (!bulletParent)
             {
                 var li = FindObjectOfType<LevelInfo>();
