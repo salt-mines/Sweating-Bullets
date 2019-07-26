@@ -1,78 +1,54 @@
 fileFormatVersion: 2
-guid: 26375ffdccff58542b54a69d666cfa33
+guid: 00d400c4e661b0a44934298426ed657e
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
   - first:
-      74: -3215028409724473604
-    second: Armature|AimingUpperbodyUSSR
+      74: -2169853964235229792
+    second: UsaSpyArmature|AimingUpperbody
   - first:
-      74: -6569365320942553694
-    second: Armature|default pose
+      74: -7721025948726236760
+    second: UsaSpyArmature|default pose
   - first:
-      74: -118510654719735041
-    second: Armature|IdleUSSR
+      74: 5940963700728377837
+    second: UsaSpyArmature|default pose.001
   - first:
-      74: 1452363365146101092
-    second: Armature|JumpUSSR
+      74: -4333188949293782595
+    second: UsaSpyArmature|default pose.003
   - first:
-      74: -7551964380084998518
-    second: Armature|Run
+      74: -1264073632150616224
+    second: UsaSpyArmature|Idle
   - first:
-      74: -8100403322360708572
-    second: Armature|RunGun
+      74: -5542124852908009196
+    second: UsaSpyArmature|Jump
   - first:
-      74: 8349542763059015795
-    second: Armature|Walk
+      74: 8958898381316232012
+    second: UsaSpyArmature|Run
   - first:
-      74: -2300041940454855990
-    second: Armature|WalkGun
+      74: 7164506479195863284
+    second: UsaSpyArmature|StrafeRight
+  - first:
+      74: 5485283635579049328
+    second: UsaSpyArmature|StrafeRight2
+  - first:
+      74: 6448742184975809042
+    second: UsaSpyArmature|Walk
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Pants.001
-    second: {fileID: 2100000, guid: 3c25ba6e7b0a6b046bba7627f537b353, type: 2}
+      name: bare bronze
+    second: {fileID: 2100000, guid: 2a45c7bf22416dd4c983428bcb986e4b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: cashmereGreen
-    second: {fileID: 2100000, guid: 8110bda4f7c40c74e94541249238a5c4, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: face
-    second: {fileID: 2100000, guid: d5b356029612e20449b03a98b00a9bd9, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: leather.001
-    second: {fileID: 2100000, guid: c4edb6e7e2ad3c643b79ccc85403fd1a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: leathershoe
-    second: {fileID: 2100000, guid: c4edb6e7e2ad3c643b79ccc85403fd1a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: redband
-    second: {fileID: 2100000, guid: e0ed27abaa36f3b48a7a5f2595d76678, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: rustIron
-    second: {fileID: 2100000, guid: 399ef43d2232f7f4b9fd75e54307f203, type: 2}
+      name: shirt knitted
+    second: {fileID: 2100000, guid: 95a62da0841a00245a754438416bda83, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: skin
-    second: {fileID: 2100000, guid: 64e07b2c7f1897740a9b3f563553fa95, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ussr_hat
-    second: {fileID: 2100000, guid: 9f91e79dff3bd2b499d86b4d471b53e8, type: 2}
+    second: {fileID: 2100000, guid: a711ac83cfddb6149830c8602bad293a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -101,9 +77,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Armature|AimingUpperbodyUSSR
-      takeName: Armature|AimingUpperbodyUSSR
-      internalID: -3215028409724473604
+      name: UsaSpyArmature|AimingUpperbody
+      takeName: UsaSpyArmature|AimingUpperbody
+      internalID: -2169853964235229792
       firstFrame: 0
       lastFrame: 16
       wrapMode: 0
@@ -130,11 +106,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|AimingUpperbodyUSSR (1)
-      takeName: Armature|AimingUpperbodyUSSR
-      internalID: -6569365320942553694
+      name: UsaSpyArmature|default pose
+      takeName: UsaSpyArmature|default pose
+      internalID: -7721025948726236760
       firstFrame: 0
-      lastFrame: 16
+      lastFrame: 1
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -159,9 +135,67 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|IdleUSSR
-      takeName: Armature|IdleUSSR
-      internalID: -118510654719735041
+      name: UsaSpyArmature|default pose.001
+      takeName: UsaSpyArmature|default pose.001
+      internalID: 5940963700728377837
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: UsaSpyArmature|default pose.003
+      takeName: UsaSpyArmature|default pose.003
+      internalID: -4333188949293782595
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: UsaSpyArmature|Idle
+      takeName: UsaSpyArmature|Idle
+      internalID: -1264073632150616224
       firstFrame: 0
       lastFrame: 49
       wrapMode: 0
@@ -188,9 +222,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|JumpUSSR
-      takeName: Armature|JumpUSSR
-      internalID: 1452363365146101092
+      name: UsaSpyArmature|Jump
+      takeName: UsaSpyArmature|Jump
+      internalID: -5542124852908009196
       firstFrame: 0
       lastFrame: 23
       wrapMode: 0
@@ -217,9 +251,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|Run
-      takeName: Armature|Run
-      internalID: -7551964380084998518
+      name: UsaSpyArmature|Run
+      takeName: UsaSpyArmature|Run
+      internalID: 8958898381316232012
       firstFrame: 0
       lastFrame: 16
       wrapMode: 0
@@ -246,11 +280,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|RunGun
-      takeName: Armature|RunGun
-      internalID: -8100403322360708572
+      name: UsaSpyArmature|StrafeRight
+      takeName: UsaSpyArmature|StrafeRight
+      internalID: 7164506479195863284
       firstFrame: 0
-      lastFrame: 15
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -275,11 +309,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|Walk
-      takeName: Armature|Walk
-      internalID: 8349542763059015795
+      name: UsaSpyArmature|StrafeRight2
+      takeName: UsaSpyArmature|StrafeRight2
+      internalID: 5485283635579049328
       firstFrame: 0
-      lastFrame: 24
+      lastFrame: 1
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -304,9 +338,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|WalkGun
-      takeName: Armature|WalkGun
-      internalID: -2300041940454855990
+      name: UsaSpyArmature|Walk
+      takeName: UsaSpyArmature|Walk
+      internalID: 6448742184975809042
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
