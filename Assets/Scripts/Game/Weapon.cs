@@ -56,6 +56,11 @@ namespace Game
             bulletPool.Fill();
         }
 
+        private void OnDestroy()
+        {
+            bulletPool.Clear();
+        }
+
         public virtual bool CanShoot()
         {
             if (rateOfFire == 0f)
@@ -66,8 +71,20 @@ namespace Game
 
         public abstract void Shoot(NetworkPlayer player, Transform startPoint);
 
-        public virtual void ShootVisual(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit = null)
+        public void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit)
         {
+            ShootEffect(player, from, to, new HitInfo
+            {
+                hit = hit.HasValue && hit.Value.collider,
+                hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                normal = hit?.normal ?? Vector3.zero
+            });
+        }
+
+        public virtual void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, HitInfo? hit = null)
+        {
+            if (audioSource) audioSource.Play();
+
             if (!bulletEffect) return;
 
             var bulletTrail = bulletPool.GetOne().GetComponent<TrailRenderer>();
@@ -90,8 +107,8 @@ namespace Game
             var bullet = bulletTrail.GetComponent<Bullet>();
 
             // Hit effects
-            var didHit = hit.HasValue && hit.Value.collider;
-            var didHitPlayer = didHit && hit.Value.collider.gameObject.layer == (int) Layer.Players;
+            var didHit = hit.HasValue && hit.Value.hit;
+            var didHitPlayer = didHit && hit.Value.hitPlayer;
 
             // Set the emit rotation based on hit direction and normal
             if (didHit)
@@ -104,15 +121,32 @@ namespace Game
                 .OnComplete(() =>
                 {
                     if (didHitPlayer)
-                        bullet.bloodSplatter.Play(false);
+                    {
+                        if (bullet.bloodSplatter)
+                            bullet.bloodSplatter.Play(false);
+                        if (bullet.audioSource && bullet.playerHitSound)
+                            bullet.audioSource.PlayOneShot(bullet.playerHitSound);
+                    }
                     else if (didHit)
-                        bullet.wallSplatter.Play(false);
+                    {
+                        if (bullet.wallSplatter)
+                            bullet.wallSplatter.Play(false);
+                        if (bullet.audioSource && bullet.wallHitSound)
+                            bullet.audioSource.PlayOneShot(bullet.wallHitSound);
+                    }
 
                     DOTween.Sequence().PrependInterval(bulletTrail.time).AppendCallback(() =>
                     {
                         bullet.gameObject.SetActive(false);
                     });
                 });
+        }
+
+        public struct HitInfo
+        {
+            public bool hit;
+            public bool hitPlayer;
+            public Vector3 normal;
         }
     }
 }

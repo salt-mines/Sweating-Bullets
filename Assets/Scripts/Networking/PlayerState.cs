@@ -4,9 +4,13 @@ using UnityEngine;
 
 namespace Networking
 {
+    /// <summary>
+    ///     Sent by client to server, containing current position, velocity and other important information.
+    ///     Also sent inside WorldState packet by server to clients.
+    /// </summary>
     public struct PlayerState : IPacket
     {
-        public PacketType Type => PacketType.PlayerMove;
+        public PacketType Type => PacketType.PlayerState;
         public int SequenceChannel => 2;
 
         public byte playerId;
@@ -66,6 +70,9 @@ namespace Networking
         }
     }
 
+    /// <summary>
+    ///     PlayerState at a specific time, used for interpolation.
+    /// </summary>
     public struct TimedPlayerState
     {
         public float time;

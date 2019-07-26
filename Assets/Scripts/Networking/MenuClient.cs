@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Networking
 {
+    /// <summary>
+    ///     Mostly non-implemented client class made for main menu's network functionality.
+    /// </summary>
     public sealed class MenuClient : Client
     {
         private readonly NetClient client;
@@ -65,10 +68,6 @@ namespace Networking
         }
 
         protected override void SendState()
-        {
-        }
-
-        public override void PlayerShoot(Vector3 @from, Vector3 to)
         {
         }
 

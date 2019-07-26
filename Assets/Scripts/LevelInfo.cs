@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -21,6 +22,7 @@ public class LevelInfo : MonoBehaviour
     [Tooltip("Parent object of dynamic objects, like bullets.")]
     public GameObject dynamicObjectParent;
 
+    [Tooltip("Audio mixer snapshot to load when level is loaded.")]
     public AudioMixerSnapshot levelSnapshot;
 
     private void Awake()
@@ -36,5 +38,10 @@ public class LevelInfo : MonoBehaviour
 
         if (levelSnapshot)
             levelSnapshot.TransitionTo(0);
+    }
+
+    private void OnDestroy()
+    {
+        DOTween.KillAll();
     }
 }

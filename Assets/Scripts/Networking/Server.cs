@@ -324,7 +324,7 @@ namespace Networking
                 case PacketType.PlayerPreferences:
                     PacketReceived(sender, PlayerPreferences.Read(msg));
                     break;
-                case PacketType.PlayerMove:
+                case PacketType.PlayerState:
                     PacketReceived(sender, PlayerState.Read(msg));
                     break;
                 case PacketType.PlayerKill:
@@ -375,7 +375,10 @@ namespace Networking
             {
                 playerId = sender,
                 from = packet.from,
-                to = packet.to
+                to = packet.to,
+                hit = packet.hit,
+                hitPlayer = packet.hitPlayer,
+                hitNormal = packet.hitNormal
             };
             SendToAll(shot, NetDeliveryMethod.ReliableUnordered);
 

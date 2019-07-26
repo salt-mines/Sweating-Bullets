@@ -42,7 +42,7 @@ namespace Game.Weapons
                 if (didHit)
                     endPoint = hit.point;
 
-                ShootVisual(player, barrelPoint.position, endPoint, hit);
+                ShootEffect(player, barrelPoint.position, endPoint, hit);
                 //player.Shoot(weapon.barrelPoint.position, to * range);
             }
         }

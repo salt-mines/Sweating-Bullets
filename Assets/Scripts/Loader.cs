@@ -11,16 +11,17 @@ using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
-    [SerializeField]
+    [Tooltip("Loading screen prefab.")]
     public LoadingScreen loadingScreen;
 
+    [Tooltip("Main menu scene, loaded first if other scenes aren't open.")]
     public SceneReference mainMenuScene;
 
     [Tooltip("Scene containing common gameplay objects.")]
     public SceneReference gameScene;
 
+    [Tooltip("List of available levels in the game. Displayed in given order.")]
     [ReorderableList]
-    [SerializeField]
     public List<SceneReference> availableLevels = new List<SceneReference>();
 
     private bool isCommonLoaded;
@@ -40,7 +41,7 @@ public class Loader : MonoBehaviour
         Preferences.Load();
 
         GetComponent<PreferencesSetter>().Preferences = Preferences;
-        
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         LevelManager = new LevelManager(availableLevels);
@@ -48,6 +49,7 @@ public class Loader : MonoBehaviour
 
         preloadedScene = SceneManager.GetActiveScene();
 
+        // Check open scenes for any levels, so we can correctly load them.
         for (var i = 0; i < SceneManager.sceneCount; i++)
         {
             var sc = SceneManager.GetSceneAt(i);
@@ -69,6 +71,36 @@ public class Loader : MonoBehaviour
 
     private void Start()
     {
+        // If started in batch mode, load straight into game
+        if (Application.isBatchMode)
+        {
+            if (Utils.GetArgument("-listlevels") != null)
+            {
+                Debug.Log("Available levels:\n");
+                foreach (var lvl in LevelManager.AvailableLevels)
+                    Debug.Log($"Level name: {lvl}");
+
+                Application.Quit();
+            }
+
+            var maxPl = Constants.MaxPlayers;
+            var maxPlStr = Utils.GetArgument("-maxplayers");
+            if (maxPlStr != null)
+                byte.TryParse(maxPlStr, out maxPl);
+
+            var clLevel = Utils.GetArgument("-level") ?? LevelManager.StartingLevel;
+
+            if (!LevelManager.IsValidLevel(clLevel))
+                throw new ArgumentException("level is invalid");
+
+            StartGame(new ServerConfig
+            {
+                MaxPlayerCount = maxPl,
+                StartingLevel = clLevel
+            });
+            return;
+        }
+
         // If this is the only loaded scene, load main menu
         if (SceneManager.sceneCount == 1) StartCoroutine(LoadSceneAsync(mainMenuScene));
 
@@ -82,6 +114,9 @@ public class Loader : MonoBehaviour
         StartCoroutine(UnloadAndLoadAsync(LevelManager.CurrentLevel, newLevel));
     }
 
+    /// <summary>
+    ///     Load main menu by unloading everything and starting from boot.
+    /// </summary>
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(gameObject.scene.buildIndex);
@@ -90,12 +125,12 @@ public class Loader : MonoBehaviour
     /// <summary>
     ///     Load common game scene, optionally with the given starting level.
     /// </summary>
-    /// <param name="startingLevel">optional starting level</param>
-    public void StartGame(ServerConfig serverConfig = null)
+    /// <param name="config">server configuration</param>
+    public void StartGame(ServerConfig config = null)
     {
         if (isCommonLoaded) return;
 
-        this.serverConfig = serverConfig;
+        serverConfig = config;
 
         StartCoroutine(UnloadAndLoadAsync(mainMenuScene, gameScene));
         isCommonLoaded = true;
@@ -152,6 +187,7 @@ public class Loader : MonoBehaviour
         if (!isCommon)
             loadingScreen.Show(false, true);
 
+        // Start network things when game scene is loaded.
         if (isCommon)
         {
             var nm = FindObjectOfType<NetworkManager>();
@@ -164,6 +200,7 @@ public class Loader : MonoBehaviour
             return;
         }
 
+        // Set last loaded level as active scene.
         SceneManager.SetActiveScene(scene);
 
         if (isMainMenu)
