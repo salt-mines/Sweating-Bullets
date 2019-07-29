@@ -101,6 +101,12 @@ namespace Game
             else
             {
                 IsGrounded = false;
+
+                if (velocity.sqrMagnitude < runSpeed * runSpeed)
+                {
+                    velocity.x += (targetMovement.x * speed) * Time.deltaTime;
+                    velocity.z += (targetMovement.z * speed) * Time.deltaTime;
+                }
             }
 
             // Apply constant gravity to also help keep us grounded
