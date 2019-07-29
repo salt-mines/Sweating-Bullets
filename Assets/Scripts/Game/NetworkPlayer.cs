@@ -32,7 +32,7 @@ namespace Game
 
         public PlayerInfo PlayerInfo { get; internal set; }
 
-        public Client Client { get; set; }
+        public NetworkClient Client { get; set; }
 
         public bool IsLocalPlayer
         {
@@ -133,16 +133,6 @@ namespace Game
         public void Kill()
         {
             playerMechanics.Kill();
-        }
-
-        public void Shoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
-        {
-            Client.PlayerShoot(from, to, hit);
-        }
-
-        public void KillPlayer(NetworkPlayer target)
-        {
-            Client.KillPlayer(target.Id);
         }
     }
 }

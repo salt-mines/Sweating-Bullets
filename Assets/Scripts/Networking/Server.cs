@@ -371,18 +371,21 @@ namespace Networking
             if (Players[sender] == null)
                 return;
 
-            var shot = new PlayerShoot
-            {
-                playerId = sender,
-                from = packet.from,
-                to = packet.to,
-                hit = packet.hit,
-                hitPlayer = packet.hitPlayer,
-                hitNormal = packet.hitNormal
-            };
-            SendToAll(shot, NetDeliveryMethod.ReliableUnordered);
+            if (sender != packet.playerId)
+                return;
 
-            PlayerShot?.Invoke(this, shot);
+//            var shot = new PlayerShoot
+//            {
+//                playerId = sender,
+//                from = packet.from,
+//                to = packet.to,
+//                hit = packet.hit,
+//                hitPlayer = packet.hitPlayer,
+//                hitNormal = packet.hitNormal
+//            };
+            SendToAll(packet, NetDeliveryMethod.ReliableUnordered);
+
+            PlayerShot?.Invoke(this, packet);
         }
 
         public void PacketReceived(byte sender, PlayerKill packet)

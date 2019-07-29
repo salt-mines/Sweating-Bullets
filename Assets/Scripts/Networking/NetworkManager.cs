@@ -159,7 +159,7 @@ public class NetworkManager : MonoBehaviour
         var ply = Instantiate(local ? localPlayerPrefab : networkPlayerPrefab);
         ply.PlayerInfo = info;
         ply.IsLocalPlayer = local;
-        ply.Client = Client;
+        ply.Client = (NetworkClient) Client;
 
         return ply;
     }

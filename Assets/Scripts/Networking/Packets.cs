@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game;
 using Lidgren.Network;
 using UnityEngine;
 
@@ -282,11 +283,8 @@ namespace Networking.Packets
 
         public byte playerId;
         public Vector3 from;
-        public Vector3 to;
 
-        public bool hit;
-        public bool hitPlayer;
-        public Vector3 hitNormal;
+        public BulletInfo[] bullets;
 
         public static PlayerShoot Read(NetIncomingMessage msg)
         {
@@ -294,10 +292,7 @@ namespace Networking.Packets
             {
                 playerId = msg.ReadByte(),
                 from = msg.ReadVector3(),
-                to = msg.ReadVector3(),
-                hit = msg.ReadBoolean(),
-                hitPlayer = msg.ReadBoolean(),
-                hitNormal = msg.ReadVector3()
+                bullets = BulletInfo.ReadAll(msg)
             };
         }
 
@@ -305,10 +300,11 @@ namespace Networking.Packets
         {
             msg.Write(playerId);
             msg.Write(from);
-            msg.Write(to);
-            msg.Write(hit);
-            msg.Write(hitPlayer);
-            msg.Write(hitNormal);
+            msg.Write((byte) bullets.Length);
+            foreach (var b in bullets)
+            {
+                b.Write(msg);
+            }
         }
     }
 

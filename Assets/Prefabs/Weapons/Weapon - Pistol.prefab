@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9a583715763134b8ee5e7b0177ca8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire: 1
+  rateOfFire: 2
+  damagePerBullet: 25
   hittableMask:
     serializedVersion: 2
     m_Bits: 513

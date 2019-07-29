@@ -13,6 +13,9 @@ namespace Game
         [Range(0.0f, 8.0f)]
         public float rateOfFire = 1f;
 
+        [Range(0, 100)]
+        public float damagePerBullet = 10f;
+
         [Tooltip("Which layers should bullets hit")]
         public LayerMask hittableMask = ~0;
 
@@ -73,15 +76,15 @@ namespace Game
 
         public void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit)
         {
-            ShootEffect(player, from, to, new HitInfo
+            ShootEffect(player, from, to, new BulletInfo
             {
                 hit = hit.HasValue && hit.Value.collider,
                 hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
-                normal = hit?.normal ?? Vector3.zero
+                hitNormal = hit?.normal ?? Vector3.zero
             });
         }
 
-        public virtual void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, HitInfo? hit = null)
+        public virtual void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, BulletInfo? hit = null)
         {
             if (audioSource) audioSource.Play();
 
@@ -114,7 +117,7 @@ namespace Game
             if (didHit)
             {
                 var fromDir = to - from;
-                bullet.transform.rotation = Quaternion.LookRotation(Vector3.Reflect(fromDir, hit.Value.normal));
+                bullet.transform.rotation = Quaternion.LookRotation(Vector3.Reflect(fromDir, hit.Value.hitNormal));
             }
 
             bullet.transform.DOMove(to, bulletEffectSpeed).SetSpeedBased()
@@ -140,13 +143,6 @@ namespace Game
                         bullet.gameObject.SetActive(false);
                     });
                 });
-        }
-
-        public struct HitInfo
-        {
-            public bool hit;
-            public bool hitPlayer;
-            public Vector3 normal;
         }
     }
 }

@@ -37,6 +37,8 @@ namespace Game
         public bool IsLocal => networkPlayer.IsLocalPlayer;
         public bool IsAlive { get; set; } = true;
 
+        public byte Health { get; set; } = 100;
+
         private void Start()
         {
             if (!gameSettings)
@@ -48,6 +50,9 @@ namespace Game
 
             uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
 
+            networkPlayer.Client.SelfHurt += (o, dmg) => TakeDamage(dmg);
+
+            // Init weapons
             foreach (var wep in gameSettings.weapons)
             {
                 var w = Instantiate(wep, gunParent);
@@ -61,6 +66,7 @@ namespace Game
 
             SetWeapon(0);
 
+            // Init spawn points
             if (!spawnPointsParent)
                 spawnPointsParent = FindObjectOfType<LevelInfo>().spawnPointParent.transform;
 
@@ -107,6 +113,20 @@ namespace Game
             GetComponent<PlayerAnimation>()?.SetWeapon(wep);
         }
 
+        public void TakeDamage(float damage)
+        {
+            var dmg = Mathf.FloorToInt(damage);
+            if (Health >= dmg)
+                Health -= (byte) dmg;
+            else
+                Health = 0;
+
+            Debug.Log($"oof for {dmg} damage, {Health} hp left");
+
+            if (Health == 0)
+                Kill();
+        }
+
         [Button]
         public void Kill()
         {
@@ -133,6 +153,7 @@ namespace Game
         public void Respawn()
         {
             IsAlive = true;
+            Health = 100;
 
             if (IsLocal)
             {

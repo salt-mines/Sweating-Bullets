@@ -73,6 +73,7 @@ namespace Networking
         public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
         public event EventHandler<PlayerInfo> OwnKill;
+        public event EventHandler<float> SelfHurt;
         public event EventHandler<PlayerDeath> PlayerDeath;
 
         public void Update()
@@ -193,6 +194,11 @@ namespace Networking
             PlayerSentInfo?.Invoke(this, packet);
         }
 
+        protected void OnSelfHurt(float damage)
+        {
+            SelfHurt?.Invoke(this, damage);
+        }
+
         protected virtual void OnPlayerDeath(PlayerDeath packet)
         {
             System.Diagnostics.Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
@@ -216,7 +222,11 @@ namespace Networking
         /// <param name="from">Where the shot was shot from</param>
         /// <param name="to">Where the shot ended</param>
         /// <param name="hit">RaycastHit if shot hit something, null otherwise</param>
-        public virtual void PlayerShoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
+        public virtual void PlayerShootOne(Vector3 from, Vector3 to, float damage, RaycastHit hit)
+        {
+        }
+
+        public virtual void PlayerShootMultiple(Vector3 from, Vector3 to, float damage, RaycastHit[] hits)
         {
         }
 

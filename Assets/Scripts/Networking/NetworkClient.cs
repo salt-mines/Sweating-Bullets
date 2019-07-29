@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Networking
 {
-    internal sealed class NetworkClient : Client
+    public sealed class NetworkClient : Client
     {
         private readonly NetClient client;
 
@@ -151,17 +151,32 @@ namespace Networking
                 ply.Teleported = false;
         }
 
-        public override void PlayerShoot(Vector3 from, Vector3 to, RaycastHit? hit = null)
+        public override void PlayerShootOne(Vector3 from, Vector3 to, float damage, RaycastHit hit)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Send(new PlayerShoot
             {
                 playerId = PlayerId.Value,
                 from = from,
-                to = to,
-                hit = hit.HasValue && hit.Value.collider,
-                hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
-                hitNormal = hit?.normal ?? Vector3.zero
+                bullets = new[] { BulletInfo.From(PlayerId.Value, from, to, damage, hit)}
+            }, NetDeliveryMethod.ReliableUnordered);
+        }
+
+        public override void PlayerShootMultiple(Vector3 from, Vector3 to, float damage, RaycastHit[] hits)
+        {
+            Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+
+            var bullets = new BulletInfo[hits.Length];
+            for (var i = 0; i < hits.Length; i++)
+            {
+                bullets[i] = BulletInfo.From(PlayerId.Value, from, to, damage, hits[i]);
+            }
+
+            Send(new PlayerShoot
+            {
+                playerId = PlayerId.Value,
+                from = from,
+                bullets = bullets
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -252,16 +267,24 @@ namespace Networking
 
             if (!ply.PlayerObject.playerMechanics.CurrentWeapon) return;
 
-            Weapon.HitInfo? hit = null;
-            if (packet.hit)
-                hit = new Weapon.HitInfo
-                {
-                    hit = true,
-                    hitPlayer = packet.hitPlayer,
-                    normal = packet.hitNormal
-                };
+            foreach (var b in packet.bullets)
+            {
+                var hit = new BulletInfo();
+                if (b.hit)
+                    hit = new BulletInfo
+                    {
+                        hit = true,
+                        hitPlayer = b.hitPlayer,
+                        hitNormal = b.hitNormal
+                    };
+                ply.PlayerObject.playerMechanics.CurrentWeapon.ShootEffect(ply.PlayerObject, packet.from, b.to, hit);
 
-            ply.PlayerObject.playerMechanics.CurrentWeapon.ShootEffect(ply.PlayerObject, packet.from, packet.to, hit);
+                Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
+                if (b.hitPlayer && b.victimId == PlayerId.Value)
+                {
+                    OnSelfHurt(b.damage);
+                }
+            }
         }
 
         internal override void OnGUI(float x, float y)

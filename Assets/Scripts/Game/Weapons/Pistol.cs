@@ -22,17 +22,8 @@ namespace Game.Weapons
             var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);
             var to = didHit ? hit.point : from + direction * range;
 
+            player.Client.PlayerShootOne(barrel, to, damagePerBullet, hit);
             ShootEffect(player, barrel, to, hit);
-            player.Shoot(barrel, to, hit);
-
-            if (!didHit)
-                return;
-
-            if (hit.transform.gameObject.layer != (int) Layer.Players) return;
-
-            var targetNetPlayer = hit.transform.gameObject.GetComponentInParent<NetworkPlayer>();
-            if (targetNetPlayer)
-                player.KillPlayer(targetNetPlayer);
         }
     }
 }
