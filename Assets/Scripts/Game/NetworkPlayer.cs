@@ -1,4 +1,5 @@
-﻿using Networking;
+﻿using System.Collections.Generic;
+using Networking;
 using UnityEngine;
 
 namespace Game
@@ -20,6 +21,12 @@ namespace Game
         public FirstPersonCamera firstPersonCamera;
 
         private CharacterController characterController;
+
+        public AudioSource audioSource;
+        public List<AudioClip> footstepClips = new List<AudioClip>(2);
+
+        private float lastStepValue;
+        private static readonly int FootstepParam = Animator.StringToHash("Footstep");
 
         public byte Id => PlayerInfo.Id;
 
@@ -51,6 +58,7 @@ namespace Game
                 PlayerInfo.ViewAngles = firstPersonCamera.ViewAngles;
                 PlayerInfo.Alive = playerMechanics.IsAlive;
                 PlayerInfo.Weapon = playerMechanics.CurrentWeaponId;
+                PlayerInfo.Grounded = playerMovement.IsGrounded;
             }
             else
             {
@@ -75,6 +83,14 @@ namespace Game
             animator.SetFloat(ParamSpeed, groundVel.magnitude);
             animator.SetFloat(ParamForward, groundVel.z);
             animator.SetFloat(ParamRight, groundVel.x);
+
+            var fsValue = animator.GetFloat(FootstepParam);
+            if (!Utils.SameSign(fsValue, lastStepValue) && PlayerInfo.Grounded)
+            {
+                var clip = footstepClips[Random.Range(0, footstepClips.Count)];
+                audioSource.PlayOneShot(clip, groundVel.magnitude/7f);
+            }
+            lastStepValue = fsValue;
         }
 
         public void Teleport(Vector3 position)

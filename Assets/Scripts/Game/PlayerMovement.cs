@@ -37,6 +37,8 @@ namespace Game
             set => velocity = value;
         }
 
+        public bool IsGrounded { get; private set; }
+
         private Vector2 input = Vector2.zero;
 
         private bool hitCeiling;
@@ -86,6 +88,7 @@ namespace Game
             // Apply movement only when on (or near) ground and player isn't moving upwards
             if ((characterController.isGrounded || didHit) && velocity.y <= 0f)
             {
+                IsGrounded = true;
                 velocity.x = targetMovement.x * speed;
                 velocity.z = targetMovement.z * speed;
 
@@ -94,6 +97,10 @@ namespace Game
 
                 if (gameInput.Jump)
                     velocity.y = jumpSpeed;
+            }
+            else
+            {
+                IsGrounded = false;
             }
 
             // Apply constant gravity to also help keep us grounded

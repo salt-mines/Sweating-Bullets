@@ -35,6 +35,7 @@ namespace Networking
         public short Kills { get; set; }
         public short Deaths { get; set; }
 
+        public bool Grounded { get; set; }
         public bool Teleported { get; set; }
         public bool Alive { get; set; } = true;
 
@@ -53,6 +54,7 @@ namespace Networking
                 viewAngles = ViewAngles,
                 health = Health,
                 weapon = Weapon,
+                grounded = Grounded,
                 teleported = Teleported,
                 alive = Alive
             };
@@ -65,6 +67,7 @@ namespace Networking
             ViewAngles = state.viewAngles;
             Health = state.health;
             Weapon = state.weapon;
+            Grounded = state.grounded;
             Teleported = state.teleported;
             Alive = state.alive;
         }
