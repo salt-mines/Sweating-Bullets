@@ -73,8 +73,9 @@ namespace Networking
         public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
         public event EventHandler<PlayerInfo> OwnKill;
-        public event EventHandler<float> SelfHurt;
+        public event EventHandler<byte> SelfHurt;
         public event EventHandler<PlayerDeath> PlayerDeath;
+        public event EventHandler<PlayerInfo> PlayerRespawn;
 
         public void Update()
         {
@@ -194,7 +195,7 @@ namespace Networking
             PlayerSentInfo?.Invoke(this, packet);
         }
 
-        protected void OnSelfHurt(float damage)
+        protected void OnSelfHurt(byte damage)
         {
             SelfHurt?.Invoke(this, damage);
         }
@@ -216,17 +217,22 @@ namespace Networking
             PlayerDeath?.Invoke(this, packet);
         }
 
+        internal void OnPlayerRespawn(PlayerInfo player)
+        {
+            PlayerRespawn?.Invoke(this, player);
+        }
+
         /// <summary>
         ///     Called when local player has shot.
         /// </summary>
         /// <param name="from">Where the shot was shot from</param>
         /// <param name="to">Where the shot ended</param>
         /// <param name="hit">RaycastHit if shot hit something, null otherwise</param>
-        public virtual void PlayerShootOne(Vector3 from, Vector3 to, float damage, RaycastHit hit)
+        public virtual void PlayerShootOne(Vector3 from, Vector3 to, byte damage, RaycastHit hit)
         {
         }
 
-        public virtual void PlayerShootMultiple(Vector3 from, Vector3 to, float damage, RaycastHit[] hits)
+        public virtual void PlayerShootMultiple(Vector3 from, Vector3 to, byte damage, RaycastHit[] hits)
         {
         }
 

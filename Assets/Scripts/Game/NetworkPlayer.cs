@@ -53,12 +53,20 @@ namespace Game
             var tr = transform;
             if (IsLocalPlayer)
             {
+                var respawned = !PlayerInfo.Alive && playerMechanics.IsAlive;
                 PlayerInfo.Position = tr.position;
                 PlayerInfo.Velocity = playerMovement.Velocity;
                 PlayerInfo.ViewAngles = firstPersonCamera.ViewAngles;
                 PlayerInfo.Alive = playerMechanics.IsAlive;
+                PlayerInfo.Health = playerMechanics.Health;
                 PlayerInfo.Weapon = playerMechanics.CurrentWeaponId;
                 PlayerInfo.Grounded = playerMovement.IsGrounded;
+
+
+                if (respawned)
+                {
+                    Client.OnPlayerRespawn(PlayerInfo);
+                }
             }
             else
             {
@@ -72,7 +80,10 @@ namespace Game
                 if (playerMechanics.IsAlive && !PlayerInfo.Alive)
                     Kill();
                 else if (!playerMechanics.IsAlive && PlayerInfo.Alive)
+                {
                     playerMechanics.Respawn();
+                    Client.OnPlayerRespawn(PlayerInfo);
+                }
 
                 if (playerMechanics.CurrentWeaponId != PlayerInfo.Weapon)
                     playerMechanics.SetWeapon(PlayerInfo.Weapon);

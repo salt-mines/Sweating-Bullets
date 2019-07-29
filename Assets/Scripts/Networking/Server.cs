@@ -78,7 +78,6 @@ namespace Networking
         public event EventHandler<PlayerPreferences> PlayerSentPreferences;
 
         public event EventHandler<PlayerDeath> PlayerDied;
-        public event EventHandler<PlayerInfo> PlayerRespawned;
 
         public event EventHandler<PlayerShoot> PlayerShot;
 

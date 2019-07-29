@@ -12,5 +12,8 @@ namespace Game
 
         [Range(0, 20)]
         public float spawnTime = 6f;
+
+        [Range(1, 255)]
+        public byte maxHealth = 100;
     }
 }

@@ -14,7 +14,7 @@ namespace Game
         public float rateOfFire = 1f;
 
         [Range(0, 100)]
-        public float damagePerBullet = 10f;
+        public byte damagePerBullet = 10;
 
         [Tooltip("Which layers should bullets hit")]
         public LayerMask hittableMask = ~0;

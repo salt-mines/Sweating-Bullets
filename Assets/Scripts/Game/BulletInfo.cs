@@ -10,7 +10,7 @@ namespace Game
         public bool hit;
         public bool hitPlayer;
         public byte victimId;
-        public float damage;
+        public byte damage;
         public Vector3 hitNormal;
 
         public static BulletInfo Read(NetIncomingMessage msg)
@@ -21,7 +21,7 @@ namespace Game
                 hit = msg.ReadBoolean(),
                 hitPlayer = msg.ReadBoolean(),
                 victimId = msg.ReadByte(),
-                damage = msg.ReadFloat(),
+                damage = msg.ReadByte(),
                 hitNormal = msg.ReadVector3()
             };
         }
@@ -48,7 +48,7 @@ namespace Game
             msg.Write(hitNormal);
         }
 
-        public static BulletInfo From(byte playerId, Vector3 from, Vector3 to, float damage, RaycastHit hit)
+        public static BulletInfo From(byte playerId, Vector3 from, Vector3 to, byte damage, RaycastHit hit)
         {
             var didHit = hit.collider != null;
             var didHitPlayer = didHit && hit.collider.gameObject.layer == (int) Layer.Players;

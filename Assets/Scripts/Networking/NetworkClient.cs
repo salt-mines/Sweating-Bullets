@@ -151,7 +151,7 @@ namespace Networking
                 ply.Teleported = false;
         }
 
-        public override void PlayerShootOne(Vector3 from, Vector3 to, float damage, RaycastHit hit)
+        public override void PlayerShootOne(Vector3 from, Vector3 to, byte damage, RaycastHit hit)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Send(new PlayerShoot
@@ -162,7 +162,7 @@ namespace Networking
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
-        public override void PlayerShootMultiple(Vector3 from, Vector3 to, float damage, RaycastHit[] hits)
+        public override void PlayerShootMultiple(Vector3 from, Vector3 to, byte damage, RaycastHit[] hits)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
 

@@ -37,12 +37,14 @@ namespace Game
         public bool IsLocal => networkPlayer.IsLocalPlayer;
         public bool IsAlive { get; set; } = true;
 
-        public byte Health { get; set; } = 100;
+        public byte Health { get; set; }
 
         private void Start()
         {
             if (!gameSettings)
                 throw new ArgumentException("gameSettings is required");
+
+            Health = gameSettings.maxHealth;
 
             networkPlayer = GetComponent<NetworkPlayer>();
             characterController = GetComponent<CharacterController>();
@@ -121,8 +123,6 @@ namespace Game
             else
                 Health = 0;
 
-            Debug.Log($"oof for {dmg} damage, {Health} hp left");
-
             if (Health == 0)
                 Kill();
         }
@@ -153,7 +153,7 @@ namespace Game
         public void Respawn()
         {
             IsAlive = true;
-            Health = 100;
+            Health = gameSettings.maxHealth;
 
             if (IsLocal)
             {
