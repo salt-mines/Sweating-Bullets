@@ -78,8 +78,8 @@ MonoBehaviour:
   firstPersonCamera: {fileID: 0}
   audioSource: {fileID: 152101171393456323}
   footstepClips:
-  - {fileID: 8300000, guid: a3935c0f6347a554a87c2b72f1d089dc, type: 3}
-  - {fileID: 8300000, guid: 3453dae6ddc45944ea7c55a627f47eb4, type: 3}
+  - {fileID: 8300000, guid: 9b6cb36273924c74a858e407e041b3c7, type: 3}
+  - {fileID: 8300000, guid: 49addb9ca5fb76846b9f2c31d8be86e9, type: 3}
 --- !u!114 &6044137544033488843
 MonoBehaviour:
   m_ObjectHideFlags: 0

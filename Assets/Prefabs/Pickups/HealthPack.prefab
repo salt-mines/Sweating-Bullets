@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1397026150537844525}
-  - component: {fileID: 2175663812613679092}
   m_Layer: 0
   m_Name: HealthPack
   m_TagString: Untagged
@@ -32,19 +31,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2175663812613679092
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3046557938500924397}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.86595434, y: 0.30941594, z: 0.82528925}
-  m_Center: {x: -0.016943783, y: 0.124112666, z: 0.022364855}
 --- !u!1001 &2630390380484616007
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57,11 +43,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: health_pack
       objectReference: {fileID: 0}
-    - target: {fileID: -5463154587285161987, guid: b125d2da2e9e72f499f15e332a437633,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 7397b067dd7fb0a4a810502b92db5446, type: 2}
     - target: {fileID: -4216859302048453862, guid: b125d2da2e9e72f499f15e332a437633,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -122,6 +103,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e2a2f69c52fdfa84b8ced8bc2f662bc4, type: 2}
+    - target: {fileID: -5463154587285161987, guid: b125d2da2e9e72f499f15e332a437633,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7397b067dd7fb0a4a810502b92db5446, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b125d2da2e9e72f499f15e332a437633, type: 3}
 --- !u!4 &7060433463781520477 stripped

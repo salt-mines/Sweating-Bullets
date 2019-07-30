@@ -4,6 +4,8 @@ namespace Game
 {
     public class WeaponPickup : MonoBehaviour
     {
+        public pickUps pickUp = pickUps.Shotgun;
+
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag(Tags.Player)) return;
@@ -14,5 +16,12 @@ namespace Game
 
             pm.SetWeapon(2);
         }
+    }
+
+    public enum pickUps
+    {
+        Shotgun,
+        Rifle,
+        HealthPack
     }
 }
