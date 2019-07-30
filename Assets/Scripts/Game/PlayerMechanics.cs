@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using Networking;
 using UI;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -117,16 +118,17 @@ namespace Game
             GetComponent<PlayerAnimation>()?.SetWeapon(wep);
         }
 
-        public void TakeDamage(byte damage)
+        private void TakeDamage(Client.DamageEventArgs dea)
         {
-            var dmg = Mathf.FloorToInt(damage);
-            if (Health >= dmg)
-                Health -= (byte) dmg;
+            if (Health >= dea.Damage)
+                Health -= dea.Damage;
             else
                 Health = 0;
 
-            if (Health == 0)
-                Kill();
+            if (Health != 0) return;
+
+            Kill();
+            networkPlayer.Client.OnDeath(dea.ShooterId);
         }
 
         [Button]

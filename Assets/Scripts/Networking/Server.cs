@@ -334,8 +334,8 @@ namespace Networking
                 case PacketType.PlayerState:
                     PacketReceived(sender, PlayerState.Read(msg));
                     break;
-                case PacketType.PlayerKill:
-                    PacketReceived(sender, PlayerKill.Read(msg));
+                case PacketType.PlayerDeath:
+                    PacketReceived(sender, PlayerDeath.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
                     PacketReceived(sender, PlayerShoot.Read(msg));
@@ -343,7 +343,7 @@ namespace Networking
             }
         }
 
-        internal void PacketReceived(byte sender, PlayerPreferences packet)
+        private void PacketReceived(byte sender, PlayerPreferences packet)
         {
             var ply = Players[sender];
             if (ply == null)
@@ -368,12 +368,12 @@ namespace Networking
             PlayerSentPreferences?.Invoke(this, newPacket);
         }
 
-        internal void PacketReceived(byte sender, PlayerState packet)
+        private void PacketReceived(byte sender, PlayerState packet)
         {
             Players[sender]?.SetFromState(packet);
         }
 
-        internal void PacketReceived(byte sender, PlayerShoot packet)
+        private void PacketReceived(byte sender, PlayerShoot packet)
         {
             if (Players[sender] == null)
                 return;
@@ -386,17 +386,26 @@ namespace Networking
             PlayerShot?.Invoke(this, packet);
         }
 
-        public void PacketReceived(byte sender, PlayerKill packet)
+        private void PacketReceived(byte sender, PlayerDeath packet)
         {
-            if (Players[sender] == null || Players[packet.targetId] == null)
-                return;
+            short deaths = 0;
+            if (Players[sender] != null)
+            {
+                deaths = ++Players[sender].Deaths;
+            }
+
+            short kills = 0;
+            if (Players[packet.killerId] != null)
+            {
+                kills = ++Players[packet.killerId].Kills;
+            }
 
             var death = new PlayerDeath
             {
-                playerId = packet.targetId,
-                killerId = sender,
-                playerDeaths = ++Players[packet.targetId].Deaths,
-                killerKills = ++Players[sender].Kills
+                playerId = sender,
+                killerId = packet.killerId,
+                playerDeaths = deaths,
+                killerKills = kills
             };
             SendToAll(death, NetDeliveryMethod.ReliableUnordered);
 

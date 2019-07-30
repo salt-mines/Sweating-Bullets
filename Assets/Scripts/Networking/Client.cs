@@ -77,7 +77,7 @@ namespace Networking
         public event EventHandler<PlayerExtraInfo> PlayerSentInfo;
 
         public event EventHandler<PlayerInfo> OwnKill;
-        public event EventHandler<byte> SelfHurt;
+        public event EventHandler<DamageEventArgs> SelfHurt;
         public event EventHandler<PlayerDeath> PlayerDeath;
         public event EventHandler<PlayerInfo> PlayerRespawn;
 
@@ -194,9 +194,9 @@ namespace Networking
             PlayerSentInfo?.Invoke(this, packet);
         }
 
-        protected void OnSelfHurt(byte damage)
+        protected void OnSelfHurt(byte shooter, byte damage)
         {
-            SelfHurt?.Invoke(this, damage);
+            SelfHurt?.Invoke(this, new DamageEventArgs {ShooterId = shooter, Damage = damage});
         }
 
         protected virtual void OnPlayerDeath(PlayerDeath packet)
@@ -210,6 +210,11 @@ namespace Networking
 
             Players[packet.playerId].Deaths = packet.playerDeaths;
             Players[packet.killerId].Kills = packet.killerKills;
+
+            if (packet.killerId == PlayerId.Value)
+            {
+                OwnKill?.Invoke(this, Players[packet.playerId]);
+            }
 
             Debug.LogFormat("Player {0} killed Player {1}", packet.killerId, packet.playerId);
 
@@ -233,11 +238,6 @@ namespace Networking
 
         public virtual void PlayerShootMultiple(Vector3 from, Vector3 to, byte damage, RaycastHit[] hits)
         {
-        }
-
-        public virtual void KillPlayer(byte targetId)
-        {
-            OwnKill?.Invoke(this, Players[targetId]);
         }
 
         internal virtual void OnGUI(float x, float y)
@@ -326,5 +326,11 @@ namespace Networking
         }
 
         #endregion
+
+        public class DamageEventArgs : EventArgs
+        {
+            public byte ShooterId { get; set; }
+            public byte Damage { get; set; }
+        }
     }
 }

@@ -34,13 +34,13 @@ namespace UI
             if (pl.Id == client.LocalPlayer.Id) SetHealth(pl.Health);
         }
 
-        private void OnSelfHurt(object sender, byte damage)
+        private void OnSelfHurt(object sender, Client.DamageEventArgs dea)
         {
             var hp = client.LocalPlayer.Health;
-            if (hp < damage)
+            if (hp < dea.Damage)
                 hp = 0;
             else
-                hp -= damage;
+                hp -= dea.Damage;
 
             SetHealth(hp);
         }

@@ -62,7 +62,6 @@ namespace Game
                 PlayerInfo.Weapon = playerMechanics.CurrentWeaponId;
                 PlayerInfo.Grounded = playerMovement.IsGrounded;
 
-
                 if (respawned)
                 {
                     Client.OnPlayerRespawn(PlayerInfo);
@@ -77,8 +76,12 @@ namespace Game
                 tr.rotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.x, Vector3.up);
                 eyePosition.localRotation = Quaternion.AngleAxis(PlayerInfo.ViewAngles.y, Vector3.right);
 
+                playerMechanics.Health = PlayerInfo.Health;
+
                 if (playerMechanics.IsAlive && !PlayerInfo.Alive)
+                {
                     Kill();
+                }
                 else if (!playerMechanics.IsAlive && PlayerInfo.Alive)
                 {
                     playerMechanics.Respawn();
