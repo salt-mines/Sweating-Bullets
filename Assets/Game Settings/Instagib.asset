@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c772df5ae464e45913fc2c6a4f14502, type: 3}
-  m_Name: Default Game Settings
+  m_Name: Instagib
   m_EditorClassIdentifier: 
-  modeName: Default
+  modeName: Instagib
   weapons:
   - {fileID: 8813512276880922557, guid: f4de7a044160e33438afa67c5c3cdbbd, type: 3}
-  - {fileID: 7160301323098420746, guid: 8ffec3414a2ed344181638bf7cfe38cb, type: 3}
-  - {fileID: 1858484937160739010, guid: d4a10c1ff36fe8342b7ba83ecb3ad0aa, type: 3}
   spawnTime: 6
-  maxHealth: 100
+  maxHealth: 0

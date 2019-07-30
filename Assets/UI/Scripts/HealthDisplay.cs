@@ -1,3 +1,4 @@
+using Game;
 using Networking;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace UI
     public class HealthDisplay : MonoBehaviour
     {
         private Client client;
+        private GameManager gameManager;
 
         public TextMeshProUGUI healthText;
 
@@ -15,6 +17,7 @@ namespace UI
         private void Start()
         {
             client = FindObjectOfType<NetworkManager>().Client;
+            gameManager = FindObjectOfType<GameManager>();
 
             if (client == null)
             {
@@ -24,16 +27,11 @@ namespace UI
 
             client.SelfHurt += OnSelfHurt;
             client.PlayerRespawn += OnPlayerRespawn;
-
-            SetHealth(100);
         }
 
         private void OnPlayerRespawn(object sender, PlayerInfo pl)
         {
-            if (pl.Id == client.LocalPlayer.Id)
-            {
-                SetHealth(pl.Health);
-            }
+            if (pl.Id == client.LocalPlayer.Id) SetHealth(pl.Health);
         }
 
         private void OnSelfHurt(object sender, byte damage)
@@ -49,8 +47,16 @@ namespace UI
 
         private void SetHealth(byte hp)
         {
+            var maxHp = gameManager.currentGameMode ? gameManager.currentGameMode.maxHealth : 100;
+
+            if (maxHp == 0)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             healthText.text = hp.ToString();
-            healthText.color = healthColor.Evaluate(hp / 100f);
+            healthText.color = healthColor.Evaluate(hp / (float) maxHp);
         }
     }
 }

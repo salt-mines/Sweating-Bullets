@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Game;
 using Lidgren.Network;
 using NaughtyAttributes;
 using Networking;
@@ -24,6 +25,10 @@ public class Loader : MonoBehaviour
     [ReorderableList]
     public List<SceneReference> availableLevels = new List<SceneReference>();
 
+    [Tooltip("List of available game modes.")]
+    [ReorderableList]
+    public List<GameMode> availableGameModes = new List<GameMode>();
+
     private bool isCommonLoaded;
     private Scene preloadedScene;
     private ServerConfig serverConfig;
@@ -38,6 +43,9 @@ public class Loader : MonoBehaviour
 
     private void Awake()
     {
+        if (availableGameModes.Count > 255)
+            throw new IndexOutOfRangeException("too many GameModes");
+
         Preferences.Load();
 
         GetComponent<PreferencesSetter>().Preferences = Preferences;
@@ -62,6 +70,12 @@ public class Loader : MonoBehaviour
             LevelManager.StartingLevel = sc.name;
             LevelManager.StartingLevelLoaded = true;
         }
+    }
+
+    private void OnValidate()
+    {
+        if (availableGameModes.Count > 255)
+            throw new IndexOutOfRangeException("too many GameModes");
     }
 
     private void OnDestroy()
@@ -96,7 +110,8 @@ public class Loader : MonoBehaviour
             StartGame(new ServerConfig
             {
                 MaxPlayerCount = maxPl,
-                StartingLevel = clLevel
+                StartingLevel = clLevel,
+                GameMode = availableGameModes[0]
             });
             return;
         }

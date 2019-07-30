@@ -19,7 +19,8 @@ namespace Networking
                 config = new ServerConfig
                 {
                     MaxPlayerCount = Constants.MaxPlayers,
-                    StartingLevel = loader.LevelManager.StartingLevel
+                    StartingLevel = loader.LevelManager.StartingLevel,
+                    GameMode = loader.availableGameModes[0]
                 };
 
             MaxPlayerCount = config.MaxPlayerCount;
@@ -29,6 +30,8 @@ namespace Networking
             Loader = loader;
             LevelManager = loader.LevelManager;
             LevelManager.StartingLevel = config.StartingLevel;
+
+            ServerConfig = config;
 
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {
@@ -63,6 +66,8 @@ namespace Networking
 
         public int TickRate { get; set; } = 64;
         public int SendRate { get; set; } = 32;
+
+        public ServerConfig ServerConfig { get; }
 
         public byte MaxPlayerCount { get; }
         public byte PlayerCount { get; private set; }
@@ -287,10 +292,13 @@ namespace Networking
 
             PlayerJoined?.Invoke(this, player);
 
+            var currentModeId = (byte) Loader.availableGameModes.IndexOf(ServerConfig.GameMode);
+
             SendToOne(new Connected
             {
                 playerId = player.Id,
                 maxPlayers = MaxPlayerCount,
+                modeId = currentModeId,
                 levelName = Level,
                 currentPlayers = BuildPlayerList(player.Id),
                 currentPlayersInfo = BuildPlayerInfoList(player.Id)
@@ -373,15 +381,6 @@ namespace Networking
             if (sender != packet.playerId)
                 return;
 
-//            var shot = new PlayerShoot
-//            {
-//                playerId = sender,
-//                from = packet.from,
-//                to = packet.to,
-//                hit = packet.hit,
-//                hitPlayer = packet.hitPlayer,
-//                hitNormal = packet.hitNormal
-//            };
             SendToAll(packet, NetDeliveryMethod.ReliableUnordered);
 
             PlayerShot?.Invoke(this, packet);

@@ -14,8 +14,6 @@ namespace Game
         private readonly List<SpawnPoint> spawnPointList = new List<SpawnPoint>(8);
         private readonly List<SpawnPoint> freeSpawnPoints = new List<SpawnPoint>(8);
 
-        public GameSettings gameSettings;
-
         [ReorderableList]
         public List<GameObject> disableOnDeath;
 
@@ -26,6 +24,8 @@ namespace Game
         private CharacterController characterController;
         private PlayerMovement playerMovement;
 
+        private GameMode gameMode;
+
         private DeadOverlay uiDeadOverlay;
         private Transform spawnPointsParent;
 
@@ -35,16 +35,18 @@ namespace Game
         public Weapon CurrentWeapon { get; private set; }
 
         public bool IsLocal => networkPlayer.IsLocalPlayer;
-        public bool IsAlive { get; set; } = true;
+        public bool IsAlive { get; set; } = false;
 
         public byte Health { get; set; }
 
         private void Start()
         {
-            if (!gameSettings)
-                throw new ArgumentException("gameSettings is required");
+            gameMode = FindObjectOfType<GameManager>().currentGameMode;
 
-            Health = gameSettings.maxHealth;
+            if (!gameMode)
+                throw new ArgumentException("GameMode is required");
+
+            Health = gameMode.maxHealth;
 
             networkPlayer = GetComponent<NetworkPlayer>();
             characterController = GetComponent<CharacterController>();
@@ -55,7 +57,7 @@ namespace Game
             networkPlayer.Client.SelfHurt += (o, dmg) => TakeDamage(dmg);
 
             // Init weapons
-            foreach (var wep in gameSettings.weapons)
+            foreach (var wep in gameMode.weapons)
             {
                 var w = Instantiate(wep, gunParent);
                 w.gameObject.SetActive(false);
@@ -91,7 +93,7 @@ namespace Game
 
             if (!IsAlive) timeSpentDead += Time.deltaTime;
 
-            if (gameSettings.spawnTime < timeSpentDead)
+            if (gameMode.spawnTime < timeSpentDead)
             {
                 timeSpentDead = 0;
                 Respawn();
@@ -115,7 +117,7 @@ namespace Game
             GetComponent<PlayerAnimation>()?.SetWeapon(wep);
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(byte damage)
         {
             var dmg = Mathf.FloorToInt(damage);
             if (Health >= dmg)
@@ -145,7 +147,7 @@ namespace Game
 
             if (uiDeadOverlay)
             {
-                uiDeadOverlay.respawnTime = gameSettings.spawnTime;
+                uiDeadOverlay.respawnTime = gameMode.spawnTime;
                 uiDeadOverlay.gameObject.SetActive(true);
             }
         }
@@ -153,7 +155,7 @@ namespace Game
         public void Respawn()
         {
             IsAlive = true;
-            Health = gameSettings.maxHealth;
+            Health = gameMode.maxHealth;
 
             if (IsLocal)
             {

@@ -20,6 +20,8 @@ namespace Networking
         /// </summary>
         public NetworkManager NetworkManager { get; internal set; }
 
+        public byte GameModeId { get; internal set; }
+
         /// <summary>
         ///     List of players on current server.
         /// </summary>
@@ -66,6 +68,8 @@ namespace Networking
         public bool Loaded { get; protected set; }
 
         protected Preferences Preferences => NetworkManager.Loader.Preferences;
+
+        public event EventHandler<Connected> ServerInfoReceived;
 
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
@@ -118,23 +122,18 @@ namespace Networking
 
         protected abstract void SendState();
 
-        protected void InitializeFromServer(Connected packet)
+        protected virtual void InitializeFromServer(Connected packet)
         {
-            InitializeFromServer(packet.playerId, packet.maxPlayers, packet.levelName, packet.currentPlayers,
-                packet.currentPlayersInfo);
-        }
+            Players = new PlayerInfo[packet.maxPlayers];
+            PlayerId = packet.playerId;
 
-        protected virtual void InitializeFromServer(byte playerId, byte maxPlayers, string level,
-            List<PlayerPreferences> currentPlayers, List<PlayerExtraInfo> currentPlayersInfo)
-        {
-            Debug.Log($"InitializeFromServer: P#{playerId}; max {maxPlayers}; level {level}");
-
-            Players = new PlayerInfo[maxPlayers];
-            PlayerId = playerId;
+            GameModeId = packet.modeId;
 
             // Store player info to be used later.
-            serverPlayers = currentPlayers;
-            serverPlayerInfos = currentPlayersInfo;
+            serverPlayers = packet.currentPlayers;
+            serverPlayerInfos = packet.currentPlayersInfo;
+
+            ServerInfoReceived?.Invoke(this, packet);
         }
 
         protected void CreateServerPlayers()

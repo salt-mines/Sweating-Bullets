@@ -37,7 +37,7 @@ namespace Networking
 
         public bool Grounded { get; set; }
         public bool Teleported { get; set; }
-        public bool Alive { get; set; } = true;
+        public bool Alive { get; set; }
 
         public NetworkPlayer PlayerObject { get; set; }
         public NetConnection Connection { get; }

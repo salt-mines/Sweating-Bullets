@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Networking;
 using TMPro;
 using UnityEngine;
@@ -16,10 +17,11 @@ namespace UI
     {
         public TMP_InputField maxPlayerInput;
         public TMP_Dropdown levelDropdown;
+        public TMP_Dropdown modeDropdown;
 
         public HostGameEvent onHostGame;
 
-        public LevelManager LevelManager { get; set; }
+        public Loader Loader { get; set; }
 
         private void Start()
         {
@@ -27,7 +29,16 @@ namespace UI
             maxPlayerInput.onSelect.AddListener(ClearError);
 
             levelDropdown.ClearOptions();
-            levelDropdown.AddOptions(LevelManager.AvailableLevels);
+            levelDropdown.AddOptions(Loader.LevelManager.AvailableLevels);
+
+            modeDropdown.ClearOptions();
+            var modes = new List<string>(Loader.availableGameModes.Count);
+            foreach (var m in Loader.availableGameModes)
+            {
+                modes.Add(m.modeName);
+            }
+
+            modeDropdown.AddOptions(modes);
         }
 
         private void ClearError(string contents)
@@ -50,8 +61,12 @@ namespace UI
                 }
             }
 
-            var level = levelDropdown.options[levelDropdown.value].text;
-            onHostGame.Invoke(new ServerConfig {MaxPlayerCount = maxPlayers, StartingLevel = level});
+            onHostGame.Invoke(new ServerConfig
+            {
+                MaxPlayerCount = maxPlayers,
+                StartingLevel = levelDropdown.options[levelDropdown.value].text,
+                GameMode = Loader.availableGameModes[modeDropdown.value]
+            });
         }
 
         public void OnClickCancel()
