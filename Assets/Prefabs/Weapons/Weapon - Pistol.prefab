@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rateOfFire: 2
   damagePerBullet: 25
+  maxAmmo: 0
   hittableMask:
     serializedVersion: 2
     m_Bits: 513

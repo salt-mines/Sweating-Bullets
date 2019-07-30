@@ -109,6 +109,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rateOfFire: 1
+  damagePerBullet: 10
+  maxAmmo: 5
   hittableMask:
     serializedVersion: 2
     m_Bits: 513
@@ -258,16 +260,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1673304952914558513}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Name
-      value: assault_rifle
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 102628066cf8f734db580328d0195031,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -323,17 +315,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Name
+      value: assault_rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3986131752463211759, guid: 102628066cf8f734db580328d0195031,
         type: 3}
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 6851519948158803367, guid: 102628066cf8f734db580328d0195031,
+    - target: {fileID: 8515514942009816929, guid: 102628066cf8f734db580328d0195031,
         type: 3}
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 8515514942009816929, guid: 102628066cf8f734db580328d0195031,
+    - target: {fileID: 6851519948158803367, guid: 102628066cf8f734db580328d0195031,
         type: 3}
       propertyPath: m_Layer
       value: 2

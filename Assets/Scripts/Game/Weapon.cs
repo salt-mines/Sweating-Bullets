@@ -16,6 +16,9 @@ namespace Game
         [Range(0, 100)]
         public byte damagePerBullet = 10;
 
+        [Range(0, 255)]
+        public byte maxAmmo;
+
         [Tooltip("Which layers should bullets hit")]
         public LayerMask hittableMask = ~0;
 
@@ -33,6 +36,8 @@ namespace Game
 
         [Header("Audio")]
         public AudioSource audioSource;
+
+        public byte Ammo { get; set; }
 
         protected float lastShot;
         protected abstract int BulletReserve { get; }
@@ -57,6 +62,8 @@ namespace Game
             bulletPool.Capacity += BulletReserve;
 
             bulletPool.Fill();
+
+            Ammo = maxAmmo;
         }
 
         private void OnDestroy()
@@ -69,17 +76,24 @@ namespace Game
             if (rateOfFire == 0f)
                 return false;
 
-            return Time.time > lastShot + 1f / rateOfFire;
+            return (Ammo > 0 || maxAmmo == 0) && Time.time > lastShot + 1f / rateOfFire;
         }
 
-        public abstract void Shoot(NetworkPlayer player, Transform startPoint);
+        public virtual void Shoot(NetworkPlayer player, Transform startPoint)
+        {
+            if (maxAmmo > 0)
+                Ammo--;
+
+            lastShot = Time.time;
+        }
 
         public void ShootEffect(NetworkPlayer player, Vector3 from, Vector3 to, RaycastHit? hit)
         {
             ShootEffect(player, from, to, new BulletInfo
             {
                 hit = hit.HasValue && hit.Value.collider,
-                hitPlayer = hit.HasValue && hit.Value.collider && hit.Value.collider.gameObject.layer == (int) Layer.Players,
+                hitPlayer = hit.HasValue && hit.Value.collider &&
+                            hit.Value.collider.gameObject.layer == (int) Layer.Players,
                 hitNormal = hit?.normal ?? Vector3.zero
             });
         }

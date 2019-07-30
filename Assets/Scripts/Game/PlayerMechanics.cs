@@ -36,7 +36,7 @@ namespace Game
         public Weapon CurrentWeapon { get; private set; }
 
         public bool IsLocal => networkPlayer.IsLocalPlayer;
-        public bool IsAlive { get; set; } = false;
+        public bool IsAlive { get; set; }
 
         public byte Health { get; set; }
 
@@ -99,6 +99,11 @@ namespace Game
                 timeSpentDead = 0;
                 Respawn();
             }
+
+            var wep = CurrentWeapon;
+
+            if (wep != null && wep.maxAmmo > 0 && wep.Ammo == 0 && CurrentWeaponId > 0)
+                SetWeapon(0);
         }
 
         public void SetWeapon(byte weaponId)
@@ -113,6 +118,9 @@ namespace Game
 
             CurrentWeapon = wep;
             CurrentWeaponId = weaponId;
+
+            if (CurrentWeapon != null)
+                CurrentWeapon.Ammo = CurrentWeapon.maxAmmo;
 
             GetComponent<PlayerShooting>()?.SetWeapon(wep);
             GetComponent<PlayerAnimation>()?.SetWeapon(wep);

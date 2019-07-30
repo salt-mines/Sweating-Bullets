@@ -430,6 +430,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 262871284}
+  - component: {fileID: 262871285}
   m_Layer: 5
   m_Name: Panel - Ammo
   m_TagString: Untagged
@@ -457,6 +458,19 @@ RectTransform:
   m_AnchoredPosition: {x: 200, y: 60}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &262871285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262871283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63791d46813945458d573d0113abae54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ammoText: {fileID: 1301053638}
 --- !u!1 &311714066
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,6 +661,7 @@ MonoBehaviour:
   paused: 0
   pausePanel: {fileID: 1920348672}
   deadOverlay: {fileID: 1129252053}
+  currentGameMode: {fileID: 0}
 --- !u!4 &341453354
 Transform:
   m_ObjectHideFlags: 0
