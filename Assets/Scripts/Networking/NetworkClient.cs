@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Game;
 using Lidgren.Network;
 using Networking.Packets;
@@ -53,16 +52,15 @@ namespace Networking
             base.Shutdown();
         }
 
-        protected override void InitializeFromServer(byte playerId, byte maxPlayers, string level,
-            List<PlayerPreferences> currentPlayers, List<PlayerExtraInfo> currentPlayersInfo)
+        protected override void InitializeFromServer(Connected packet)
         {
-            base.InitializeFromServer(playerId, maxPlayers, level, currentPlayers, currentPlayersInfo);
+            base.InitializeFromServer(packet);
 
             if (preloadedLevel)
-                LevelLoaded(level);
+                LevelLoaded(packet.levelName);
 
             if (!ListenServer)
-                LevelManager.ChangeLevel(level);
+                LevelManager.ChangeLevel(packet.levelName);
         }
 
         private void LevelLoaded(string level)

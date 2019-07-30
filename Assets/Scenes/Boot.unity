@@ -512,6 +512,9 @@ MonoBehaviour:
     scenePath: Assets/Scenes/Levels/Test.unity
   - sceneAsset: {fileID: 102900000, guid: 1c31036727ae12441b5a8a913afd8cbc, type: 3}
     scenePath: Assets/Scenes/Levels/dmsert.unity
+  availableGameModes:
+  - {fileID: 11400000, guid: a83659622b98db842a012648e63177f5, type: 2}
+  - {fileID: 11400000, guid: eaa550675e69aac45b435fee186c38f9, type: 2}
 --- !u!114 &1425483753
 MonoBehaviour:
   m_ObjectHideFlags: 0

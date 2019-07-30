@@ -30,7 +30,7 @@ namespace UI
 
             optionsMenu.preferencesSetter = FindObjectOfType<PreferencesSetter>();
 
-            hostGameDialog.LevelManager = loader.LevelManager;
+            hostGameDialog.Loader = loader;
         }
 
         private void Start()

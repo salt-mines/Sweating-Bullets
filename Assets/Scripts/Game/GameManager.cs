@@ -1,4 +1,5 @@
-﻿using UI;
+﻿using Networking.Packets;
+using UI;
 using UnityEngine;
 
 namespace Game
@@ -9,11 +10,15 @@ namespace Game
         public GameObject pausePanel;
         public DeadOverlay deadOverlay;
 
+        public GameMode currentGameMode;
+
         private GameInput gameInput;
 
         private void Start()
         {
             gameInput = FindObjectOfType<GameInput>();
+
+            GetComponent<NetworkManager>().Client.ServerInfoReceived += OnServerInfo;
         }
 
         // Update is called once per frame
@@ -24,7 +29,13 @@ namespace Game
             else if (paused && gameInput.Cancel) OnResume();
         }
 
-        public void OnPause()
+        private void OnServerInfo(object sender, Connected packet)
+        {
+            currentGameMode = FindObjectOfType<Loader>().availableGameModes[packet.modeId];
+            Debug.Log($"Loading mode {currentGameMode.modeName}");
+        }
+
+        private void OnPause()
         {
             pausePanel.SetActive(true);
             GameInput.MouseLocked = false;
@@ -32,7 +43,7 @@ namespace Game
             gameInput.BlockInput = true;
         }
 
-        public void OnResume()
+        private void OnResume()
         {
             pausePanel.SetActive(false);
             GameInput.MouseLocked = true;

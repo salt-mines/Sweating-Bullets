@@ -50,6 +50,8 @@ namespace Networking.Packets
         public byte playerId;
         public byte maxPlayers;
 
+        public byte modeId;
+
         public string levelName;
 
         public List<PlayerPreferences> currentPlayers;
@@ -62,6 +64,7 @@ namespace Networking.Packets
             {
                 playerId = msg.ReadByte(),
                 maxPlayers = msg.ReadByte(),
+                modeId = msg.ReadByte(),
                 levelName = msg.ReadString(),
                 currentPlayers = ReadPlayerList(msg),
                 currentPlayersInfo = ReadPlayerInfo(msg)
@@ -90,6 +93,7 @@ namespace Networking.Packets
         {
             msg.Write(playerId);
             msg.Write(maxPlayers);
+            msg.Write(modeId);
             msg.Write(levelName);
 
             msg.Write((byte) currentPlayers.Count);
