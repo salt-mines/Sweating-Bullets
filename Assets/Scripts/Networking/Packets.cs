@@ -13,7 +13,6 @@ namespace Networking.Packets
         PlayerConnected = 10,
         PlayerDisconnected = 11,
         PlayerState = 12,
-        PlayerKill = 13,
         PlayerDeath = 14,
         PlayerShoot = 15,
         WorldState = 20
@@ -116,6 +115,7 @@ namespace Networking.Packets
         public byte playerId;
         public string name;
         public Color color;
+        public byte modelId;
 
         public static PlayerPreferences Read(NetIncomingMessage msg)
         {
@@ -123,7 +123,8 @@ namespace Networking.Packets
             {
                 playerId = msg.ReadByte(),
                 name = msg.ReadString(),
-                color = msg.ReadColor(false)
+                color = msg.ReadColor(false),
+                modelId = msg.ReadByte()
             };
         }
 
@@ -132,6 +133,7 @@ namespace Networking.Packets
             msg.Write(playerId);
             msg.Write(name);
             msg.Write(color, false);
+            msg.Write(modelId);
         }
     }
 
@@ -212,33 +214,6 @@ namespace Networking.Packets
         public void Write(NetOutgoingMessage msg)
         {
             msg.Write(playerId);
-        }
-    }
-
-    /// <summary>
-    ///     Sent by client to server when client kills a player.
-    /// </summary>
-    public struct PlayerKill : IPacket
-    {
-        public PacketType Type => PacketType.PlayerKill;
-        public int SequenceChannel => 0;
-
-        public byte killerId;
-        public byte targetId;
-
-        public static PlayerKill Read(NetIncomingMessage msg)
-        {
-            return new PlayerKill
-            {
-                killerId = msg.ReadByte(),
-                targetId = msg.ReadByte()
-            };
-        }
-
-        public void Write(NetOutgoingMessage msg)
-        {
-            msg.Write(killerId);
-            msg.Write(targetId);
         }
     }
 

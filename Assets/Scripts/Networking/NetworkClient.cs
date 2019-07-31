@@ -84,7 +84,8 @@ namespace Networking
             {
                 playerId = PlayerId.Value,
                 name = Preferences.Name,
-                color = Random.ColorHSV(0, 1f, 0.3f, 1f, 0.5f, 1f)
+                color = Random.ColorHSV(0, 1f, 0.3f, 1f, 0.5f, 1f),
+                modelId = (byte) Random.Range(0, 3)
             };
 
             Send(info, NetDeliveryMethod.ReliableUnordered);

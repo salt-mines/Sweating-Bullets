@@ -259,7 +259,8 @@ namespace Networking
                 {
                     playerId = pl.Id,
                     name = pl.Name,
-                    color = pl.Color
+                    color = pl.Color,
+                    modelId = pl.Model
                 });
             }
 
@@ -352,20 +353,17 @@ namespace Networking
                 return;
             }
 
+            if (sender != packet.playerId)
+                return;
+
             Debug.Log($"Setting player {sender}'s name to '{packet.name}'");
             ply.Name = packet.name;
             ply.Color = packet.color;
+            ply.Model = packet.modelId;
 
-            var newPacket = new PlayerPreferences
-            {
-                playerId = ply.Id,
-                name = ply.Name,
-                color = ply.Color
-            };
+            SendToAll(packet, NetDeliveryMethod.ReliableUnordered);
 
-            SendToAll(newPacket, NetDeliveryMethod.ReliableUnordered);
-
-            PlayerSentPreferences?.Invoke(this, newPacket);
+            PlayerSentPreferences?.Invoke(this, packet);
         }
 
         private void PacketReceived(byte sender, PlayerState packet)
