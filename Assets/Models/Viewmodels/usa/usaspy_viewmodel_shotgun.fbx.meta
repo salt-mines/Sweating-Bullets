@@ -1,23 +1,17 @@
 fileFormatVersion: 2
-guid: 7ed3a71d9df0c4244a77080d522efb97
+guid: 77f53072155c6c84f9a25b5cd1269fa7
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
   - first:
-      74: -3645977080599339085
-    second: GunArmature|GunArmature.001|GunArmature|Shoot|GunArmature|Shoot
-  - first:
-      74: -3247496358665798055
-    second: GunArmature|ShootPistol
-  - first:
       74: -7955708010397774168
     second: UsaSpyArmature|AimingUBAssaultRifle
   - first:
-      74: 313010844130916424
-    second: UsaSpyArmature|AimingUBPistol
-  - first:
       74: 653566970691494154
     second: UsaSpyArmature|AimingUBShotgun
+  - first:
+      74: -2169853964235229792
+    second: UsaSpyArmature|AimingUpperbody
   - first:
       74: -7721025948726236760
     second: UsaSpyArmature|default pose
@@ -72,7 +66,35 @@ ModelImporter:
   - first:
       74: 6448742184975809042
     second: UsaSpyArmature|Walk
-  externalObjects: {}
+  - first:
+      74: 5449924506542882635
+    second: Armature.003|AimingUpperbody
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: f226558aef687a444a305bd26d1c891b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: ec358e68a901ddd46b97c3e75e5e166f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bare bronze
+    second: {fileID: 2100000, guid: 2a45c7bf22416dd4c983428bcb986e4b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shirt knitted
+    second: {fileID: 2100000, guid: 95a62da0841a00245a754438416bda83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin
+    second: {fileID: 2100000, guid: a711ac83cfddb6149830c8602bad293a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -101,125 +123,38 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: GunArmature|GunArmature.001|GunArmature|Shoot|GunArmature|Shoot
-      takeName: GunArmature|GunArmature.001|GunArmature|Shoot|GunArmature|Shoot
-      internalID: -3645977080599339085
-      firstFrame: 0
-      lastFrame: 16
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: GunArmature|ShootPistol
-      takeName: GunArmature|ShootPistol
-      internalID: -3247496358665798055
-      firstFrame: 0
-      lastFrame: 16
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: UsaSpyArmature|AimingUBAssaultRifle
-      takeName: UsaSpyArmature|AimingUBAssaultRifle
-      internalID: -7955708010397774168
-      firstFrame: 0
-      lastFrame: 15
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: UsaSpyArmature|AimingUBPistol
-      takeName: UsaSpyArmature|AimingUBPistol
-      internalID: 313010844130916424
-      firstFrame: 0
-      lastFrame: 16
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
       name: UsaSpyArmature|AimingUBShotgun
       takeName: UsaSpyArmature|AimingUBShotgun
       internalID: 653566970691494154
+      firstFrame: 0
+      lastFrame: 16
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: UsaSpyArmature|AimingUpperbody
+      takeName: UsaSpyArmature|AimingUpperbody
+      internalID: -2169853964235229792
       firstFrame: 0
       lastFrame: 16
       wrapMode: 0
@@ -744,6 +679,35 @@ ModelImporter:
       internalID: 6448742184975809042
       firstFrame: 0
       lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature.003|AimingUpperbody
+      takeName: Armature.003|AimingUpperbody
+      internalID: 5449924506542882635
+      firstFrame: 0
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
