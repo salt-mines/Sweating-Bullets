@@ -10,11 +10,15 @@ namespace Game
         public bool keepPlayerVelocity;
 
         public Animator animator;
+        public AudioSource audioSource;
 
         private void Awake()
         {
             if (!animator)
                 animator = GetComponent<Animator>();
+
+            if (!audioSource)
+                audioSource = GetComponent<AudioSource>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -36,6 +40,9 @@ namespace Game
 
             if (animator)
                 animator.SetTrigger(Spring);
+
+            if (audioSource)
+                audioSource.Play();
         }
     }
 }

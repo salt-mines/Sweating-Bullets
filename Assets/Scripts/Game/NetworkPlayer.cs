@@ -24,6 +24,7 @@ namespace Game
 
         public AudioSource audioSource;
         public List<AudioClip> footstepClips = new List<AudioClip>(2);
+        private int lastFootStepClip = 0;
 
         private float lastStepValue;
         private static readonly int FootstepParam = Animator.StringToHash("Footstep");
@@ -101,8 +102,17 @@ namespace Game
             var fsValue = animator.GetFloat(FootstepParam);
             if (!Utils.SameSign(fsValue, lastStepValue) && PlayerInfo.Grounded)
             {
-                var clip = footstepClips[Random.Range(0, footstepClips.Count)];
+                var clip = footstepClips[lastFootStepClip];
                 audioSource.PlayOneShot(clip, groundVel.magnitude/7f);
+
+                if (lastFootStepClip == 0) {
+                    lastFootStepClip = 1;
+                }
+                else
+                {
+                    lastFootStepClip = 0;
+                }
+                
             }
             lastStepValue = fsValue;
         }
