@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -35,6 +36,16 @@ namespace Game
 
             if (!leftHandTarget)
                 leftHandTarget = weapon.leftHandIKTarget;
+        }
+
+        private void OnEnable()
+        {
+            weaponPivot.GetComponent<PositionConstraint>().SetSource(0,
+                new ConstraintSource
+                {
+                    sourceTransform = animator.GetBoneTransform(HumanBodyBones.Chest),
+                    weight = 1
+                });
         }
 
         public void SetWeapon(Weapon wep)

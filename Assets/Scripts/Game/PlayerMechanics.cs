@@ -123,7 +123,7 @@ namespace Game
                 CurrentWeapon.Ammo = CurrentWeapon.maxAmmo;
 
             GetComponent<PlayerShooting>()?.SetWeapon(wep);
-            GetComponent<PlayerAnimation>()?.SetWeapon(wep);
+            networkPlayer.GetPlayerAnimation()?.SetWeapon(wep);
         }
 
         private void TakeDamage(Client.DamageEventArgs dea)

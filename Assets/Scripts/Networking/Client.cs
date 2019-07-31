@@ -179,6 +179,7 @@ namespace Networking
 
             pl.Name = packet.name;
             pl.Color = packet.color;
+            pl.Model = packet.modelId;
 
             PlayerSentPreferences?.Invoke(this, packet);
         }

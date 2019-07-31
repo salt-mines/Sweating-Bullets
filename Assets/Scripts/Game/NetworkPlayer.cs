@@ -9,11 +9,13 @@ namespace Game
         private static readonly int ParamSpeed = Animator.StringToHash("Speed");
         private static readonly int ParamForward = Animator.StringToHash("Forward");
         private static readonly int ParamRight = Animator.StringToHash("Right");
+        private static readonly int FootstepParam = Animator.StringToHash("Footstep");
 
         [SerializeField]
         private bool isLocalPlayer;
 
         public Transform eyePosition;
+        public Transform modelParent;
 
         public Animator animator;
         public PlayerMechanics playerMechanics;
@@ -26,8 +28,8 @@ namespace Game
         public List<AudioClip> footstepClips = new List<AudioClip>(2);
         private int lastFootStepClip = 0;
 
+        private byte modelId;
         private float lastStepValue;
-        private static readonly int FootstepParam = Animator.StringToHash("Footstep");
 
         public byte Id => PlayerInfo.Id;
 
@@ -63,10 +65,7 @@ namespace Game
                 PlayerInfo.Weapon = playerMechanics.CurrentWeaponId;
                 PlayerInfo.Grounded = playerMovement.IsGrounded;
 
-                if (respawned)
-                {
-                    Client.OnPlayerRespawn(PlayerInfo);
-                }
+                if (respawned) Client.OnPlayerRespawn(PlayerInfo);
             }
             else
             {
@@ -93,31 +92,51 @@ namespace Game
                     playerMechanics.SetWeapon(PlayerInfo.Weapon);
             }
 
+            if (modelId != PlayerInfo.Model)
+                SetModel(PlayerInfo.Model, modelId);
+
             var groundVel = tr.InverseTransformVector(PlayerInfo.Velocity);
             groundVel.y = 0;
-            animator.SetFloat(ParamSpeed, groundVel.magnitude);
-            animator.SetFloat(ParamForward, groundVel.z);
-            animator.SetFloat(ParamRight, groundVel.x);
+            if (animator.isActiveAndEnabled)
+            {
+                animator.SetFloat(ParamSpeed, groundVel.magnitude);
+                animator.SetFloat(ParamForward, groundVel.z);
+                animator.SetFloat(ParamRight, groundVel.x);
+            }
 
-            var fsValue = animator.GetFloat(FootstepParam);
-            if (!Utils.SameSign(fsValue, lastStepValue) && PlayerInfo.Grounded)
+            var fsValue = animator.isActiveAndEnabled ? animator.GetFloat(FootstepParam) : 0;
+            if (animator.isActiveAndEnabled && !Utils.SameSign(fsValue, lastStepValue) && PlayerInfo.Grounded)
             {
                 var clip = footstepClips[lastFootStepClip];
-                audioSource.PlayOneShot(clip, groundVel.magnitude/7f);
+                audioSource.PlayOneShot(clip, groundVel.magnitude / 7f);
 
-                if (lastFootStepClip == 0) {
-                    lastFootStepClip = 1;
-                }
-                else
-                {
-                    lastFootStepClip = 0;
-                }
-                
+                lastFootStepClip = lastFootStepClip == 0 ? 1 : 0;
             }
+
             lastStepValue = fsValue;
         }
 
-        public void Teleport(Vector3 position)
+        private void SetModel(byte id, byte oldModel)
+        {
+            var old = modelParent.GetChild(oldModel);
+            var wep = old.GetComponent<PlayerAnimation>().weapon;
+            old.gameObject.SetActive(false);
+
+            var newModel = modelParent.GetChild(id);
+            newModel.gameObject.SetActive(true);
+            newModel.GetComponent<PlayerAnimation>().SetWeapon(wep);
+
+            animator = newModel.GetComponent<Animator>();
+
+            modelId = id;
+        }
+
+        public PlayerAnimation GetPlayerAnimation()
+        {
+            return modelParent.GetChild(modelId).GetComponent<PlayerAnimation>();
+        }
+
+        private void Teleport(Vector3 position)
         {
             var oldState = true;
             if (characterController)
@@ -132,16 +151,6 @@ namespace Game
 
             if (characterController)
                 characterController.enabled = oldState;
-        }
-
-        public void Teleport(Vector3 position, Vector2 viewAngles)
-        {
-            Teleport(position);
-
-            transform.rotation = Quaternion.AngleAxis(viewAngles.x, Vector3.up);
-            if (firstPersonCamera)
-                firstPersonCamera.SetAngles(viewAngles);
-            PlayerInfo.ViewAngles = viewAngles;
         }
 
         public void Teleport(Vector3 position, Quaternion rotation)
