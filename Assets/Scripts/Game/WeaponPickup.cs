@@ -6,6 +6,13 @@ namespace Game
     {
         public pickUps pickUp = pickUps.Shotgun;
 
+        private AudioSource audioSource;
+
+        private void Start()
+        {
+            if(!audioSource) audioSource = GetComponent<AudioSource>();
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag(Tags.Player)) return;
@@ -15,13 +22,14 @@ namespace Game
             if (!pm) return;
 
             pm.SetWeapon(2);
+
+            if (audioSource) audioSource.Play();
         }
     }
 
     public enum pickUps
     {
         Shotgun,
-        Rifle,
-        HealthPack
+        Rifle
     }
 }
