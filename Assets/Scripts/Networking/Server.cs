@@ -37,6 +37,7 @@ namespace Networking
             {
                 Port = Constants.AppPort,
                 MaximumConnections = MaxPlayerCount,
+                EnableUPnP = true,
 #if UNITY_EDITOR
                 ConnectionTimeout = 600
 #endif
