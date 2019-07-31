@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b55db82869ceb96428e6af1679a3e1f7
+guid: f75905de366239842b46f8d31e939396
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -66,7 +66,32 @@ ModelImporter:
   - first:
       74: 6448742184975809042
     second: UsaSpyArmature|Walk
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: f226558aef687a444a305bd26d1c891b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: ec358e68a901ddd46b97c3e75e5e166f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bare bronze
+    second: {fileID: 2100000, guid: 2a45c7bf22416dd4c983428bcb986e4b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shirt knitted
+    second: {fileID: 2100000, guid: 95a62da0841a00245a754438416bda83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin
+    second: {fileID: 2100000, guid: a711ac83cfddb6149830c8602bad293a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
