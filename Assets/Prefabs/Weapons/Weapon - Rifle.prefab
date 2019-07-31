@@ -108,13 +108,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a76194ffd5ed644b97171b023bc35ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire: 1
+  rateOfFire: 0.3
   damagePerBullet: 10
   maxAmmo: 5
   hittableMask:
     serializedVersion: 2
     m_Bits: 513
-  barrelPoint: {fileID: 0}
+  barrelPoint: {fileID: 3078294510190528033}
   rightHandIKTarget: {fileID: 5400389389210415427}
   leftHandIKTarget: {fileID: 4611616565571077366}
   bulletParent: {fileID: 0}
@@ -122,10 +122,10 @@ MonoBehaviour:
     type: 3}
   bulletEffectSpeed: 500
   audioSource: {fileID: 0}
-  numPellets: 6
+  numPellets: 2
   horizontalSpread: 1
   verticalSpread: 1
-  range: 8
+  range: 20
 --- !u!82 &3991792667338253683
 AudioSource:
   m_ObjectHideFlags: 0
@@ -137,8 +137,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -6105601365831262819, guid: ea26dd60f271e1a499fc21003a00bb63,
     type: 2}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: 2e7b3ecafd4e99a4e8ec0f627e16f3c9, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -260,6 +260,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1673304952914558513}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Name
+      value: assault_rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515514942009816929, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851519948158803367, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3986131752463211759, guid: 102628066cf8f734db580328d0195031,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 102628066cf8f734db580328d0195031,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -314,31 +339,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Name
-      value: assault_rifle
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3986131752463211759, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8515514942009816929, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6851519948158803367, guid: 102628066cf8f734db580328d0195031,
-        type: 3}
-      propertyPath: m_Layer
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 102628066cf8f734db580328d0195031, type: 3}
