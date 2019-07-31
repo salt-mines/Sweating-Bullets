@@ -178,17 +178,13 @@ namespace Networking
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
-        public override void KillPlayer(byte targetId)
+        public void OnDeath(byte shooter)
         {
-            base.KillPlayer(targetId);
-
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-            UnityEngine.Debug.LogFormat("Shooting Player {0}", targetId);
-
-            Send(new PlayerKill
+            Send(new PlayerDeath
             {
-                killerId = PlayerId.Value,
-                targetId = targetId
+                playerId = PlayerId.Value,
+                killerId = shooter
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -280,7 +276,7 @@ namespace Networking
                 Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
                 if (b.hitPlayer && b.victimId == PlayerId.Value)
                 {
-                    OnSelfHurt(b.damage);
+                    OnSelfHurt(packet.playerId, b.damage);
                 }
             }
         }

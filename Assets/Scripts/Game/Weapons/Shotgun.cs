@@ -21,7 +21,7 @@ namespace Game.Weapons
 
         public override void Shoot(NetworkPlayer player, Transform startPoint)
         {
-            lastShot = Time.time;
+            base.Shoot(player, startPoint);
 
             float spreadX;
             float spreadY;

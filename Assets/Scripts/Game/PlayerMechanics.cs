@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using Networking;
 using UI;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -35,7 +36,7 @@ namespace Game
         public Weapon CurrentWeapon { get; private set; }
 
         public bool IsLocal => networkPlayer.IsLocalPlayer;
-        public bool IsAlive { get; set; } = false;
+        public bool IsAlive { get; set; }
 
         public byte Health { get; set; }
 
@@ -98,6 +99,11 @@ namespace Game
                 timeSpentDead = 0;
                 Respawn();
             }
+
+            var wep = CurrentWeapon;
+
+            if (wep != null && wep.maxAmmo > 0 && wep.Ammo == 0 && CurrentWeaponId > 0)
+                SetWeapon(0);
         }
 
         public void SetWeapon(byte weaponId)
@@ -113,20 +119,24 @@ namespace Game
             CurrentWeapon = wep;
             CurrentWeaponId = weaponId;
 
+            if (CurrentWeapon != null)
+                CurrentWeapon.Ammo = CurrentWeapon.maxAmmo;
+
             GetComponent<PlayerShooting>()?.SetWeapon(wep);
             GetComponent<PlayerAnimation>()?.SetWeapon(wep);
         }
 
-        public void TakeDamage(byte damage)
+        private void TakeDamage(Client.DamageEventArgs dea)
         {
-            var dmg = Mathf.FloorToInt(damage);
-            if (Health >= dmg)
-                Health -= (byte) dmg;
+            if (Health >= dea.Damage)
+                Health -= dea.Damage;
             else
                 Health = 0;
 
-            if (Health == 0)
-                Kill();
+            if (Health != 0) return;
+
+            Kill();
+            networkPlayer.Client.OnDeath(dea.ShooterId);
         }
 
         [Button]
