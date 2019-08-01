@@ -54,7 +54,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2330908465005718430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0016, y: 0.083, z: 0.6182}
+  m_LocalPosition: {x: 0, y: 0.049, z: 0.708}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8075330545553896709}
@@ -99,10 +99,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8075330545553896709}
-  - component: {fileID: 1858484937160739010}
   - component: {fileID: 4036666354665009083}
+  - component: {fileID: 5767364110194033039}
   m_Layer: 2
-  m_Name: Weapon - Shotgun
+  m_Name: Weapon - Instagib
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,37 +126,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -1, z: 0}
---- !u!114 &1858484937160739010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8075330545553896710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a76194ffd5ed644b97171b023bc35ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rateOfFire: 1
-  damagePerBullet: 10
-  maxAmmo: 5
-  hittableMask:
-    serializedVersion: 2
-    m_Bits: 513
-  barrelPoint: {fileID: 1324164558265025500}
-  rightHandIKTarget: {fileID: 4468299166246001752}
-  leftHandIKTarget: {fileID: 3054043193475692347}
-  viewmodelPrefab: {fileID: 798944747897210477, guid: d4010d2587ae9e94a8218fada0285a16,
-    type: 3}
-  bulletParent: {fileID: 0}
-  bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
-    type: 3}
-  bulletEffectSpeed: 500
-  audioSource: {fileID: 4036666354665009083}
-  numPellets: 12
-  accuracy: 1.1
-  range: 20
 --- !u!82 &4036666354665009083
 AudioSource:
   m_ObjectHideFlags: 0
@@ -272,6 +241,35 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5767364110194033039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8075330545553896710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a9a583715763134b8ee5e7b0177ca8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rateOfFire: 1
+  damagePerBullet: 10
+  maxAmmo: 0
+  hittableMask:
+    serializedVersion: 2
+    m_Bits: 513
+  barrelPoint: {fileID: 1324164558265025500}
+  rightHandIKTarget: {fileID: 4468299166246001752}
+  leftHandIKTarget: {fileID: 3054043193475692347}
+  viewmodelPrefab: {fileID: 798944747897210477, guid: b52b23dfcf5828546b87b80d2f282daf,
+    type: 3}
+  bulletParent: {fileID: 0}
+  bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
+    type: 3}
+  bulletEffectSpeed: 500
+  audioSource: {fileID: 4036666354665009083}
+  range: 100
 --- !u!1001 &5250082437611260469
 PrefabInstance:
   m_ObjectHideFlags: 0

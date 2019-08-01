@@ -23,6 +23,8 @@ namespace Game
 
         private bool oldGrounded;
 
+
+
         private void Awake()
         {
             if (!networkPlayer)
@@ -79,6 +81,7 @@ namespace Game
             {
                 animator.ResetTrigger(Jump);
                 animator.SetTrigger(Land);
+
             }
 
             oldGrounded = grounded;

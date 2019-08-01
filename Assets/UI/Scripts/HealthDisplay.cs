@@ -9,6 +9,7 @@ namespace UI
     {
         private Client client;
         private GameManager gameManager;
+        private PlayerMechanics mechanics;
 
         public TextMeshProUGUI healthText;
 
@@ -27,6 +28,19 @@ namespace UI
 
             client.SelfHurt += OnSelfHurt;
             client.PlayerRespawn += OnPlayerRespawn;
+        }
+
+        private void Update()
+        {
+            if (client.LocalPlayer == null) return;
+
+            if (!mechanics)
+                mechanics = client.LocalPlayer.PlayerObject.GetComponent<PlayerMechanics>();
+
+            if(mechanics.Health.ToString() != healthText.text.ToString())
+            {
+                SetHealth(mechanics.Health);
+            }
         }
 
         private void OnPlayerRespawn(object sender, PlayerInfo pl)

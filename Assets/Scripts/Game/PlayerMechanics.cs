@@ -181,6 +181,8 @@ namespace Game
                 uiDeadOverlay.respawnTime = gameMode.spawnTime;
                 uiDeadOverlay.gameObject.SetActive(true);
             }
+
+            SetWeapon(0);
         }
 
         public void Respawn()

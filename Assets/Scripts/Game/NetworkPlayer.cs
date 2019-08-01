@@ -26,10 +26,12 @@ namespace Game
 
         public AudioSource audioSource;
         public List<AudioClip> footstepClips = new List<AudioClip>(2);
+        public AudioClip landingClip;
         private int lastFootStepClip = 0;
 
         private byte modelId;
         private float lastStepValue;
+        private bool oldGrounded;
 
         public byte Id => PlayerInfo.Id;
 
@@ -113,6 +115,11 @@ namespace Game
                 lastFootStepClip = lastFootStepClip == 0 ? 1 : 0;
             }
 
+            if(!oldGrounded && PlayerInfo.Grounded)
+            {
+                audioSource.PlayOneShot(landingClip);
+            }
+            oldGrounded = PlayerInfo.Grounded;
             lastStepValue = fsValue;
         }
 
