@@ -15,7 +15,9 @@ MonoBehaviour:
   modeName: Default
   weapons:
   - {fileID: 8813512276880922557, guid: f4de7a044160e33438afa67c5c3cdbbd, type: 3}
-  - {fileID: 7160301323098420746, guid: 8ffec3414a2ed344181638bf7cfe38cb, type: 3}
+  - {fileID: 5533707778032468180, guid: 8ffec3414a2ed344181638bf7cfe38cb, type: 3}
   - {fileID: 1858484937160739010, guid: d4a10c1ff36fe8342b7ba83ecb3ad0aa, type: 3}
+  itemsEnabled: 1
   spawnTime: 6
   maxHealth: 100
+  killsTarget: 30

@@ -21,7 +21,7 @@ namespace Game
 
             if (!pm) return;
 
-            pm.SetWeapon(2);
+            pm.SetWeapon(1);
 
             if (audioSource) audioSource.Play();
         }

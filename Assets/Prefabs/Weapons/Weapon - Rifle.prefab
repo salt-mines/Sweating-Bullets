@@ -69,7 +69,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1673304952914558513}
-  - component: {fileID: 7160301323098420746}
+  - component: {fileID: 5533707778032468180}
   - component: {fileID: 3991792667338253683}
   m_Layer: 2
   m_Name: Weapon - Rifle
@@ -96,7 +96,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0.5, z: 0}
---- !u!114 &7160301323098420746
+--- !u!114 &5533707778032468180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,15 +105,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5398777461380430868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a76194ffd5ed644b97171b023bc35ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a9a583715763134b8ee5e7b0177ca8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire: 0.3
-  damagePerBullet: 10
-  maxAmmo: 5
+  rateOfFire: 6
+  damagePerBullet: 15
+  maxAmmo: 30
   hittableMask:
     serializedVersion: 2
-    m_Bits: 513
+    m_Bits: 4294967295
   barrelPoint: {fileID: 3078294510190528033}
   rightHandIKTarget: {fileID: 5400389389210415427}
   leftHandIKTarget: {fileID: 4611616565571077366}
@@ -121,11 +121,8 @@ MonoBehaviour:
   bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
     type: 3}
   bulletEffectSpeed: 500
-  audioSource: {fileID: 0}
-  numPellets: 2
-  horizontalSpread: 1
-  verticalSpread: 1
-  range: 20
+  audioSource: {fileID: 3991792667338253683}
+  range: 100
 --- !u!82 &3991792667338253683
 AudioSource:
   m_ObjectHideFlags: 0
@@ -137,9 +134,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -6105601365831262819, guid: ea26dd60f271e1a499fc21003a00bb63,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 2e7b3ecafd4e99a4e8ec0f627e16f3c9, type: 3}
+  m_audioClip: {fileID: 8300000, guid: f846ee62e8e2a5843b22f728187260bf, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -147,10 +144,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 5
+  MaxDistance: 38
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -158,23 +155,50 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.060276795
+      value: 0.99494934
+      inSlope: -0.989239
+      outSlope: -0.989239
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0.51071477
+    - serializedVersion: 3
+      time: 0.41506347
+      value: 0.817894
+      inSlope: -1.4893519
+      outSlope: -1.4893519
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.77181345
+    - serializedVersion: 3
+      time: 0.5339857
+      value: 0.44645005
+      inSlope: -2.4050233
+      outSlope: -2.4050233
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.5737563
+      outWeight: 0.62171173
+    - serializedVersion: 3
+      time: 0.7657593
+      value: 0.16342163
+      inSlope: -1.1017528
+      outSlope: -1.1017528
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.5851505
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.05001994
+      outSlope: -0.05001994
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -183,7 +207,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -198,13 +222,22 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 0.31396484
+      inSlope: -0.1333729
+      outSlope: -0.1333729
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.30220175
+    - serializedVersion: 3
+      time: 0.13107485
       value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
