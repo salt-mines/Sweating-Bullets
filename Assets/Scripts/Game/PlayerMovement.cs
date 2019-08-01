@@ -96,7 +96,9 @@ namespace Game
                 if (characterController.isGrounded) velocity.y = -keepOnGroundForce;
 
                 if (gameInput.Jump)
+                {
                     velocity.y = jumpSpeed;
+                }
             }
             else
             {

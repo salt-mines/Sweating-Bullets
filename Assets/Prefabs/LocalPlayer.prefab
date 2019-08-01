@@ -19,6 +19,7 @@ MonoBehaviour:
   rightHandTarget: {fileID: 0}
   leftHandTarget: {fileID: 0}
   networkPlayer: {fileID: 3318192786354215941}
+  playerMovement: {fileID: 5563977352412500578}
   animator: {fileID: 6436135195182498550}
 --- !u!1 &269656877852444173
 GameObject:
@@ -730,6 +731,7 @@ MonoBehaviour:
   rightHandTarget: {fileID: 0}
   leftHandTarget: {fileID: 0}
   networkPlayer: {fileID: 3318192786354215941}
+  playerMovement: {fileID: 5563977352412500578}
   animator: {fileID: 3121860947564364307}
 --- !u!114 &7359780754541418413
 MonoBehaviour:
@@ -750,6 +752,7 @@ MonoBehaviour:
   rightHandTarget: {fileID: 0}
   leftHandTarget: {fileID: 0}
   networkPlayer: {fileID: 3318192786354215941}
+  playerMovement: {fileID: 5563977352412500578}
   animator: {fileID: 2376329503966029214}
 --- !u!1001 &46061784757437555
 PrefabInstance:
@@ -2595,15 +2598,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7c28760a2dfffb4a940ca408e9e993b, type: 3}
---- !u!4 &8481164232970622241 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2666575935604271085, guid: a7c28760a2dfffb4a940ca408e9e993b,
-    type: 3}
-  m_PrefabInstance: {fileID: 5814904958326829772}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &408417600093702391 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6131735437185661499, guid: a7c28760a2dfffb4a940ca408e9e993b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5814904958326829772}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8481164232970622241 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2666575935604271085, guid: a7c28760a2dfffb4a940ca408e9e993b,
     type: 3}
   m_PrefabInstance: {fileID: 5814904958326829772}
   m_PrefabAsset: {fileID: 0}
