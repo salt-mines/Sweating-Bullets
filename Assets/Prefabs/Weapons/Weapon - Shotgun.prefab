@@ -154,8 +154,8 @@ MonoBehaviour:
     type: 3}
   bulletEffectSpeed: 500
   audioSource: {fileID: 4036666354665009083}
-  numPellets: 10
-  accuracy: 0.7
+  numPellets: 12
+  accuracy: 1.1
   range: 20
 --- !u!82 &4036666354665009083
 AudioSource:

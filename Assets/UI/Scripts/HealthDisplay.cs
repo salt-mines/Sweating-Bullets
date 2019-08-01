@@ -39,7 +39,7 @@ namespace UI
 
             if(mechanics.Health.ToString() != healthText.text.ToString())
             {
-                healthText.text = mechanics.Health.ToString();
+                SetHealth(mechanics.Health);
             }
         }
 
