@@ -165,6 +165,8 @@ namespace Game
             if (deathEffect)
                 deathEffect.Play();
 
+            SetWeapon(0);
+
             foreach (var go in disableOnDeath)
                 if (go)
                     go.SetActive(false);
