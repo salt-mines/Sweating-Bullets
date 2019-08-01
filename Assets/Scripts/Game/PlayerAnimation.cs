@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
-using Random = UnityEngine.Random;
 
 namespace Game
 {
     public class PlayerAnimation : MonoBehaviour
     {
+        private static readonly int Grounded = Animator.StringToHash("Grounded");
+        private static readonly int Land = Animator.StringToHash("Land");
+        private static readonly int Jump = Animator.StringToHash("Jump");
         public bool ikEnabled = true;
 
         public Weapon weapon;
@@ -20,6 +20,8 @@ namespace Game
 
         public NetworkPlayer networkPlayer;
         public Animator animator;
+
+        private bool oldGrounded;
 
         private void Awake()
         {
@@ -62,7 +64,26 @@ namespace Game
         {
             if (!ikEnabled) return;
 
-            var vel = networkPlayer.PlayerInfo?.Velocity ?? Vector3.zero;
+            if (networkPlayer.PlayerInfo == null) return;
+            var grounded = networkPlayer.PlayerInfo.Grounded;
+
+            animator.SetBool(Grounded, grounded);
+
+            if (oldGrounded && !grounded)
+            {
+                animator.ResetTrigger(Land);
+                animator.SetTrigger(Jump);
+            }
+
+            if (!oldGrounded && grounded)
+            {
+                animator.ResetTrigger(Jump);
+                animator.SetTrigger(Land);
+            }
+
+            oldGrounded = grounded;
+
+            var vel = networkPlayer.PlayerInfo.Velocity;
 
             var lowerBodyDirection = networkPlayer.transform.InverseTransformVector(vel);
             lowerBodyDirection.y = 0;

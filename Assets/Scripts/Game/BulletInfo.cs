@@ -48,7 +48,7 @@ namespace Game
             msg.Write(hitNormal);
         }
 
-        public static BulletInfo From(byte playerId, Vector3 from, Vector3 to, byte damage, RaycastHit hit)
+        public static BulletInfo From(Vector3 to, byte damage, RaycastHit hit)
         {
             var didHit = hit.collider != null;
             var didHitPlayer = didHit && hit.collider.gameObject.layer == (int) Layer.Players;

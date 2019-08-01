@@ -157,7 +157,7 @@ namespace Networking
             {
                 playerId = PlayerId.Value,
                 from = from,
-                bullets = new[] { BulletInfo.From(PlayerId.Value, from, to, damage, hit)}
+                bullets = new[] { BulletInfo.From(to, damage, hit)}
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -168,7 +168,7 @@ namespace Networking
             var bullets = new BulletInfo[hits.Length];
             for (var i = 0; i < hits.Length; i++)
             {
-                bullets[i] = BulletInfo.From(PlayerId.Value, from, to, damage, hits[i]);
+                bullets[i] = BulletInfo.From(to, damage, hits[i]);
             }
 
             Send(new PlayerShoot

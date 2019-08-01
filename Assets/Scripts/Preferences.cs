@@ -10,7 +10,7 @@ public class Preferences
         set => name = string.IsNullOrWhiteSpace(value) ? "Player" : value;
     }
 
-    public float Sensitivity { get; set; } = 0.1f;
+    public float Sensitivity { get; set; } = 10f;
 
     public float MasterVolume { get; set; } = 1.0f;
     public float MusicVolume { get; set; } = 1.0f;
@@ -25,12 +25,12 @@ public class Preferences
         MusicVolume = PlayerPrefs.GetFloat("MusicVolume", MusicVolume);
         EffectsVolume = PlayerPrefs.GetFloat("EffectsVolume", EffectsVolume);
     }
-    
+
     public void Save()
     {
         PlayerPrefs.SetString("PlayerName", Name);
         PlayerPrefs.SetFloat("Sensitivity", Sensitivity);
-        
+
         PlayerPrefs.SetFloat("MasterVolume", MasterVolume);
         PlayerPrefs.SetFloat("MusicVolume", MusicVolume);
         PlayerPrefs.SetFloat("EffectsVolume", EffectsVolume);
