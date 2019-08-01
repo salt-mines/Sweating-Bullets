@@ -96,7 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 112000002, guid: 6b872fe0ef1dfe246b2a1e7463dee636,
+  m_LightingDataAsset: {fileID: 112000000, guid: e8429b5dc7aee634499bf624f4cbf64e,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -201,22 +201,22 @@ PrefabInstance:
     - target: {fileID: 3042684634005062823, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 0
+      value: NaN
       objectReference: {fileID: 0}
     - target: {fileID: 3042684634005062823, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 7.3e-44
+      value: NaN
       objectReference: {fileID: 0}
     - target: {fileID: 3042684634005062823, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 6.7e-44
+      value: NaN
       objectReference: {fileID: 0}
     - target: {fileID: 3042684634005062823, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.z
-      value: 1e-45
+      value: 1.0624352e+25
       objectReference: {fileID: 0}
     - target: {fileID: 2471746526381337171, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
@@ -265,7 +265,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &90166405
 Transform:
@@ -996,15 +996,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
@@ -6603,15 +6603,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
@@ -10426,7 +10426,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &610982532
 Transform:
@@ -10806,22 +10806,22 @@ PrefabInstance:
     - target: {fileID: 2471746526381337171, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 0
+      value: -1744332.9
       objectReference: {fileID: 0}
     - target: {fileID: 2471746526381337171, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 0
+      value: 1.2695977e+33
       objectReference: {fileID: 0}
     - target: {fileID: 2471746526381337171, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.z
-      value: 0
+      value: 2.3071165e+21
       objectReference: {fileID: 0}
     - target: {fileID: 2471746526381337171, guid: 7c2c9509aa328b44e9bb305ed7ccf999,
         type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 0
+      value: 4.542225e-23
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c2c9509aa328b44e9bb305ed7ccf999, type: 3}
@@ -11668,7 +11668,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!108 &858995657
 Light:
@@ -11726,7 +11726,7 @@ Light:
   m_BounceIntensity: 4
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 4e-44}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 9.502e-42, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0.2
@@ -46033,22 +46033,22 @@ PrefabInstance:
     - target: {fileID: 7312094648847055208, guid: 81b80fa89d3079943ac0c756c52ec601,
         type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 0
+      value: -103153.36
       objectReference: {fileID: 0}
     - target: {fileID: 7312094648847055208, guid: 81b80fa89d3079943ac0c756c52ec601,
         type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 0
+      value: -1.7229883e-17
       objectReference: {fileID: 0}
     - target: {fileID: 7312094648847055208, guid: 81b80fa89d3079943ac0c756c52ec601,
         type: 3}
       propertyPath: m_BoundingSphereOverride.z
-      value: 0
+      value: 3.841146e+24
       objectReference: {fileID: 0}
     - target: {fileID: 7312094648847055208, guid: 81b80fa89d3079943ac0c756c52ec601,
         type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 0
+      value: 7.19925e-30
       objectReference: {fileID: 0}
     - target: {fileID: 7312094648847055208, guid: 81b80fa89d3079943ac0c756c52ec601,
         type: 3}
@@ -49977,15 +49977,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}

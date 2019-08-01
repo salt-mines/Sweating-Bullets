@@ -62,7 +62,6 @@ namespace Game
         {
             gameInput = FindObjectOfType<GameInput>();
             characterController = GetComponent<CharacterController>();
-            characterController.enableOverlapRecovery = false;
         }
 
         private void Update()
