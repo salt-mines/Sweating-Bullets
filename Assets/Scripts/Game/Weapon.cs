@@ -44,7 +44,7 @@ namespace Game
         protected float lastShot;
         protected abstract int BulletReserve { get; }
 
-        private void Start()
+        protected void Start()
         {
             if (!audioSource)
                 audioSource = GetComponent<AudioSource>();

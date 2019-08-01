@@ -36,7 +36,7 @@ namespace UI
 
         private void OnSelfHurt(object sender, Client.DamageEventArgs dea)
         {
-            var hp = client.LocalPlayer.Health;
+            var hp = client.LocalPlayer.PlayerObject.playerMechanics.Health;
             if (hp < dea.Damage)
                 hp = 0;
             else

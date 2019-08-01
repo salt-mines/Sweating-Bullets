@@ -150,7 +150,14 @@ namespace Networking
                 ply.Teleported = false;
         }
 
-        public override void PlayerShootOne(Vector3 from, Vector3 to, byte damage, RaycastHit hit)
+        /// <summary>
+        ///     Called when local player has shot.
+        /// </summary>
+        /// <param name="from">Where the shot was shot from</param>
+        /// <param name="to">Where the shot ended</param>
+        /// <param name="damage">How much damage the shot does</param>
+        /// <param name="hit">RaycastHit if shot hit something, null otherwise</param>
+        public void ShootOne(Vector3 from, Vector3 to, byte damage, RaycastHit hit)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
             Send(new PlayerShoot
@@ -161,16 +168,9 @@ namespace Networking
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
-        public override void PlayerShootMultiple(Vector3 from, Vector3 to, byte damage, RaycastHit[] hits)
+        public void ShootMultiple(Vector3 from, BulletInfo[] bullets)
         {
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-
-            var bullets = new BulletInfo[hits.Length];
-            for (var i = 0; i < hits.Length; i++)
-            {
-                bullets[i] = BulletInfo.From(to, damage, hits[i]);
-            }
-
             Send(new PlayerShoot
             {
                 playerId = PlayerId.Value,
