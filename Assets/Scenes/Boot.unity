@@ -506,10 +506,6 @@ MonoBehaviour:
   availableLevels:
   - sceneAsset: {fileID: 102900000, guid: eeb9f19b011bbc549b87d2cf5726a9b8, type: 3}
     scenePath: Assets/Scenes/Levels/Arena Factory.unity
-  - sceneAsset: {fileID: 102900000, guid: c512478aa64907b4c82414c49e439775, type: 3}
-    scenePath: Assets/Scenes/Levels/Level1.unity
-  - sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
-    scenePath: Assets/Scenes/Levels/Test.unity
   - sceneAsset: {fileID: 102900000, guid: 1c31036727ae12441b5a8a913afd8cbc, type: 3}
     scenePath: Assets/Scenes/Levels/dmsert.unity
   availableGameModes:

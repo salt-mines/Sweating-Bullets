@@ -20,7 +20,8 @@ namespace Networking
                 {
                     MaxPlayerCount = Constants.MaxPlayers,
                     StartingLevel = loader.LevelManager.StartingLevel,
-                    GameMode = loader.availableGameModes[0]
+                    GameMode = loader.availableGameModes[0],
+                    KillsToWin = loader.availableGameModes[0].killsTarget
                 };
 
             MaxPlayerCount = config.MaxPlayerCount;
@@ -34,6 +35,8 @@ namespace Networking
             NetworkManager = nm;
 
             ServerConfig = config;
+
+            ServerConfig.GameMode.killsTarget = ServerConfig.KillsToWin;
 
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
             {

@@ -18,6 +18,7 @@ namespace UI
         public TMP_InputField maxPlayerInput;
         public TMP_Dropdown levelDropdown;
         public TMP_Dropdown modeDropdown;
+        public TMP_InputField killsToWinInput;
 
         public HostGameEvent onHostGame;
 
@@ -27,6 +28,9 @@ namespace UI
         {
             maxPlayerInput.placeholder.GetComponent<TextMeshProUGUI>().text = Constants.MaxPlayers.ToString();
             maxPlayerInput.onSelect.AddListener(ClearError);
+
+            killsToWinInput.placeholder.GetComponent<TextMeshProUGUI>().text = "30";
+            killsToWinInput.onSelect.AddListener(ClearError);
 
             levelDropdown.ClearOptions();
             levelDropdown.AddOptions(Loader.LevelManager.AvailableLevels);
@@ -44,6 +48,7 @@ namespace UI
         private void ClearError(string contents)
         {
             maxPlayerInput.GetComponent<Image>().color = maxPlayerInput.colors.selectedColor;
+            killsToWinInput.GetComponent<Image>().color = killsToWinInput.colors.selectedColor;
         }
 
         public void OnClickHost()
@@ -61,11 +66,24 @@ namespace UI
                 }
             }
 
+            short killsToWin = 30;
+
+            if (!string.IsNullOrWhiteSpace(killsToWinInput.text))
+            {
+                var ok = short.TryParse(killsToWinInput.text, out killsToWin);
+                if (!ok)
+                {
+                    maxPlayerInput.GetComponent<Image>().color = Color.red;
+                    return;
+                }
+            }
+
             onHostGame.Invoke(new ServerConfig
             {
                 MaxPlayerCount = maxPlayers,
                 StartingLevel = levelDropdown.options[levelDropdown.value].text,
-                GameMode = Loader.availableGameModes[modeDropdown.value]
+                GameMode = Loader.availableGameModes[modeDropdown.value],
+                KillsToWin = killsToWin
             });
         }
 

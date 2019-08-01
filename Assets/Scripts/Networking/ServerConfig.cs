@@ -7,5 +7,6 @@ namespace Networking
         public byte MaxPlayerCount { get; set; }
         public string StartingLevel { get; set; }
         public GameMode GameMode { get; set; }
+        public short KillsToWin { get; set; }
     }
 }
