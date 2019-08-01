@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using NaughtyAttributes;
 using Networking;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -81,9 +82,8 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("Starting in mode: " + Mode);
 
         if (Mode == NetworkMode.Server || Mode == NetworkMode.ListenServer)
-            Server = new Server(ServerConfig, Loader)
+            Server = new Server(this, ServerConfig, Loader)
             {
-                NetworkManager = this,
                 TickRate = tickRate,
                 SendRate = sendRate,
                 SimulatedLag = simulatedLag
@@ -148,6 +148,12 @@ public class NetworkManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Client?.OnDrawGizmos();
+    }
+
+    [Button]
+    private void EndGame()
+    {
+        Server?.EndGame(0);
     }
 
     #endregion

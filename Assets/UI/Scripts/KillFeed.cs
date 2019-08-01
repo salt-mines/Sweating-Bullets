@@ -22,6 +22,13 @@ namespace UI
 
             client.OwnKill += OnOwnKill;
             client.PlayerDeath += OnDeath;
+            client.LevelChanging += (sender, s) => ResetFeed();
+        }
+
+        private void ResetFeed()
+        {
+            fragText.text = "";
+            deathText.text = "";
         }
 
         private void OnOwnKill(object sender, PlayerInfo target)

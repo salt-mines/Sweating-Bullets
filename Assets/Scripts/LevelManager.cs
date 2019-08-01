@@ -27,7 +27,7 @@ public class LevelManager
 
     public bool StartingLevelLoaded { get; internal set; }
     public string StartingLevel { get; set; }
-    public string CurrentLevel { get; private set; }
+    public string CurrentLevel { get; internal set; }
 
     public event EventHandler<string> LevelChanging;
 
@@ -36,11 +36,11 @@ public class LevelManager
         return AvailableLevels.Contains(level) || AvailableLevels.Contains(Path.GetFileNameWithoutExtension(level));
     }
 
-    public void ChangeToStartingLevel()
+    public string GetNextLevel()
     {
-        if (StartingLevelLoaded) return;
-
-        ChangeLevel(StartingLevel);
+        var i = AvailableLevels.IndexOf(CurrentLevel);
+        i = (i + 1) % AvailableLevels.Count;
+        return AvailableLevels[i];
     }
 
     public void ChangeLevel(string level)

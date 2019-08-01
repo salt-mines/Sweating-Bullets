@@ -15,7 +15,9 @@ namespace Networking.Packets
         PlayerState = 12,
         PlayerDeath = 14,
         PlayerShoot = 15,
-        WorldState = 20
+        WorldState = 20,
+        ChangeLevel = 30,
+        GameOver = 31
     }
 
     public interface IPacket
@@ -329,6 +331,51 @@ namespace Networking.Packets
                     msg.Write(true);
                     state.Value.Write(msg);
                 }
+        }
+    }
+
+    public struct ChangeLevel : IPacket
+    {
+        public PacketType Type => PacketType.ChangeLevel;
+        public int SequenceChannel => 0;
+
+        public string nextLevel;
+
+        public static ChangeLevel Read(NetIncomingMessage msg)
+        {
+            return new ChangeLevel
+            {
+                nextLevel = msg.ReadString()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write(nextLevel);
+        }
+    }
+
+    public struct GameOver : IPacket
+    {
+        public PacketType Type => PacketType.GameOver;
+        public int SequenceChannel => 0;
+
+        public byte winnerId;
+        public float mapChangeTime;
+
+        public static GameOver Read(NetIncomingMessage msg)
+        {
+            return new GameOver
+            {
+                winnerId = msg.ReadByte(),
+                mapChangeTime = msg.ReadFloat()
+            };
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write(winnerId);
+            msg.Write(mapChangeTime);
         }
     }
 }

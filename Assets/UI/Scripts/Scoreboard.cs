@@ -36,8 +36,11 @@ namespace UI
             cl.PlayerSentInfo += (sender, info) => { UpdatePlayerInfo(info); };
             cl.PlayerDeath += (sender, info) => { UpdatePlayerDeath(info); };
 
+            cl.LevelChanging += (sender, s) => ResetBoard();
+            cl.LevelLoaded += (sender, s) => RefreshBoard();
+
             // Add local player separately since its creation doesn't raise an event.
-            if (cl.LocalPlayer != null) AddPlayer(cl.LocalPlayer);
+            //if (cl.LocalPlayer != null) AddPlayer(cl.LocalPlayer);
         }
 
         private void LateUpdate()
@@ -47,10 +50,32 @@ namespace UI
                 SortScores();
         }
 
+        private void ResetBoard()
+        {
+            for (var i = 0; i < playerList.transform.childCount; i++)
+                Destroy(playerList.transform.GetChild(i).gameObject);
+        }
+
+        private void RefreshBoard()
+        {
+            foreach (var pl in networkManager.Client.Players)
+                if (pl != null)
+                    AddPlayer(pl);
+        }
+
         private void AddPlayer(PlayerInfo player)
         {
-            var row = Instantiate(scoreRowPrefab.gameObject, playerList.transform);
-            row.GetComponent<ScoreRow>().PlayerInfo = player;
+            foreach (RectTransform tr in playerList.transform)
+                if (tr.GetComponent<ScoreRow>().PlayerInfo?.Id == player.Id)
+                    return;
+
+            var row = Instantiate(scoreRowPrefab.gameObject, playerList.transform).GetComponent<ScoreRow>();
+            row.PlayerInfo = player;
+
+            row.UpdateColor(player.Color);
+            row.UpdateName(player.Name);
+            row.UpdateKills(player.Kills);
+            row.UpdateDeaths(player.Deaths);
         }
 
         private void RemovePlayer(byte id)

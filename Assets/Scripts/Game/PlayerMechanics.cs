@@ -56,7 +56,7 @@ namespace Game
 
             uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
 
-            networkPlayer.Client.SelfHurt += (o, dmg) => TakeDamage(dmg);
+            networkPlayer.Client.SelfHurt += TakeDamage;
 
             // Init weapons
             foreach (var wep in gameMode.weapons)
@@ -89,6 +89,11 @@ namespace Game
             }
 
             Respawn();
+        }
+
+        private void OnDestroy()
+        {
+            networkPlayer.Client.SelfHurt -= TakeDamage;
         }
 
         private void Update()
@@ -139,7 +144,7 @@ namespace Game
             networkPlayer.GetPlayerAnimation()?.SetWeapon(wep);
         }
 
-        private void TakeDamage(Client.DamageEventArgs dea)
+        private void TakeDamage(object s, Client.DamageEventArgs dea)
         {
             if (Health >= dea.Damage)
                 Health -= dea.Damage;
@@ -161,9 +166,12 @@ namespace Game
                 deathEffect.Play();
 
             foreach (var go in disableOnDeath)
-                go.SetActive(false);
+                if (go)
+                    go.SetActive(false);
 
             if (!IsLocal) return;
+
+            if (!characterController) return;
 
             characterController.enabled = false;
             playerMovement.enabled = false;

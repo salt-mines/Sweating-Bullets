@@ -70,6 +70,9 @@ namespace Networking
         protected Preferences Preferences => NetworkManager.Loader.Preferences;
 
         public event EventHandler<Connected> ServerInfoReceived;
+        public event EventHandler<string> LevelChanging;
+        public event EventHandler<string> LevelLoaded;
+        public event EventHandler<GameOver> GameOver;
 
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
@@ -147,6 +150,9 @@ namespace Networking
             }
 
             foreach (var pl in serverPlayerInfos) OnPlayerSentInfo(pl);
+
+            serverPlayers.Clear();
+            serverPlayerInfos.Clear();
         }
 
         protected virtual PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -160,6 +166,31 @@ namespace Networking
         {
             OnPlayerLeft(Players[id]);
             Players[id] = null;
+        }
+
+        protected virtual void OnChangeLevel(ChangeLevel packet)
+        {
+            Loaded = false;
+
+            foreach (var pl in Players)
+            {
+                if (pl == null) continue;
+
+                pl.Kills = 0;
+                pl.Deaths = 0;
+            }
+
+            LevelChanging?.Invoke(this, packet.nextLevel);
+        }
+
+        protected virtual void OnLevelLoaded(string level)
+        {
+            LevelLoaded?.Invoke(this, level);
+        }
+
+        protected virtual void OnGameOver(GameOver packet)
+        {
+            GameOver?.Invoke(this, packet);
         }
 
         protected virtual void OnPlayerJoined(PlayerInfo player)

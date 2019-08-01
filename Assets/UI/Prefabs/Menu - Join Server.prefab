@@ -2082,7 +2082,7 @@ PrefabInstance:
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
@@ -2102,14 +2102,12 @@ PrefabInstance:
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_text
-      value: 'Cancel
-
-'
+      value: Cancel
       objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}
@@ -2296,7 +2294,7 @@ PrefabInstance:
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
@@ -2316,14 +2314,12 @@ PrefabInstance:
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_text
-      value: 'Join
-
-'
+      value: Join
       objectReference: {fileID: 0}
     - target: {fileID: 421225548051296396, guid: 034e38e5a21468d4d9f3c9267fdc4b3c,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 034e38e5a21468d4d9f3c9267fdc4b3c, type: 3}

@@ -13,7 +13,7 @@ namespace Networking
         private float nextSend;
         private float nextTick;
 
-        public Server(ServerConfig config, Loader loader)
+        public Server(NetworkManager nm, ServerConfig config, Loader loader)
         {
             if (config == null)
                 config = new ServerConfig
@@ -31,6 +31,8 @@ namespace Networking
             LevelManager = loader.LevelManager;
             LevelManager.StartingLevel = config.StartingLevel;
 
+            NetworkManager = nm;
+
             ServerConfig = config;
 
             server = new NetServer(new NetPeerConfiguration(Constants.AppName)
@@ -47,7 +49,7 @@ namespace Networking
 
             server.Start();
 
-            LevelManager.ChangeToStartingLevel();
+            LevelManager.CurrentLevel = ServerConfig.StartingLevel;
         }
 
         public Loader Loader { get; }
@@ -76,15 +78,17 @@ namespace Networking
         public PlayerInfo[] Players { get; }
         public PlayerState?[] WorldState { get; }
 
+        public bool GameOver { get; set; }
+        private float changeMapAt;
+
         public string Level => LevelManager.CurrentLevel;
+        public bool ListenServer => NetworkManager && NetworkManager.Mode == NetworkManager.NetworkMode.ListenServer;
 
         public event EventHandler<PlayerInfo> PlayerJoined;
         public event EventHandler<PlayerInfo> PlayerLeft;
-
         public event EventHandler<PlayerPreferences> PlayerSentPreferences;
 
         public event EventHandler<PlayerDeath> PlayerDied;
-
         public event EventHandler<PlayerShoot> PlayerShot;
 
         public void Update()
@@ -94,6 +98,12 @@ namespace Networking
             {
                 ProcessMessages();
                 nextTick = time + 1f / TickRate;
+            }
+
+            if (GameOver && Time.time >= changeMapAt)
+            {
+                GameOver = false;
+                ChangeLevel(LevelManager.GetNextLevel());
             }
         }
 
@@ -124,6 +134,39 @@ namespace Networking
         public void Shutdown()
         {
             server.Shutdown("Bye");
+        }
+
+        public void ChangeLevel(string level)
+        {
+            if (!LevelManager.IsValidLevel(level)) return;
+
+            foreach (var pl in Players)
+            {
+                if (pl == null) continue;
+
+                pl.Kills = 0;
+                pl.Deaths = 0;
+            }
+
+            if (!ListenServer)
+                LevelManager.ChangeLevel(level);
+
+            SendToAll(new ChangeLevel
+            {
+                nextLevel = level
+            }, NetDeliveryMethod.ReliableUnordered);
+        }
+
+        public void EndGame(byte winner)
+        {
+            GameOver = true;
+            changeMapAt = Time.time + ServerConfig.GameMode.mapChangeTime;
+
+            SendToAll(new GameOver
+            {
+                winnerId = winner,
+                mapChangeTime = ServerConfig.GameMode.mapChangeTime
+            }, NetDeliveryMethod.ReliableUnordered);
         }
 
         #region Player methods
@@ -388,16 +431,10 @@ namespace Networking
         private void PacketReceived(byte sender, PlayerDeath packet)
         {
             short deaths = 0;
-            if (Players[sender] != null)
-            {
-                deaths = ++Players[sender].Deaths;
-            }
+            if (Players[sender] != null) deaths = ++Players[sender].Deaths;
 
             short kills = 0;
-            if (Players[packet.killerId] != null)
-            {
-                kills = ++Players[packet.killerId].Kills;
-            }
+            if (Players[packet.killerId] != null) kills = ++Players[packet.killerId].Kills;
 
             var death = new PlayerDeath
             {
@@ -409,6 +446,12 @@ namespace Networking
             SendToAll(death, NetDeliveryMethod.ReliableUnordered);
 
             PlayerDied?.Invoke(this, death);
+
+            var killsTarget = ServerConfig.GameMode.killsTarget;
+            if (killsTarget > 0 && kills >= ServerConfig.GameMode.killsTarget)
+            {
+                EndGame(packet.killerId);
+            }
         }
 
         #endregion

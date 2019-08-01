@@ -21,7 +21,7 @@ namespace Networking
             Loader = loader;
             LevelManager = Loader.LevelManager;
 
-            Loader.LevelLoaded += (o, s) => LevelLoaded(s);
+            Loader.LevelLoaded += (o, s) => OnLevelLoaded(s);
 
             client = new NetClient(new NetPeerConfiguration(Constants.AppName)
             {
@@ -57,13 +57,13 @@ namespace Networking
             base.InitializeFromServer(packet);
 
             if (preloadedLevel)
-                LevelLoaded(packet.levelName);
+                OnLevelLoaded(packet.levelName);
 
-            if (!ListenServer)
-                LevelManager.ChangeLevel(packet.levelName);
+            //if (!ListenServer)
+            LevelManager.ChangeLevel(packet.levelName);
         }
 
-        private void LevelLoaded(string level)
+        protected override void OnLevelLoaded(string level)
         {
             if (!PlayerId.HasValue)
             {
@@ -76,6 +76,16 @@ namespace Networking
 
             Loaded = true;
             CreatePlayer(PlayerId.Value, true);
+
+            if (Players != null)
+            {
+                foreach (var pl in Players)
+                {
+                    if (pl == null || pl.Id == PlayerId.Value) continue;
+
+                    pl.PlayerObject = NetworkManager.CreatePlayer(pl, false);
+                }
+            }
 
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
 
@@ -92,6 +102,8 @@ namespace Networking
             OnPlayerSentPreferences(info);
 
             CreateServerPlayers();
+
+            base.OnLevelLoaded(level);
         }
 
         protected override PlayerInfo CreatePlayer(byte id, bool local = false)
@@ -205,11 +217,13 @@ namespace Networking
         {
             var type = (PacketType) msg.ReadByte();
 
+            if (type == PacketType.Connected)
+                InitializeFromServer(Packets.Connected.Read(msg));
+
+            if (!Loaded) return;
+
             switch (type)
             {
-                case PacketType.Connected:
-                    InitializeFromServer(Packets.Connected.Read(msg));
-                    break;
                 case PacketType.PlayerPreferences:
                     PacketReceived(PlayerPreferences.Read(msg));
                     break;
@@ -226,9 +240,28 @@ namespace Networking
                     PacketReceived(Packets.PlayerDeath.Read(msg));
                     break;
                 case PacketType.PlayerShoot:
-                    PacketReceived(Packets.PlayerShoot.Read(msg));
+                    PacketReceived(PlayerShoot.Read(msg));
+                    break;
+                case PacketType.ChangeLevel:
+                    PacketReceived(ChangeLevel.Read(msg));
+                    break;
+                case PacketType.GameOver:
+                    PacketReceived(Packets.GameOver.Read(msg));
                     break;
             }
+        }
+
+        private void PacketReceived(GameOver packet)
+        {
+            OnGameOver(packet);
+        }
+
+        private void PacketReceived(ChangeLevel packet)
+        {
+            Loaded = false;
+            OnChangeLevel(packet);
+
+            LevelManager.ChangeLevel(packet.nextLevel);
         }
 
         private void PacketReceived(PlayerConnected packet)

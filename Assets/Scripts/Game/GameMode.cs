@@ -13,8 +13,6 @@ namespace Game
         [ReorderableList]
         public List<Weapon> weapons;
 
-        public bool itemsEnabled = true;
-
         [Range(0, 20)]
         public float spawnTime = 6f;
 
@@ -23,6 +21,8 @@ namespace Game
 
         [Range(0, short.MaxValue)]
         public short killsTarget = 30;
+
+        public float mapChangeTime = 5;
 
         private void Awake()
         {
