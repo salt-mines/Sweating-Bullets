@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using Effects;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace Game
         public Transform leftHandIKTarget;
 
         [Header("Visuals")]
+        public Viewmodel viewmodelPrefab;
         public Transform bulletParent;
 
         public TrailRenderer bulletEffect;
@@ -64,6 +66,11 @@ namespace Game
             bulletPool.Fill();
 
             Ammo = maxAmmo;
+        }
+
+        private void OnEnable()
+        {
+            lastShot = Time.time;
         }
 
         private void OnDestroy()

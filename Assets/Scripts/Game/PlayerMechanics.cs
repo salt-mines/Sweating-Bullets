@@ -19,6 +19,7 @@ namespace Game
         public List<GameObject> disableOnDeath;
 
         public Transform gunParent;
+        public Transform viewmodelParent;
         public ParticleSystem deathEffect;
 
         private NetworkPlayer networkPlayer;
@@ -65,6 +66,8 @@ namespace Game
 
                 if (!IsLocal) continue;
 
+                Instantiate(wep.viewmodelPrefab, viewmodelParent).gameObject.SetActive(false);
+
                 foreach (var mr in w.GetComponentsInChildren<MeshRenderer>())
                     mr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
@@ -110,17 +113,27 @@ namespace Game
         {
             var wep = gunParent.GetChild(weaponId)?.GetComponent<Weapon>();
 
+            if (CurrentWeapon != null)
+                CurrentWeapon.gameObject.SetActive(false);
+
             if (wep != null)
                 wep.gameObject.SetActive(true);
 
-            if (CurrentWeapon != null)
-                CurrentWeapon.gameObject.SetActive(false);
+            if (IsLocal)
+            {
+                viewmodelParent.GetChild(CurrentWeaponId)?.gameObject.SetActive(false);
+                viewmodelParent.GetChild(weaponId)?.gameObject.SetActive(true);
+            }
 
             CurrentWeapon = wep;
             CurrentWeaponId = weaponId;
 
             if (CurrentWeapon != null)
                 CurrentWeapon.Ammo = CurrentWeapon.maxAmmo;
+
+            if (IsLocal)
+                GetComponent<PlayerShooting>().viewmodel =
+                    viewmodelParent.GetChild(weaponId)?.GetComponent<Viewmodel>();
 
             GetComponent<PlayerShooting>()?.SetWeapon(wep);
             networkPlayer.GetPlayerAnimation()?.SetWeapon(wep);

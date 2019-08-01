@@ -54,6 +54,8 @@ MonoBehaviour:
   barrelPoint: {fileID: 5515538458555030996}
   rightHandIKTarget: {fileID: 7392322244997594882}
   leftHandIKTarget: {fileID: 7750077050890363246}
+  viewmodelPrefab: {fileID: 798944747897210477, guid: b7923fad75b46cf4c9563a3ae5903266,
+    type: 3}
   bulletParent: {fileID: 0}
   bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
     type: 3}

@@ -32,6 +32,9 @@ namespace UI
 
             var wep = mechanics.CurrentWeapon;
 
+            if (!wep)
+                return;
+
             if (wep.Ammo == lastAmmoCount) return;
 
             SetAmmo(wep.Ammo);
