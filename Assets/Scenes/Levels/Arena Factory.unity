@@ -2448,15 +2448,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1478744538}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
@@ -19207,15 +19207,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1478744538}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
@@ -26283,15 +26283,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1478744538}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
@@ -26709,6 +26709,11 @@ PrefabInstance:
         type: 3}
       propertyPath: respawnTime
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 789030873213279465, guid: 11b22557169383f4392437ff3ccbaeb8,
+        type: 3}
+      propertyPath: weapon
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11b22557169383f4392437ff3ccbaeb8, type: 3}
@@ -28615,15 +28620,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1478744538}
     m_Modifications:
-    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
-        type: 3}
-      propertyPath: respawnTime
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 789030873213279468, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}
       propertyPath: m_Name
       value: Health Pickup (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: -1772889729965942500, guid: 0c2a017be63f74d479df56a8039d63df,
+        type: 3}
+      propertyPath: respawnTime
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 789030873213279470, guid: 0c2a017be63f74d479df56a8039d63df,
         type: 3}

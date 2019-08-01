@@ -34,6 +34,9 @@ namespace UI
         {
             if (client.LocalPlayer == null) return;
 
+            if (!client.LocalPlayer.PlayerObject)
+                return;
+
             if (!mechanics)
                 mechanics = client.LocalPlayer.PlayerObject.GetComponent<PlayerMechanics>();
 

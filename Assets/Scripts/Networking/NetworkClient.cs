@@ -176,7 +176,7 @@ namespace Networking
             {
                 playerId = PlayerId.Value,
                 from = from,
-                bullets = new[] { BulletInfo.From(to, damage, hit)}
+                bullets = new[] {BulletInfo.From(to, damage, hit)}
             }, NetDeliveryMethod.ReliableUnordered);
         }
 
@@ -317,6 +317,7 @@ namespace Networking
 
         internal override void OnGUI(float x, float y)
         {
+#if UNITY_EDITOR
             GUI.Box(new Rect(x, y += 20, 140, 100), "Client");
             var rtt = 0;
             if (client.ServerConnection != null)
@@ -330,6 +331,7 @@ namespace Networking
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Pos: {ply.Position}");
                 GUI.Label(new Rect(x + 5, y += 20, 140, 20), $"Rot: {ply.ViewAngles}");
             }
+#endif
         }
 
         public class StatusChangeEvent : EventArgs

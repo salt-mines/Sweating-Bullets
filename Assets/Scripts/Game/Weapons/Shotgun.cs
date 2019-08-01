@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Weapons
 {
@@ -15,9 +14,9 @@ namespace Game.Weapons
         [Range(0.0f, 20.0f)]
         public float range = 8f;
 
-        protected override int BulletReserve => Mathf.CeilToInt(numPellets * 1 / rateOfFire) + 1;
-
         private BulletInfo[] hits;
+
+        protected override int BulletReserve => Mathf.CeilToInt(numPellets * 1 / rateOfFire) + 1;
 
         private new void Start()
         {
@@ -32,13 +31,11 @@ namespace Game.Weapons
 
             for (var i = 0; i < numPellets; i++)
             {
+                var randomOffset_x = Random.Range(-(1 - accuracy), 1 - accuracy);
+                var randomOffset_y = Random.Range(-(1 - accuracy), 1 - accuracy);
+                var randomOffset_z = Random.Range(-(1 - accuracy), 1 - accuracy);
 
-                
-                float randomOffset_x = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
-                float randomOffset_y = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
-                float randomOffset_z = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
-
-                Vector3 direction = transform.forward;
+                var direction = transform.forward;
 
                 direction.x += randomOffset_x;
                 direction.y += randomOffset_y;

@@ -56,7 +56,8 @@ namespace Game
 
             uiDeadOverlay = FindObjectOfType<GameManager>().deadOverlay;
 
-            networkPlayer.Client.SelfHurt += TakeDamage;
+            if (IsLocal)
+                networkPlayer.Client.SelfHurt += TakeDamage;
 
             // Init weapons
             foreach (var wep in gameMode.weapons)
@@ -146,6 +147,8 @@ namespace Game
 
         private void TakeDamage(object s, Client.DamageEventArgs dea)
         {
+            if (!IsAlive) return;
+
             if (Health >= dea.Damage)
                 Health -= dea.Damage;
             else
@@ -160,6 +163,8 @@ namespace Game
         [Button]
         public void Kill()
         {
+            if (!IsAlive) return;
+
             IsAlive = false;
 
             if (deathEffect)
