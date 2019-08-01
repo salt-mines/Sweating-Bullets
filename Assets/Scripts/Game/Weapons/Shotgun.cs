@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Game.Weapons
 {
@@ -9,10 +10,7 @@ namespace Game.Weapons
         public int numPellets = 6;
 
         [Range(0.0f, 2.0f)]
-        public float horizontalSpread = 1.0f;
-
-        [Range(0.0f, 2.0f)]
-        public float verticalSpread = 1.0f;
+        public float accuracy = 0.5f;
 
         [Range(0.0f, 20.0f)]
         public float range = 8f;
@@ -30,19 +28,21 @@ namespace Game.Weapons
         public override void Shoot(NetworkPlayer player, Transform startPoint)
         {
             base.Shoot(player, startPoint);
-
-            float spreadX;
-            float spreadY;
-            float rad;
             var from = startPoint.position;
 
             for (var i = 0; i < numPellets; i++)
             {
-                rad = Random.Range(0.0f, 360.0f) * Mathf.Rad2Deg;
-                spreadX = Random.Range(0.0f, horizontalSpread / 2.0f) * Mathf.Cos(rad);
-                spreadY = Random.Range(0.0f, verticalSpread / 2.0f) * Mathf.Sin(rad);
 
-                var direction = new Vector3(spreadX, spreadY, 0.0f) + startPoint.forward;
+                
+                float randomOffset_x = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
+                float randomOffset_y = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
+                float randomOffset_z = UnityEngine.Random.Range(-(1 - accuracy), 1 - accuracy);
+
+                Vector3 direction = transform.forward;
+
+                direction.x += randomOffset_x;
+                direction.y += randomOffset_y;
+                direction.z += randomOffset_z;
                 var endPoint = startPoint.position + direction * range;
 
                 var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);

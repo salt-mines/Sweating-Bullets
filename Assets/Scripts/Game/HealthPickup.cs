@@ -53,14 +53,20 @@ namespace Game
 
         private void OnTriggerEnter(Collider other)
         {
+            var pm = other.gameObject.GetComponent<PlayerMechanics>();
+
             if (pickedUp && Time.time < timePickedUp + respawnTime) return;
             if (!other.gameObject.CompareTag(Tags.Player)) return;
-
-            var pm = other.gameObject.GetComponent<PlayerMechanics>();
+            if (gameManager.currentGameMode.maxHealth <= pm.Health) return;
 
             if (!pm) return;
 
-            pm.Health += healAmount; 
+            pm.Health += healAmount;
+            if(pm.Health > gameManager.currentGameMode.maxHealth)
+            {
+                pm.Health = gameManager.currentGameMode.maxHealth;
+            }
+
             pickupParent.gameObject.SetActive(false);
             timePickedUp = Time.time;
             pickedUp = true;

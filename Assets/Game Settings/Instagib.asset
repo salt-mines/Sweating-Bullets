@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modeName: Instagib
   weapons:
-  - {fileID: 8813512276880922557, guid: f4de7a044160e33438afa67c5c3cdbbd, type: 3}
+  - {fileID: 5767364110194033039, guid: 73c70befbc742e24ca5baa455093b560, type: 3}
+  itemsEnabled: 1
   spawnTime: 6
   maxHealth: 0
+  killsTarget: 30
