@@ -227,20 +227,6 @@ namespace Networking
             PlayerRespawn?.Invoke(this, player);
         }
 
-        /// <summary>
-        ///     Called when local player has shot.
-        /// </summary>
-        /// <param name="from">Where the shot was shot from</param>
-        /// <param name="to">Where the shot ended</param>
-        /// <param name="hit">RaycastHit if shot hit something, null otherwise</param>
-        public virtual void PlayerShootOne(Vector3 from, Vector3 to, byte damage, RaycastHit hit)
-        {
-        }
-
-        public virtual void PlayerShootMultiple(Vector3 from, Vector3 to, byte damage, RaycastHit[] hits)
-        {
-        }
-
         internal virtual void OnGUI(float x, float y)
         {
         }

@@ -22,7 +22,7 @@ namespace Game.Weapons
             var didHit = Physics.Raycast(from, direction, out var hit, range, hittableMask);
             var to = didHit ? hit.point : from + direction * range;
 
-            player.Client.PlayerShootOne(barrel, to, damagePerBullet, hit);
+            player.Client.ShootOne(barrel, to, damagePerBullet, hit);
             ShootEffect(player, barrel, to, hit);
         }
     }

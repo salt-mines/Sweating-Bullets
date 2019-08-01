@@ -19,6 +19,14 @@ namespace Game.Weapons
 
         protected override int BulletReserve => Mathf.CeilToInt(numPellets * 1 / rateOfFire) + 1;
 
+        private BulletInfo[] hits;
+
+        private new void Start()
+        {
+            base.Start();
+            hits = new BulletInfo[numPellets];
+        }
+
         public override void Shoot(NetworkPlayer player, Transform startPoint)
         {
             base.Shoot(player, startPoint);
@@ -43,8 +51,11 @@ namespace Game.Weapons
                     endPoint = hit.point;
 
                 ShootEffect(player, barrelPoint.position, endPoint, hit);
-                //player.Shoot(weapon.barrelPoint.position, to * range);
+
+                hits[i] = BulletInfo.From(endPoint, damagePerBullet, hit);
             }
+
+            player.Client.ShootMultiple(barrelPoint.position, hits);
         }
     }
 }
