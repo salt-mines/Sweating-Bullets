@@ -155,7 +155,7 @@ MonoBehaviour:
   bulletEffectSpeed: 500
   audioSource: {fileID: 4036666354665009083}
   numPellets: 10
-  horizontalSpread: 0.9
+  horizontalSpread: 0.4
   verticalSpread: 0.5
   range: 20
 --- !u!82 &4036666354665009083
@@ -280,6 +280,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8075330545553896709}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 263e5445d95dff146a60efea336dae7e,
+        type: 3}
+      propertyPath: m_Name
+      value: shotgun
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 263e5445d95dff146a60efea336dae7e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -335,11 +340,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 263e5445d95dff146a60efea336dae7e,
+    - target: {fileID: 6961698226742840131, guid: 263e5445d95dff146a60efea336dae7e,
         type: 3}
-      propertyPath: m_Name
-      value: shotgun
-      objectReference: {fileID: 0}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ec358e68a901ddd46b97c3e75e5e166f, type: 2}
+    - target: {fileID: 8528072375862307057, guid: 263e5445d95dff146a60efea336dae7e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c87921cdc3f18f7419f563548a52f03a, type: 2}
+    - target: {fileID: -4736148416643471995, guid: 263e5445d95dff146a60efea336dae7e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ec358e68a901ddd46b97c3e75e5e166f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 263e5445d95dff146a60efea336dae7e, type: 3}
 --- !u!4 &983683470906597679 stripped

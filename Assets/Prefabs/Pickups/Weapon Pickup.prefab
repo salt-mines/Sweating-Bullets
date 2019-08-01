@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 789030873213279465}
   - component: {fileID: 5991607786455890512}
   m_Layer: 2
-  m_Name: Item Thing
+  m_Name: Weapon Pickup
   m_TagString: ItemPickUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,13 +185,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5272989332112993246}
-  m_LocalRotation: {x: -0.1736466, y: 0.004296986, z: 0.00075767486, w: 0.9847984}
-  m_LocalPosition: {x: -0.14800516, y: 0.4, z: -0.34372148}
+  m_LocalRotation: {x: -0.21643744, y: 0.004259847, z: 0.00094438484, w: 0.97628677}
+  m_LocalPosition: {x: -0.15, y: 0.4, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 789030873213279470}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: -20, y: 0.5, z: 0}
+  m_LocalEulerAnglesHint: {x: -25, y: 0.5, z: 0}
 --- !u!1001 &4334582303848067707
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,16 +274,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.2
       objectReference: {fileID: 0}
-    - target: {fileID: -2058067791732106546, guid: 2e04e574e6d59f54da9a3b717281348d,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 612b07f7dba33414b89cb3ec1432a159, type: 2}
     - target: {fileID: 8141930970071010223, guid: 2e04e574e6d59f54da9a3b717281348d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 58eebfa9176e9654cab0f79ff71da158, type: 2}
+    - target: {fileID: -2058067791732106546, guid: 2e04e574e6d59f54da9a3b717281348d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 612b07f7dba33414b89cb3ec1432a159, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e04e574e6d59f54da9a3b717281348d, type: 3}
 --- !u!4 &8745202595860535649 stripped
