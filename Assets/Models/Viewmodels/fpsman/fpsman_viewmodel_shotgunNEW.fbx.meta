@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 83d80dfb79d9d464c9d76f5dbd5f0c48
+guid: 026907f2f60f6d344af069fa07854287
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -66,7 +66,27 @@ ModelImporter:
   - first:
       74: -1264114231110606188
     second: Armature.003|ShootShotgun
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: f226558aef687a444a305bd26d1c891b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: ec358e68a901ddd46b97c3e75e5e166f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: black
+    second: {fileID: 2100000, guid: 8179e27d3cad1dd42a5cc991bd1bde92, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin
+    second: {fileID: 2100000, guid: 64e07b2c7f1897740a9b3f563553fa95, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
