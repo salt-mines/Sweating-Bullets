@@ -153,7 +153,7 @@ MonoBehaviour:
   bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
     type: 3}
   bulletEffectSpeed: 500
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 4036666354665009083}
   numPellets: 10
   horizontalSpread: 0.9
   verticalSpread: 0.5

@@ -113,10 +113,12 @@ MonoBehaviour:
   maxAmmo: 30
   hittableMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 513
   barrelPoint: {fileID: 3078294510190528033}
   rightHandIKTarget: {fileID: 5400389389210415427}
   leftHandIKTarget: {fileID: 4611616565571077366}
+  viewmodelPrefab: {fileID: 798944747897210477, guid: 5291cc7acefd61d44b57fedec4e4c045,
+    type: 3}
   bulletParent: {fileID: 0}
   bulletEffect: {fileID: 3257723076179856069, guid: f5f20c2d530a48d4d95af61bce1a1a7f,
     type: 3}
