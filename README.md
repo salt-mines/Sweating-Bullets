@@ -9,6 +9,9 @@ Multiplayer first-person arena shooter made during TAMK Game Camp 2019.
 * Tommi Mäkeläinen: Modeling, art
 * Pasi Mäkitalo: Programming, level design
 
+## Build requirements
+
+Requires DOTween Free from Unity Asset Store to build.
 
 ## Assets
 
