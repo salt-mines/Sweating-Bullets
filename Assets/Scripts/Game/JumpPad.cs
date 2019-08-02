@@ -23,9 +23,22 @@ namespace Game
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.gameObject.CompareTag(Tags.Player)) return;
+            var go = other.gameObject;
+            var isLocal = go.CompareTag(Tags.Player);
+            var isNetPlayer = go.layer == (int) Layer.Players;
 
-            var pm = other.gameObject.GetComponent<PlayerMovement>();
+            if (isLocal || isNetPlayer)
+            {
+                if (audioSource)
+                    audioSource.Play();
+
+                if (animator)
+                    animator.SetTrigger(Spring);
+            }
+
+            if (!isLocal) return;
+
+            var pm = go.GetComponent<PlayerMovement>();
             if (!pm) return;
 
             var vel = transform.up * jumpStrength;
@@ -37,12 +50,6 @@ namespace Game
             }
 
             pm.Velocity = vel;
-
-            if (animator)
-                animator.SetTrigger(Spring);
-
-            if (audioSource)
-                audioSource.Play();
         }
     }
 }
