@@ -53,25 +53,34 @@ namespace Game
 
         private void OnTriggerEnter(Collider other)
         {
-            var pm = other.gameObject.GetComponent<PlayerMechanics>();
-
             if (pickedUp && Time.time < timePickedUp + respawnTime) return;
-            if (!other.gameObject.CompareTag(Tags.Player)) return;
-            if (gameManager.currentGameMode.maxHealth <= pm.Health) return;
 
+            var go = other.gameObject;
+            var isLocal = go.CompareTag(Tags.Player);
+            var isNetPlayer = go.layer == (int) Layer.Players;
+
+            if (isLocal || isNetPlayer)
+            {
+                pickupParent.gameObject.SetActive(false);
+                timePickedUp = Time.time;
+                pickedUp = true;
+
+                if (audioSource)
+                    audioSource.Play();
+            }
+
+            if (!isLocal) return;
+
+            var pm = other.gameObject.GetComponent<PlayerMechanics>();
             if (!pm) return;
+
+            if (gameManager.currentGameMode.maxHealth <= pm.Health) return;
 
             pm.Health += healAmount;
             if(pm.Health > gameManager.currentGameMode.maxHealth)
             {
                 pm.Health = gameManager.currentGameMode.maxHealth;
             }
-
-            pickupParent.gameObject.SetActive(false);
-            timePickedUp = Time.time;
-            pickedUp = true;
-
-            if (audioSource) audioSource.Play();
         }
     }
 }
