@@ -110,15 +110,16 @@ namespace Game
             if (animator.isActiveAndEnabled && !Utils.SameSign(fsValue, lastStepValue) && PlayerInfo.Grounded)
             {
                 var clip = footstepClips[lastFootStepClip];
-                audioSource.PlayOneShot(clip, groundVel.magnitude / 7f);
+                audioSource.PlayOneShot(clip, Mathf.Clamp01(groundVel.magnitude / 7f));
 
                 lastFootStepClip = lastFootStepClip == 0 ? 1 : 0;
             }
 
-            if(!oldGrounded && PlayerInfo.Grounded)
+            if (!oldGrounded && PlayerInfo.Grounded)
             {
                 audioSource.PlayOneShot(landingClip);
             }
+
             oldGrounded = PlayerInfo.Grounded;
             lastStepValue = fsValue;
         }

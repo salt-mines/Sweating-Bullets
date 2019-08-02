@@ -92,7 +92,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -111,50 +111,50 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.06666667
+      time: 0
       value: 1
-      inSlope: -15.005997
-      outSlope: -15.005997
+      inSlope: -5.633155
+      outSlope: -5.633155
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.2723526
     - serializedVersion: 3
-      time: 0.13333334
-      value: 0.5
-      inSlope: -2.6820817
-      outSlope: -2.6820817
+      time: 0.13942923
+      value: 0.5263672
+      inSlope: -1.7965567
+      outSlope: -1.7965567
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0.72089
+      inWeight: 0.5600458
+      outWeight: 0.7378076
     - serializedVersion: 3
-      time: 0.26666668
-      value: 0.25
-      inSlope: -1.4005872
-      outSlope: -1.4005872
+      time: 0.27899578
+      value: 0.29354858
+      inSlope: -1.3216529
+      outSlope: -1.3216529
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.9045976
       outWeight: 0.685594
     - serializedVersion: 3
-      time: 0.42717797
-      value: 0.054351807
-      inSlope: -0.2344687
-      outSlope: -0.2344687
+      time: 0.43354088
+      value: 0.14611816
+      inSlope: -0.6992032
+      outSlope: -0.6992032
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.8928595
+      outWeight: 0.6404083
     - serializedVersion: 3
-      time: 0.67686456
-      value: 0.022063375
-      inSlope: 0.030997956
-      outSlope: 0.030997956
+      time: 0.6738128
+      value: 0.047240376
+      inSlope: -0.20359161
+      outSlope: -0.20359161
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.8198298
+      outWeight: 0.47164035
     - serializedVersion: 3
       time: 1
       value: 0

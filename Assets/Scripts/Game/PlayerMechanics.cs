@@ -159,7 +159,6 @@ namespace Game
             Kill(dea.ShooterId);
         }
 
-        [Button]
         public void Kill(byte? killerId = null)
         {
             if (!IsAlive) return;
