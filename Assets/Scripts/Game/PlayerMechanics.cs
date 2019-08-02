@@ -156,12 +156,11 @@ namespace Game
 
             if (Health != 0) return;
 
-            Kill();
-            networkPlayer.Client.OnDeath(dea.ShooterId);
+            Kill(dea.ShooterId);
         }
 
         [Button]
-        public void Kill()
+        public void Kill(byte? killerId = null)
         {
             if (!IsAlive) return;
 
@@ -190,6 +189,8 @@ namespace Game
             }
 
             SetWeapon(0);
+
+            networkPlayer.Client.OnDeath(killerId ?? networkPlayer.Id);
         }
 
         public void Respawn()

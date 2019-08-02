@@ -58,9 +58,8 @@ namespace Networking
 
             if (preloadedLevel)
                 OnLevelLoaded(packet.levelName);
-
-            //if (!ListenServer)
-            LevelManager.ChangeLevel(packet.levelName);
+            else
+                LevelManager.ChangeLevel(packet.levelName);
         }
 
         protected override void OnLevelLoaded(string level)
@@ -78,14 +77,12 @@ namespace Networking
             CreatePlayer(PlayerId.Value, true);
 
             if (Players != null)
-            {
                 foreach (var pl in Players)
                 {
                     if (pl == null || pl.Id == PlayerId.Value) continue;
 
-                    pl.PlayerObject = NetworkManager.CreatePlayer(pl, false);
+                    pl.PlayerObject = NetworkManager.CreatePlayer(pl);
                 }
-            }
 
             Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
 
@@ -308,10 +305,7 @@ namespace Networking
                 ply.PlayerObject.playerMechanics.CurrentWeapon.ShootEffect(ply.PlayerObject, packet.from, b.to, hit);
 
                 Debug.Assert(PlayerId != null, nameof(PlayerId) + " != null");
-                if (b.hitPlayer && b.victimId == PlayerId.Value)
-                {
-                    OnSelfHurt(packet.playerId, b.damage);
-                }
+                if (b.hitPlayer && b.victimId == PlayerId.Value) OnSelfHurt(packet.playerId, b.damage);
             }
         }
 

@@ -49,10 +49,7 @@ namespace Game
 
             deadOverlay.block = true;
 
-            if (deadOverlay.gameObject.activeSelf)
-            {
-                deadOverlay.gameObject.SetActive(false);
-            }
+            if (deadOverlay.gameObject.activeSelf) deadOverlay.gameObject.SetActive(false);
         }
 
         private void OnLevelChange(object sender, string e)
@@ -81,6 +78,13 @@ namespace Game
         public void OnMainMenu()
         {
             FindObjectOfType<Loader>().LoadMainMenu();
+        }
+
+        public void OnSuicide()
+        {
+            var pl = client?.LocalPlayer?.PlayerObject;
+            if (pl != null)
+                pl.Kill();
         }
     }
 }

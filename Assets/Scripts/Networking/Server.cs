@@ -12,6 +12,7 @@ namespace Networking
 
         private float nextSend;
         private float nextTick;
+        private float changeMapAt;
 
         public Server(NetworkManager nm, ServerConfig config, Loader loader)
         {
@@ -82,7 +83,6 @@ namespace Networking
         public PlayerState?[] WorldState { get; }
 
         public bool GameOver { get; set; }
-        private float changeMapAt;
 
         public string Level => LevelManager.CurrentLevel;
         public bool ListenServer => NetworkManager && NetworkManager.Mode == NetworkManager.NetworkMode.ListenServer;
@@ -437,7 +437,9 @@ namespace Networking
             if (Players[sender] != null) deaths = ++Players[sender].Deaths;
 
             short kills = 0;
-            if (Players[packet.killerId] != null) kills = ++Players[packet.killerId].Kills;
+            if (packet.killerId == sender && Players[sender] != null)
+                kills = Players[sender].Kills;
+            else if (Players[packet.killerId] != null) kills = ++Players[packet.killerId].Kills;
 
             var death = new PlayerDeath
             {
@@ -451,10 +453,7 @@ namespace Networking
             PlayerDied?.Invoke(this, death);
 
             var killsTarget = ServerConfig.GameMode.killsTarget;
-            if (killsTarget > 0 && kills >= ServerConfig.GameMode.killsTarget)
-            {
-                EndGame(packet.killerId);
-            }
+            if (killsTarget > 0 && kills >= ServerConfig.GameMode.killsTarget) EndGame(packet.killerId);
         }
 
         #endregion
